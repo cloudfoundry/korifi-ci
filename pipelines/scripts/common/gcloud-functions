@@ -1,0 +1,84 @@
+#!/bin/bash
+
+# Loop forever until the status of the cluster $1 equals to $2
+# In Concourse, use timeout to limit waiting https://concourse-ci.org/timeout-step-modifier.html
+wait-for-state() {
+  declare -r name=$1
+  declare -r desired_status=$2
+
+  until cluster-state-is "$name" "$desired_status"; do
+    cluster-state "$name" | jq --raw-output '.state'
+    sleep 10
+  done
+}
+
+# Exit nonzero unless the cluster $1 is in the status given as $2
+cluster-state-is() {
+  declare -r name=$1
+  declare -r desired_status=$2
+
+  cluster-state "$name" | jq '.status == $status' --arg status "$desired_status" --exit-status >/dev/null
+}
+
+# Show details about the cluster
+cluster-state() {
+  declare -r name=$1
+  gcloud container clusters describe "$name" --zone "$GCP_ZONE" --format json
+}
+
+# Log in to the Google Cloud
+gcloud-login() {
+  declare -r service_account_json="/tmp/service-account.json"
+  echo "$GCP_SERVICE_ACCOUNT_JSON" >"$service_account_json"
+  gcloud auth activate-service-account --key-file="$service_account_json"
+  gcloud config set container/use_application_default_credentials true
+}
+
+terraform-init() {
+  declare -r name=$1
+  terraform init -backend-config="prefix=terraform/state/$name"
+}
+
+# Create a new cluster with the name given as $1
+create-cluster() {
+  declare -r name=$1
+  declare -r worker_count=$2
+  terraform apply -var "name=$name" \
+    -var "node-count-per-zone=$worker_count"
+}
+
+# Delete the cluster with the name given as $1
+delete-cluster() {
+  declare -r name=$1
+  terraform destroy -var "name=$name" -auto-approve
+}
+
+# Exit nonzero unless the cluster $1 exists
+cluster-exists() {
+  declare -r name="$1"
+  cluster_status="$(gcloud container clusters describe "$name" --zone "$GCP_ZONE" 2>&1)"
+  if [[ "$cluster_status" =~ "Not found" ]]; then
+    return 1
+  fi
+  return 0
+}
+
+# Loop forever until the status of the cluster $1 is gone
+wait-for-deletion() {
+  declare -r name=$1
+
+  until ! cluster-exists "$name"; do
+    cluster-state "$name" | jq --raw-output '.status' || true
+    sleep 10
+  done
+}
+
+export-kubeconfig() {
+  declare -r name=$1
+  gcloud container clusters get-credentials "$name" --zone "$GCP_ZONE"
+}
+
+get-static-ip() {
+  declare -r name=$1
+  gcloud compute addresses describe "$name" --region "$GCP_REGION" --format json | jq --raw-output ".address"
+}

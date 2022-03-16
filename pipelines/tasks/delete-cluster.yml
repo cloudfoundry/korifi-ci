@@ -1,0 +1,17 @@
+platform: linux
+image_resource:
+  type: registry-image
+  source:
+    repository: eirini/gcloud
+    tag: latest
+    username: ((docker.user))
+    password: ((docker.pass))
+inputs:
+- name: cf-k8s-ci
+- name: cf-k8s-secrets
+params:
+  CLUSTER_NAME: pr-e2e
+  GCP_SERVICE_ACCOUNT_JSON: ((gcp-serviceaccount))
+  WORKER_COUNT: 3
+run:
+  path: cf-k8s-ci/pipelines/scripts/delete-cluster.sh

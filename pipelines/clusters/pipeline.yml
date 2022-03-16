@@ -1,0 +1,114 @@
+common:
+  on_failure: &slackHook
+    put: slack
+    params:
+      attachments: |2
+          [{
+              "color": "danger",
+              "actions": [
+                    {
+                      "type": "button",
+                      "text": "View in Concourse",
+                      "url": "https://ci.cf-k8s.cf/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
+                    }
+              ]
+          }]
+      channel: '#eirini-ci'
+      text: |
+        Pipeline *$BUILD_PIPELINE_NAME* failed :cry:
+
+        Job is *$BUILD_JOB_NAME*
+        Build name is *$BUILD_NAME*
+
+groups:
+- name: main
+  jobs:
+  - create-cluster-pr-e2e
+  - delete-cluster-pr-e2e
+
+jobs:
+- name: delete-cluster-pr-e2e
+  serial: true
+  serial_groups:
+  - pr-e2e
+  plan:
+  - get: delete-timer
+    trigger: true
+  - get: cf-k8s-ci
+  - get: cf-k8s-secrets
+  - task: delete-kubernetes-cluster
+    privileged: true
+    file: cf-k8s-ci/pipelines/tasks/delete-cluster.yml
+  - put: semver-event-pr-e2e
+    params:
+      bump: major
+  on_failure: *slackHook
+
+- name: create-cluster-pr-e2e
+  serial: true
+  serial_groups:
+  - pr-e2e
+  plan:
+  - get: cf-k8s-ci
+  - get: cf-k8s-secrets
+  - task: delete-disks
+    file: cf-k8s-ci/pipelines/tasks/delete-disks.yml
+  - put: semver-event-pr-e2e
+    params:
+      bump: major
+  - get: semver-event-pr-e2e
+    passed:
+    - delete-cluster-pr-e2e
+    trigger: true
+  - task: create-kubernetes-cluster
+    file: cf-k8s-ci/pipelines/tasks/create-cluster.yml
+  on_failure: *slackHook
+
+resource_types:
+- name: slack-notification
+  type: registry-image
+  source:
+    username: ((docker.user))
+    password: ((docker.pass))
+    repository: cfcommunity/slack-notification-resource
+    tag: latest
+
+resources:
+- name: cf-k8s-ci
+  type: git
+  icon: git
+  source:
+    uri: https://github.com/cloudfoundry/cf-k8s-ci.git
+    branch: main
+
+- name: cf-k8s-secrets
+  type: git
+  icon: git
+  source:
+    uri: ((github/cf-k8s-secrets.uri))
+    branch: main
+    private_key: ((github/cf-k8s-secrets.private_key))
+
+- name: delete-timer
+  type: time
+  icon: bomb
+  source:
+    start: 6:00 AM
+    stop: 7:00 AM
+
+- name: semver-event-pr-e2e
+  type: semver
+  icon: check-decagram
+  source:
+    uri: ((github/cf-k8s-secrets.uri))
+    branch: events
+    driver: git
+    file: semver-event-pr-e2e
+    initial_version: 0.1.0
+    private_key: ((github/cf-k8s-secrets.private_key))
+
+- name: slack
+  type: slack-notification
+  icon: slack
+  source:
+    url: ((slack-notification.uri))
