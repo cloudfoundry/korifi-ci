@@ -1,0 +1,29 @@
+platform: linux
+
+caches:
+- path: docker/overlay2
+- path: docker/buildkit
+
+image_resource:
+  type: registry-image
+  source:
+    repository: europe-west1-docker.pkg.dev/cf-on-k8s-wg/ci/ci
+    tag: latest
+    username: _json_key
+    password: ((gcp-artifact-registry-writer))
+
+inputs:
+- name: cf-k8s-ci
+- name: cf-k8s-controllers-pr
+
+outputs:
+- name: kube
+
+params:
+  REGISTRY_SERVICE_ACCOUNT_JSON: ((gcp-artifact-registry-writer))
+  GCP_SERVICE_ACCOUNT_JSON: ((gcp-serviceaccount))
+  GCP_ZONE:
+  CLUSTER_NAME:
+
+run:
+  path: cf-k8s-ci/pipelines/scripts/deploy-cf-k8s.sh

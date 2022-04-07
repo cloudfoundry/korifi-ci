@@ -1,0 +1,26 @@
+platform: linux
+
+image_resource:
+  type: registry-image
+  source:
+    repository: europe-west1-docker.pkg.dev/cf-on-k8s-wg/ci/ci
+    tag: latest
+    username: _json_key
+    password: ((gcp-artifact-registry-writer))
+
+inputs:
+- name: cf-k8s-ci
+- name: cf-k8s-controllers-pr
+
+outputs:
+  - name: accounts
+
+params:
+  GCP_SERVICE_ACCOUNT_JSON: ((gcp-pr-e2e-k8s-admin))
+  GCP_ZONE:
+  CLUSTER_NAME:
+  GINKGO_NODES:
+  ROOT_NAMESPACE:
+
+run:
+  path: cf-k8s-ci/pipelines/scripts/set-account-env-vars.sh

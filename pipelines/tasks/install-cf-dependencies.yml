@@ -1,0 +1,22 @@
+platform: linux
+image_resource:
+  type: registry-image
+  source:
+    repository: europe-west1-docker.pkg.dev/cf-on-k8s-wg/ci/gcloud
+    tag: latest
+    username: _json_key
+    password: ((gcp-artifact-registry-writer))
+inputs:
+- name: cf-k8s-ci
+- name: cf-k8s-controllers
+- name: eirini-controller
+- name: terraform-output
+params:
+  CLUSTER_NAME:
+  GCP_SERVICE_ACCOUNT_JSON: ((gcp-serviceaccount))
+  KPACK_TAG: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/kpack/beta
+  DOCKER_SERVER: europe-west1-docker.pkg.dev
+  DOCKER_USERNAME: _json_key
+  DOCKER_PASSWORD: ((gcp-artifact-registry-writer))
+run:
+  path: cf-k8s-ci/pipelines/scripts/install-cf-dependencies.sh

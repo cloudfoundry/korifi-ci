@@ -1,17 +1,23 @@
 platform: linux
+
+caches: []
+
 image_resource:
   type: registry-image
   source:
-    repository: europe-west1-docker.pkg.dev/cf-on-k8s-wg/ci/gcloud
+    repository: europe-west1-docker.pkg.dev/cf-on-k8s-wg/ci/ci
     tag: latest
     username: _json_key
     password: ((gcp-artifact-registry-writer))
+
 inputs:
 - name: cf-k8s-ci
-- name: cf-k8s-secrets
+
 params:
-  CLUSTER_NAME:
+  REGISTRY_SERVICE_ACCOUNT_JSON: ((gcp-artifact-registry-writer))
   GCP_SERVICE_ACCOUNT_JSON: ((gcp-serviceaccount))
-  WORKER_COUNT: 3
+  GCP_ZONE:
+  CLUSTER_NAME:
+
 run:
-  path: cf-k8s-ci/pipelines/scripts/delete-cluster.sh
+  path: cf-k8s-ci/pipelines/scripts/undeploy-cf-k8s.sh

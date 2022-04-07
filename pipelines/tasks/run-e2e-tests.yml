@@ -1,0 +1,28 @@
+platform: linux
+
+caches:
+  - path: ../../../root/.cache/go-build
+  - path: ../../../go/pkg/mod
+
+image_resource:
+  type: registry-image
+  source:
+    repository: europe-west1-docker.pkg.dev/cf-on-k8s-wg/ci/ci
+    tag: latest
+    username: _json_key
+    password: ((gcp-artifact-registry-writer))
+
+inputs:
+- name: cf-k8s-ci
+- name: cf-k8s-controllers-pr
+- name: kube
+
+params:
+  API_SERVER_ROOT:
+  APP_FQDN:
+  GINKGO_NODES:
+  ROOT_NAMESPACE:
+  KUBECONFIG: kube/kube.config
+
+run:
+  path: cf-k8s-ci/pipelines/scripts/run-e2e-tests.sh

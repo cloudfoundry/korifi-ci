@@ -1,0 +1,124 @@
+common:
+  on_failure: &slackHook
+    put: slack
+    params:
+      attachments: |2
+          [{
+              "color": "danger",
+              "actions": [
+                    {
+                      "type": "button",
+                      "text": "View in Concourse",
+                      "url": "https://ci.cf-k8s.cf/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
+                    }
+              ]
+          }]
+      channel: '#eirini-ci'
+      text: |
+        Pipeline *$BUILD_PIPELINE_NAME* failed :cry:
+
+        Job is *$BUILD_JOB_NAME*
+        Build name is *$BUILD_NAME*
+
+groups:
+- name: main
+  jobs:
+  - update-ci-image
+  - update-gcloud-image
+
+jobs:
+- name: update-ci-image
+  plan:
+  - get: go-image
+    trigger: true
+  - get: ci-image-source
+    trigger: true
+  - get_params:
+      skip_download: true
+    params:
+      build: ci-image-source/images/ci
+    put: ci-image
+  on_failure: *slackHook
+
+- name: update-gcloud-image
+  plan:
+  - get: google-cloud-sdk-image
+    trigger: true
+  - get: gcloud-image-source
+    trigger: true
+  - get_params:
+      skip_download: true
+    params:
+      build: gcloud-image-source/images/gcloud
+    put: gcloud-image
+  on_failure: *slackHook
+
+resource_types:
+- name: slack-notification
+  type: registry-image
+  source:
+    username: ((docker.user))
+    password: ((docker.pass))
+    repository: cfcommunity/slack-notification-resource
+    tag: latest
+
+resources:
+- name: ci-image
+  type: docker-image
+  icon: docker
+  source:
+    repository: europe-west1-docker.pkg.dev/cf-on-k8s-wg/ci/ci
+    tag: latest
+    username: _json_key
+    password: ((gcp-artifact-registry-writer))
+
+- name: ci-image-source
+  type: git
+  icon: git
+  source:
+    branch: issues/300-concourse-e2e
+    paths:
+    - images/ci/*
+    uri: https://github.com/cloudfoundry/cf-k8s-ci
+
+- name: go-image
+  type: docker-image
+  icon: docker
+  source:
+    username: ((docker.user))
+    password: ((docker.pass))
+    repository: golang
+    tag: latest
+
+- name: gcloud-image
+  type: docker-image
+  icon: docker
+  source:
+    repository: europe-west1-docker.pkg.dev/cf-on-k8s-wg/ci/gcloud
+    tag: latest
+    username: _json_key
+    password: ((gcp-artifact-registry-writer))
+
+- name: gcloud-image-source
+  type: git
+  icon: git
+  source:
+    branch: issues/300-concourse-e2e
+    paths:
+    - images/gcloud/*
+    uri: https://github.com/cloudfoundry/cf-k8s-ci
+
+- name: google-cloud-sdk-image
+  type: docker-image
+  icon: docker
+  source:
+    username: ((docker.user))
+    password: ((docker.pass))
+    repository: google/cloud-sdk
+    tag: latest
+
+- name: slack
+  type: slack-notification
+  icon: slack
+  source:
+    url: ((slack-notification.uri))

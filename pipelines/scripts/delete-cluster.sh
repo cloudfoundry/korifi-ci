@@ -8,7 +8,7 @@ export GOOGLE_APPLICATION_CREDENTIALS="$PWD/service-account.json"
 # shellcheck disable=SC1091
 source cf-k8s-ci/pipelines/scripts/common/gcloud-functions
 
-pushd cf-k8s-secrets/ci-deployment/gke-cluster/cluster-config || exit 1
+pushd cf-k8s-secrets/ci-deployment/$CLUSTER_NAME || exit 1
 {
   terraform init -backend-config="prefix=terraform/state/$CLUSTER_NAME"
   cluster_values="$(terraform show -json | jq -r '.values ')"

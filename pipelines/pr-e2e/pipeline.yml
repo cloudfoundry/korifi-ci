@@ -1,0 +1,136 @@
+common:
+  on_failure: &slackHook
+    do:
+    - put: cf-k8s-controllers-pr
+      params:
+        path: cf-k8s-controllers-pr
+        base_context: "Concourse "
+        context: " e2e-tests (pull_request)"
+        status: failure
+    - put: slack
+      params:
+        attachments: |2
+            [{
+                "color": "danger",
+                "actions": [
+                      {
+                        "type": "button",
+                        "text": "View in Concourse",
+                        "url": "https://ci.cf-k8s.cf/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
+                      }
+                ]
+            }]
+        channel: '#eirini-ci'
+        text: |
+          Pipeline *$BUILD_PIPELINE_NAME* failed :cry:
+
+          Job is *$BUILD_JOB_NAME*
+          Build name is *$BUILD_NAME*
+
+groups:
+- name: main
+  jobs:
+  - run-e2es
+
+jobs:
+- name: run-e2es
+  serial: true
+  serial_groups:
+  - pr-e2e
+  plan:
+  - in_parallel:
+    - get: cf-k8s-ci
+    - get: cf-k8s-controllers-pr
+      trigger: true
+
+  - put: cf-k8s-controllers-pr
+    params:
+      path: cf-k8s-controllers-pr
+      base_context: "Concourse "
+      context: " e2e-tests (pull_request)"
+      status: pending
+
+  - task: deploy-cf-k8s
+    privileged: true
+    file: cf-k8s-ci/pipelines/tasks/deploy-cf-k8s.yml
+    params:
+      CLUSTER_NAME: pr-e2e
+      GCP_ZONE: europe-west1-b
+
+  - task: set-account-env-vars
+    file: cf-k8s-ci/pipelines/tasks/set-account-env-vars.yml
+    params:
+      CLUSTER_NAME: pr-e2e
+      GCP_ZONE: europe-west1-b
+      ROOT_NAMESPACE: cf
+
+  - load_var: accounts_env_vars
+    file: accounts/env_vars.yaml
+
+  - task: run-e2e-tests
+    file: cf-k8s-ci/pipelines/tasks/run-e2e-tests.yml
+    params:
+      ROOT_NAMESPACE: cf
+      API_SERVER_ROOT: https://cf.pr-e2e.cf-k8s.cf
+      APP_FQDN: pr-e2e.cf-k8s.cf
+      E2E_USER_NAMES: ((.:accounts_env_vars.E2E_USER_NAMES))
+      E2E_USER_PEMS: ((.:accounts_env_vars.E2E_USER_PEMS))
+      E2E_SERVICE_ACCOUNTS: ((.:accounts_env_vars.E2E_SERVICE_ACCOUNTS))
+      E2E_SERVICE_ACCOUNT_TOKENS: ((.:accounts_env_vars.E2E_SERVICE_ACCOUNT_TOKENS))
+      CF_ADMIN_KEY: ((.:accounts_env_vars.CF_ADMIN_KEY))
+      CF_ADMIN_CERT: ((.:accounts_env_vars.CF_ADMIN_CERT))
+
+  - put: cf-k8s-controllers-pr
+    params:
+      path: cf-k8s-controllers-pr
+      base_context: "Concourse "
+      context: " e2e-tests (pull_request)"
+      status: success
+
+  on_failure: *slackHook
+  ensure:
+    task: undeploy-cf-k8s
+    file: cf-k8s-ci/pipelines/tasks/undeploy-cf-k8s.yml
+    attempts: 10
+    params:
+      CLUSTER_NAME: pr-e2e
+      GCP_ZONE: europe-west1-b
+
+
+resource_types:
+- name: slack-notification
+  type: registry-image
+  source:
+    username: ((docker.user))
+    password: ((docker.pass))
+    repository: cfcommunity/slack-notification-resource
+    tag: latest
+
+- name: pull-request
+  type: docker-image
+  source:
+    repository: teliaoss/github-pr-resource
+
+resources:
+- name: cf-k8s-controllers-pr
+  type: pull-request
+  check_every: 1m
+  source:
+    repository: cloudfoundry/cf-k8s-controllers
+    access_token: ((github/pr-pipeline-token))
+    base_branch: main
+    ignore_drafts: true
+    required_review_approvals: 0
+
+- name: cf-k8s-ci
+  type: git
+  icon: git
+  source:
+    uri: https://github.com/cloudfoundry/cf-k8s-ci.git
+    branch: issues/300-concourse-e2e
+
+- name: slack
+  type: slack-notification
+  icon: slack
+  source:
+    url: ((slack-notification.uri))
