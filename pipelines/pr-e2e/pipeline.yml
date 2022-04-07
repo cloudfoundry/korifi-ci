@@ -120,7 +120,8 @@ resources:
     access_token: ((github/pr-pipeline-token))
     base_branch: main
     ignore_drafts: true
-    required_review_approvals: 1
+    labels: ["e2e-allowed"]
+    required_review_approvals: 0
 
 - name: cf-k8s-ci
   type: git
