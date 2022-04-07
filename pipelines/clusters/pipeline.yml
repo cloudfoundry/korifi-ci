@@ -112,14 +112,14 @@ resources:
   icon: git
   source:
     uri: https://github.com/cloudfoundry/cf-k8s-ci.git
-    branch: issues/300-concourse-e2e
+    branch: main
 
 - name: cf-k8s-secrets
   type: git
   icon: git
   source:
     uri: ((github/cf-k8s-secrets.uri))
-    branch: issues/300-concourse-e2e
+    branch: main
     private_key: ((github/cf-k8s-secrets.private_key))
 
 - name: cf-k8s-controllers
@@ -127,7 +127,7 @@ resources:
   icon: git
   source:
     uri: https://github.com/cloudfoundry/cf-k8s-controllers.git
-    branch: issues/300-concourse-e2e
+    branch: main
 
 - name: eirini-controller
   type: git

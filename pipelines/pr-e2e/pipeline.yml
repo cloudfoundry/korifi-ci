@@ -127,7 +127,7 @@ resources:
   icon: git
   source:
     uri: https://github.com/cloudfoundry/cf-k8s-ci.git
-    branch: issues/300-concourse-e2e
+    branch: main
 
 - name: slack
   type: slack-notification

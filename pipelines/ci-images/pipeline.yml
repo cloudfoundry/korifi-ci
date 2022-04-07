@@ -76,7 +76,7 @@ resources:
   type: git
   icon: git
   source:
-    branch: issues/300-concourse-e2e
+    branch: main
     paths:
     - images/ci/*
     uri: https://github.com/cloudfoundry/cf-k8s-ci
@@ -103,7 +103,7 @@ resources:
   type: git
   icon: git
   source:
-    branch: issues/300-concourse-e2e
+    branch: main
     paths:
     - images/gcloud/*
     uri: https://github.com/cloudfoundry/cf-k8s-ci
