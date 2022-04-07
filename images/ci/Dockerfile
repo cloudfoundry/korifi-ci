@@ -4,6 +4,7 @@ ARG GCLOUD_VERSION="378.0.0"
 ARG YQ_VERSION="v4.23.1"
 ARG KBLD_VERSION="v0.32.0"
 ARG KAPP_VERSION="v0.46.0"
+ARG BUILDKIT_CLI_VERSION="v0.1.5"
 
 ENV PATH="$GOPATH/bin:${PATH}"
 
@@ -66,3 +67,6 @@ RUN curl -sL "https://github.com/vmware-tanzu/carvel-kapp/releases/download/${KA
 
 RUN curl -sL "https://github.com/vmware-tanzu/carvel-kbld/releases/download/${KBLD_VERSION}/kbld-linux-amd64" -o /usr/local/bin/kbld && \
   chmod +x /usr/local/bin/kbld
+
+RUN curl -sL https://github.com/vmware-tanzu/buildkit-cli-for-kubectl/releases/download/${BUILDKIT_CLI_VERSION}/linux-${BUILDKIT_CLI_VERSION}.tgz | \
+  tar -C /usr/local/bin -xzf -
