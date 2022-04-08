@@ -13,7 +13,7 @@ common:
                     }
               ]
           }]
-      channel: '#eirini-ci'
+      channel: '#korifi-ci'
       text: |
         Pipeline *$BUILD_PIPELINE_NAME* failed :cry:
 
