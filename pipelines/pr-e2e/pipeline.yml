@@ -39,6 +39,8 @@ jobs:
   - pr-e2e
   plan:
   - in_parallel:
+    - get: ci-image
+    - get: gcloud-image
     - get: cf-k8s-ci
     - get: cf-k8s-controllers-pr
       trigger: true

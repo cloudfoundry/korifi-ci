@@ -36,6 +36,7 @@ jobs:
   - get: delete-timer
     trigger: true
   - in_parallel:
+    - get: gcloud-image
     - get: cf-k8s-ci
     - get: cf-k8s-secrets
   - task: delete-kubernetes-cluster
@@ -55,6 +56,7 @@ jobs:
   - clusters
   plan:
   - in_parallel:
+    - get: gcloud-image
     - get: cf-k8s-ci
     - get: cf-k8s-secrets
   - task: delete-disks
@@ -79,6 +81,7 @@ jobs:
   - clusters
   plan:
   - in_parallel:
+    - get: ci-image
     - get: cf-k8s-ci
     - get: cf-k8s-secrets
     - get: cf-k8s-controllers
