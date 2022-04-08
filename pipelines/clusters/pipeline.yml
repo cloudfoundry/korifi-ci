@@ -41,6 +41,7 @@ jobs:
   - task: delete-kubernetes-cluster
     privileged: true
     file: cf-k8s-ci/pipelines/tasks/delete-cluster.yml
+    image: gcloud-image
     params:
       CLUSTER_NAME: pr-e2e
   - put: semver-event-pr-e2e
@@ -58,6 +59,7 @@ jobs:
     - get: cf-k8s-secrets
   - task: delete-disks
     file: cf-k8s-ci/pipelines/tasks/delete-disks.yml
+    image: gcloud-image
   - put: semver-event-pr-e2e
     params:
       bump: major
@@ -92,6 +94,7 @@ jobs:
       PROPERTY: pr_e2e_ip
   - task: install-cf-dependencies
     file: cf-k8s-ci/pipelines/tasks/install-cf-dependencies.yml
+    image: ci-image
     params:
       CLUSTER_NAME: pr-e2e
       GCP_ZONE: europe-west1-b
@@ -159,3 +162,19 @@ resources:
   icon: slack
   source:
     url: ((slack-notification.uri))
+
+- name: ci-image
+  type: registry-image
+  source:
+    repository: europe-west1-docker.pkg.dev/cf-on-k8s-wg/ci/ci
+    tag: latest
+    username: _json_key
+    password: ((gcp-artifact-registry-writer))
+
+- name: gcloud-image
+  type: registry-image
+  source:
+    repository: europe-west1-docker.pkg.dev/cf-on-k8s-wg/ci/gcloud
+    tag: latest
+    username: _json_key
+    password: ((gcp-artifact-registry-writer))

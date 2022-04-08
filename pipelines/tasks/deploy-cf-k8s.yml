@@ -4,14 +4,6 @@ caches:
 - path: docker/overlay2
 - path: docker/buildkit
 
-image_resource:
-  type: registry-image
-  source:
-    repository: europe-west1-docker.pkg.dev/cf-on-k8s-wg/ci/ci
-    tag: latest
-    username: _json_key
-    password: ((gcp-artifact-registry-writer))
-
 inputs:
 - name: cf-k8s-ci
 - name: cf-k8s-controllers-pr
