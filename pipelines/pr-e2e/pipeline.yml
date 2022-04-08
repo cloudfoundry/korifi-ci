@@ -71,6 +71,7 @@ jobs:
 
   - task: get-ip-addr
     file: cf-k8s-ci/pipelines/tasks/get-terraform-property.yml
+    image: gcloud-image
     params:
       CLUSTER_NAME: pr-e2e
       PROPERTY: pr_e2e_ip

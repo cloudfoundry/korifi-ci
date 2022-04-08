@@ -71,6 +71,7 @@ jobs:
     trigger: true
   - task: create-kubernetes-cluster
     file: cf-k8s-ci/pipelines/tasks/create-cluster.yml
+    image: gcloud-image
     params:
       CLUSTER_NAME: pr-e2e
   on_failure: *slackHook
@@ -92,6 +93,7 @@ jobs:
     trigger: true
   - task: get-ip-addr
     file: cf-k8s-ci/pipelines/tasks/get-terraform-property.yml
+    image: gcloud-image
     params:
       CLUSTER_NAME: pr-e2e
       PROPERTY: pr_e2e_ip
