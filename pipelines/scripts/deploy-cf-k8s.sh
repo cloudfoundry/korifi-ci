@@ -32,10 +32,10 @@ deploy_cf() {
 
     sed 's/vcap\.me/'$CLUSTER_NAME.cf-k8s.cf'/' controllers/config/samples/cfdomain.yaml | kubectl apply -f-
   }
+  popd
 }
 
 main() {
-  # run_docker_daemon
   export KUBECONFIG=$PWD/kube/kube.config
   generate_kube_config
   docker_login
