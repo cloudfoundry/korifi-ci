@@ -16,9 +16,9 @@ undeploy_cf() {
   echo $GCP_SERVICE_ACCOUNT_JSON >"$tmp/sa.json"
   export GOOGLE_APPLICATION_CREDENTIALS="$tmp/sa.json"
 
-  kubectl delete subnamespaceanchor -n cf --all=true
-  kubectl delete secret -n cf-k8s-controllers-system cf-k8s-workloads-ingress-cert
-  kubectl delete secret -n cf-k8s-api-system cf-k8s-api-ingress-cert
+  kubectl delete subnamespaceanchor --ignore-not-found=true -n cf --all=true
+  kubectl delete secret --ignore-not-found=true -n cf-k8s-controllers-system cf-k8s-workloads-ingress-cert
+  kubectl delete secret --ignore-not-found=true -n cf-k8s-api-system cf-k8s-api-ingress-cert
   kapp delete -y -a cf-k8s-controllers
   kapp delete -y -a cf-k8s-api
 }
