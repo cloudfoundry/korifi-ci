@@ -1,0 +1,22 @@
+platform: linux
+
+caches:
+- path: docker/overlay2
+- path: docker/buildkit
+
+inputs:
+- name: korifi-version
+- name: cf-k8s-ci
+- name: cf-k8s-controllers
+
+outputs:
+- name: release-output
+
+params:
+  REGISTRY_SERVICE_ACCOUNT_JSON: ((gcp-artifact-registry-writer))
+  GCP_SERVICE_ACCOUNT_JSON: ((gcp-serviceaccount))
+  GCP_ZONE:
+  CLUSTER_NAME:
+
+run:
+  path: cf-k8s-ci/pipelines/scripts/create-release.sh

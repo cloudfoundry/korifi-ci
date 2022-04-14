@@ -1,0 +1,12 @@
+---
+apiVersion: kbld.k14s.io/v1alpha1
+kind: Config
+sources:
+- image: cloudfoundry/cf-k8s-controllers:latest
+  path: .
+  kubectlBuildkit:
+    build:
+      file: controllers/Dockerfile
+destinations:
+- image: cloudfoundry/cf-k8s-controllers:latest
+  newImage: cloudfoundry/cf-on-k8s/korifi-controllers
