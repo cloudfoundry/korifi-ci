@@ -6,7 +6,7 @@ echo "$GCP_SERVICE_ACCOUNT_JSON" >"$PWD/service-account.json"
 export GOOGLE_APPLICATION_CREDENTIALS="$PWD/service-account.json"
 
 # shellcheck disable=SC1091
-source cf-k8s-ci/pipelines/scripts/common/gcloud-functions
+source korifi-ci/pipelines/scripts/common/gcloud-functions
 
 pushd cf-k8s-secrets/ci-deployment/$CLUSTER_NAME || exit 1
 {

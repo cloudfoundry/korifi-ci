@@ -5,8 +5,8 @@ caches:
 - path: docker/buildkit
 
 inputs:
-- name: cf-k8s-ci
-- name: cf-k8s-controllers-pr
+- name: korifi-ci
+- name: korifi-pr
 
 outputs:
 - name: kube
@@ -18,4 +18,4 @@ params:
   CLUSTER_NAME:
 
 run:
-  path: cf-k8s-ci/pipelines/scripts/deploy-cf-k8s.sh
+  path: korifi-ci/pipelines/scripts/deploy-korifi.sh

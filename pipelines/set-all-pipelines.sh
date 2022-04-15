@@ -7,8 +7,8 @@ pushd "$SCRIPT_DIR"
   for config in **/pipeline.yml; do
     pipeline="$(dirname $config)"
     echo "Applying pipeline "$pipeline"..."
-    fly --target cfk8s set-pipeline --pipeline "$pipeline" --config $config
-    fly --target=cfk8s expose-pipeline --pipeline="$pipeline"
+    fly --target korifi set-pipeline --pipeline "$pipeline" --config $config
+    fly --target=korifi expose-pipeline --pipeline="$pipeline"
   done
 }
 popd

@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-source cf-k8s-ci/pipelines/scripts/common/gcloud-functions
+source korifi-ci/pipelines/scripts/common/gcloud-functions
 
 generate_kube_config() {
   gcloud-login
@@ -19,7 +19,7 @@ main() {
 
   generate_kube_config
 
-  source ./cf-k8s-controllers-pr/scripts/account-creation.sh $PWD/cf-k8s-controllers-pr/scripts
+  source ./korifi-pr/scripts/account-creation.sh $PWD/korifi-pr/scripts
 
   cat <<EOF >accounts/env_vars.yaml
 E2E_USER_NAMES: $E2E_USER_NAMES

@@ -6,8 +6,8 @@ caches:
 
 inputs:
 - name: korifi-version
-- name: cf-k8s-ci
-- name: cf-k8s-controllers
+- name: korifi-ci
+- name: korifi
 
 outputs:
 - name: release-output
@@ -19,4 +19,4 @@ params:
   CLUSTER_NAME:
 
 run:
-  path: cf-k8s-ci/pipelines/scripts/create-release.sh
+  path: korifi-ci/pipelines/scripts/create-release.sh

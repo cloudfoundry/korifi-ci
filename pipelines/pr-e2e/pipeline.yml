@@ -1,9 +1,9 @@
 common:
   on_failure: &slackHook
     do:
-    - put: cf-k8s-controllers-pr
+    - put: korifi-pr
       params:
-        path: cf-k8s-controllers-pr
+        path: korifi-pr
         base_context: "Concourse "
         context: " e2e-tests (pull_request)"
         status: failure
@@ -38,12 +38,12 @@ jobs:
   plan:
   - in_parallel:
     - get: ci-image
-    - get: cf-k8s-ci
+    - get: korifi-ci
     - get: pr-label
       trigger: true
 
   - task: allow-e2e
-    file: cf-k8s-ci/pipelines/tasks/allow-e2e.yml
+    file: korifi-ci/pipelines/tasks/allow-e2e.yml
     image: ci-image
     params:
       KORIFI_BOT_TOKEN: ((github/pr-label-setter))
@@ -56,45 +56,45 @@ jobs:
   - in_parallel:
     - get: ci-image
     - get: gcloud-image
-    - get: cf-k8s-ci
-    - get: cf-k8s-controllers-pr
+    - get: korifi-ci
+    - get: korifi-pr
       trigger: true
     - get: cf-k8s-secrets
     - get: eirini-controller
 
-  - put: cf-k8s-controllers-pr
+  - put: korifi-pr
     params:
-      path: cf-k8s-controllers-pr
+      path: korifi-pr
       base_context: "Concourse "
       context: " e2e-tests (pull_request)"
       status: pending
 
   - task: get-ip-addr
-    file: cf-k8s-ci/pipelines/tasks/get-terraform-property.yml
+    file: korifi-ci/pipelines/tasks/get-terraform-property.yml
     image: gcloud-image
     params:
       CLUSTER_NAME: pr-e2e
       PROPERTY: pr_e2e_ip
 
-  - task: install-cf-dependencies
+  - task: install-korifi-dependencies
     input_mapping:
-      cf-k8s-controllers: cf-k8s-controllers-pr
-    file: cf-k8s-ci/pipelines/tasks/install-cf-dependencies.yml
+      korifi-controllers: korifi-pr
+    file: korifi-ci/pipelines/tasks/install-korifi-dependencies.yml
     image: ci-image
     params:
       CLUSTER_NAME: pr-e2e
       GCP_ZONE: europe-west1-b
 
-  - task: deploy-cf-k8s
+  - task: deploy-korifi
     privileged: true
-    file: cf-k8s-ci/pipelines/tasks/deploy-cf-k8s.yml
+    file: korifi-ci/pipelines/tasks/deploy-korifi.yml
     image: ci-image
     params:
       CLUSTER_NAME: pr-e2e
       GCP_ZONE: europe-west1-b
 
   - task: set-account-env-vars
-    file: cf-k8s-ci/pipelines/tasks/set-account-env-vars.yml
+    file: korifi-ci/pipelines/tasks/set-account-env-vars.yml
     image: ci-image
     params:
       CLUSTER_NAME: pr-e2e
@@ -105,7 +105,7 @@ jobs:
     file: accounts/env_vars.yaml
 
   - task: run-e2e-tests
-    file: cf-k8s-ci/pipelines/tasks/run-e2e-tests.yml
+    file: korifi-ci/pipelines/tasks/run-e2e-tests.yml
     image: ci-image
     params:
       ROOT_NAMESPACE: cf
@@ -118,17 +118,17 @@ jobs:
       CF_ADMIN_KEY: ((.:accounts_env_vars.CF_ADMIN_KEY))
       CF_ADMIN_CERT: ((.:accounts_env_vars.CF_ADMIN_CERT))
 
-  - put: cf-k8s-controllers-pr
+  - put: korifi-pr
     params:
-      path: cf-k8s-controllers-pr
+      path: korifi-pr
       base_context: "Concourse "
       context: " e2e-tests (pull_request)"
       status: success
 
   on_failure: *slackHook
   ensure:
-    task: undeploy-cf-k8s
-    file: cf-k8s-ci/pipelines/tasks/undeploy-cf-k8s.yml
+    task: undeploy-korifi
+    file: korifi-ci/pipelines/tasks/undeploy-korifi.yml
     image: ci-image
     attempts: 10
     params:
@@ -151,11 +151,11 @@ resource_types:
     repository: teliaoss/github-pr-resource
 
 resources:
-- name: cf-k8s-controllers-pr
+- name: korifi-pr
   type: pull-request
   check_every: 1m
   source:
-    repository: cloudfoundry/cf-k8s-controllers
+    repository: cloudfoundry/korifi
     access_token: ((github/pr-pipeline-token))
     base_branch: main
     ignore_drafts: true
@@ -166,17 +166,17 @@ resources:
   type: pull-request
   check_every: 1m
   source:
-    repository: cloudfoundry/cf-k8s-controllers
+    repository: cloudfoundry/korifi
     access_token: ((github/pr-pipeline-token))
     base_branch: main
     ignore_drafts: true
     required_review_approvals: 0
 
-- name: cf-k8s-ci
+- name: korifi-ci
   type: git
   icon: git
   source:
-    uri: https://github.com/cloudfoundry/cf-k8s-ci.git
+    uri: https://github.com/cloudfoundry/korifi-ci.git
     branch: main
 
 - name: cf-k8s-secrets

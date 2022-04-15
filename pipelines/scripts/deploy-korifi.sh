@@ -2,8 +2,8 @@
 
 set -euo pipefail
 
-source cf-k8s-ci/pipelines/scripts/common/gcloud-functions
-source cf-k8s-ci/pipelines/scripts/common/secrets.sh
+source korifi-ci/pipelines/scripts/common/gcloud-functions
+source korifi-ci/pipelines/scripts/common/secrets.sh
 
 tmp="$(mktemp -d)"
 trap "rm -rf $tmp" EXIT
@@ -22,13 +22,13 @@ generate_kube_config() {
 }
 
 deploy_cf() {
-  pushd cf-k8s-controllers-pr
+  pushd korifi-pr
   {
-    kubectl kustomize controllers/config/overlays/pr-e2e | kbld -f scripts/assets/cf-k8s-controllers-kbld.yml -f- | kapp deploy -y -a cf-k8s-controllers -f-
-    create_tls_secret "cf-k8s-workloads-ingress-cert" "cf-k8s-controllers-system" "*.$CLUSTER_NAME.cf-k8s.cf"
+    kubectl kustomize controllers/config/overlays/pr-e2e | kbld -f scripts/assets/korif-controllers-kbld.yml -f- | kapp deploy -y -a korif-controllers -f-
+    create_tls_secret "korif-workloads-ingress-cert" "korifi-controllers-system" "*.$CLUSTER_NAME.cf-k8s.cf"
 
-    kubectl kustomize api/config/overlays/pr-e2e | kbld -f scripts/assets/cf-k8s-api-kbld.yml -f- | kapp deploy -y -a cf-k8s-api -f-
-    create_tls_secret "cf-k8s-api-ingress-cert" "cf-k8s-api-system" "*.$CLUSTER_NAME.cf-k8s.cf"
+    kubectl kustomize api/config/overlays/pr-e2e | kbld -f scripts/assets/korif-api-kbld.yml -f- | kapp deploy -y -a korif-api -f-
+    create_tls_secret "korif-api-ingress-cert" "korif-api-system" "*.$CLUSTER_NAME.cf-k8s.cf"
 
     sed 's/vcap\.me/'$CLUSTER_NAME.cf-k8s.cf'/' controllers/config/samples/cfdomain.yaml | kubectl apply -f-
   }

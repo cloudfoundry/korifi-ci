@@ -1,7 +1,7 @@
 platform: linux
 
 inputs:
-- name: cf-k8s-ci
+- name: korifi-ci
 
 params:
   REGISTRY_SERVICE_ACCOUNT_JSON: ((gcp-artifact-registry-writer))
@@ -10,4 +10,4 @@ params:
   CLUSTER_NAME:
 
 run:
-  path: cf-k8s-ci/pipelines/scripts/undeploy-cf-k8s.sh
+  path: korifi-ci/pipelines/scripts/undeploy-korifi.sh
