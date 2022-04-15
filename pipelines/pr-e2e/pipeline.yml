@@ -78,7 +78,7 @@ jobs:
 
   - task: install-korifi-dependencies
     input_mapping:
-      korifi-controllers: korifi-pr
+      korifi: korifi-pr
     file: korifi-ci/pipelines/tasks/install-korifi-dependencies.yml
     image: ci-image
     params:

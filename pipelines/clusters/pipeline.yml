@@ -86,7 +86,7 @@ jobs:
     - get: gcloud-image
     - get: korifi-ci
     - get: cf-k8s-secrets
-    - get: korifi-controllers
+    - get: korifi
     - get: eirini-controller
   - get: semver-event-pr-e2e
     passed:
@@ -131,11 +131,11 @@ resources:
     branch: main
     private_key: ((github/cf-k8s-secrets.private_key))
 
-- name: korifi-controllers
+- name: korifi
   type: git
   icon: git
   source:
-    uri: https://github.com/cloudfoundry/korifi-controllers.git
+    uri: https://github.com/cloudfoundry/korifi.git
     branch: main
 
 - name: eirini-controller
