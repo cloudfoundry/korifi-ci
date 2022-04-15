@@ -2,11 +2,11 @@
 apiVersion: kbld.k14s.io/v1alpha1
 kind: Config
 sources:
-- image: cloudfoundry/cf-k8s-api:latest
+- image: cloudfoundry/korifi-api:latest
   path: .
   kubectlBuildkit:
     build:
       file: api/Dockerfile
 destinations:
-- image: cloudfoundry/cf-k8s-api:latest
+- image: cloudfoundry/korifi-api:latest
   newImage: cloudfoundry/cf-on-k8s/korifi-api

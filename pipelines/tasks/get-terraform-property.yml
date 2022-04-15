@@ -1,6 +1,6 @@
 platform: linux
 inputs:
-- name: cf-k8s-ci
+- name: korifi-ci
 - name: cf-k8s-secrets
 outputs:
 - name: terraform-output
@@ -9,4 +9,4 @@ params:
   GCP_SERVICE_ACCOUNT_JSON: ((gcp-serviceaccount))
   PROPERTY:
 run:
-  path: cf-k8s-ci/pipelines/scripts/get-terraform-property.sh
+  path: korifi-ci/pipelines/scripts/get-terraform-property.sh

@@ -5,8 +5,8 @@ caches:
   - path: ../../../go/pkg/mod
 
 inputs:
-- name: cf-k8s-ci
-- name: cf-k8s-controllers-pr
+- name: korifi-ci
+- name: korifi-pr
 - name: kube
 
 params:
@@ -17,4 +17,4 @@ params:
   KUBECONFIG: kube/kube.config
 
 run:
-  path: cf-k8s-ci/pipelines/scripts/run-e2e-tests.sh
+  path: korifi-ci/pipelines/scripts/run-e2e-tests.sh

@@ -1,8 +1,8 @@
 platform: linux
 
 inputs:
-- name: cf-k8s-ci
-- name: cf-k8s-controllers-pr
+- name: korifi-ci
+- name: korifi-pr
 
 outputs:
   - name: accounts
@@ -15,4 +15,4 @@ params:
   ROOT_NAMESPACE:
 
 run:
-  path: cf-k8s-ci/pipelines/scripts/set-account-env-vars.sh
+  path: korifi-ci/pipelines/scripts/set-account-env-vars.sh

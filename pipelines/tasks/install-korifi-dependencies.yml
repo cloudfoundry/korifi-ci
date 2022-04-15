@@ -1,7 +1,7 @@
 platform: linux
 inputs:
-- name: cf-k8s-ci
-- name: cf-k8s-controllers
+- name: korifi-ci
+- name: korifi
 - name: eirini-controller
 - name: terraform-output
 params:
@@ -12,4 +12,4 @@ params:
   DOCKER_USERNAME: _json_key
   DOCKER_PASSWORD: ((gcp-artifact-registry-writer))
 run:
-  path: cf-k8s-ci/pipelines/scripts/install-cf-dependencies.sh
+  path: korifi-ci/pipelines/scripts/install-korifi-dependencies.sh

@@ -25,7 +25,7 @@ groups:
   jobs:
   - create-cluster-pr-e2e
   - delete-cluster-pr-e2e
-  - install-cf-dependencies
+  - install-korifi-dependencies
 
 jobs:
 - name: delete-cluster-pr-e2e
@@ -37,11 +37,11 @@ jobs:
     trigger: true
   - in_parallel:
     - get: gcloud-image
-    - get: cf-k8s-ci
+    - get: korifi-ci
     - get: cf-k8s-secrets
   - task: delete-kubernetes-cluster
     privileged: true
-    file: cf-k8s-ci/pipelines/tasks/delete-cluster.yml
+    file: korifi-ci/pipelines/tasks/delete-cluster.yml
     image: gcloud-image
     params:
       CLUSTER_NAME: pr-e2e
@@ -57,10 +57,10 @@ jobs:
   plan:
   - in_parallel:
     - get: gcloud-image
-    - get: cf-k8s-ci
+    - get: korifi-ci
     - get: cf-k8s-secrets
   - task: delete-disks
-    file: cf-k8s-ci/pipelines/tasks/delete-disks.yml
+    file: korifi-ci/pipelines/tasks/delete-disks.yml
     image: gcloud-image
   - put: semver-event-pr-e2e
     params:
@@ -70,13 +70,13 @@ jobs:
     - delete-cluster-pr-e2e
     trigger: true
   - task: create-kubernetes-cluster
-    file: cf-k8s-ci/pipelines/tasks/create-cluster.yml
+    file: korifi-ci/pipelines/tasks/create-cluster.yml
     image: gcloud-image
     params:
       CLUSTER_NAME: pr-e2e
   on_failure: *slackHook
 
-- name: install-cf-dependencies
+- name: install-korifi-dependencies
   serial: true
   serial_groups:
   - clusters
@@ -84,22 +84,22 @@ jobs:
   - in_parallel:
     - get: ci-image
     - get: gcloud-image
-    - get: cf-k8s-ci
+    - get: korifi-ci
     - get: cf-k8s-secrets
-    - get: cf-k8s-controllers
+    - get: korifi-controllers
     - get: eirini-controller
   - get: semver-event-pr-e2e
     passed:
     - create-cluster-pr-e2e
     trigger: true
   - task: get-ip-addr
-    file: cf-k8s-ci/pipelines/tasks/get-terraform-property.yml
+    file: korifi-ci/pipelines/tasks/get-terraform-property.yml
     image: gcloud-image
     params:
       CLUSTER_NAME: pr-e2e
       PROPERTY: pr_e2e_ip
-  - task: install-cf-dependencies
-    file: cf-k8s-ci/pipelines/tasks/install-cf-dependencies.yml
+  - task: install-korifi-dependencies
+    file: korifi-ci/pipelines/tasks/install-korifi-dependencies.yml
     image: ci-image
     params:
       CLUSTER_NAME: pr-e2e
@@ -116,11 +116,11 @@ resource_types:
     tag: latest
 
 resources:
-- name: cf-k8s-ci
+- name: korifi-ci
   type: git
   icon: git
   source:
-    uri: https://github.com/cloudfoundry/cf-k8s-ci.git
+    uri: https://github.com/cloudfoundry/korifi-ci.git
     branch: main
 
 - name: cf-k8s-secrets
@@ -131,11 +131,11 @@ resources:
     branch: main
     private_key: ((github/cf-k8s-secrets.private_key))
 
-- name: cf-k8s-controllers
+- name: korifi-controllers
   type: git
   icon: git
   source:
-    uri: https://github.com/cloudfoundry/cf-k8s-controllers.git
+    uri: https://github.com/cloudfoundry/korifi-controllers.git
     branch: main
 
 - name: eirini-controller

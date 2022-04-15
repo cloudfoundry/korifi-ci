@@ -79,7 +79,7 @@ resources:
     branch: main
     paths:
     - images/ci/*
-    uri: https://github.com/cloudfoundry/cf-k8s-ci
+    uri: https://github.com/cloudfoundry/korifi-ci
 
 - name: go-image
   type: docker-image
@@ -106,7 +106,7 @@ resources:
     branch: main
     paths:
     - images/gcloud/*
-    uri: https://github.com/cloudfoundry/cf-k8s-ci
+    uri: https://github.com/cloudfoundry/korifi-ci
 
 - name: google-cloud-sdk-image
   type: docker-image

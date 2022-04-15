@@ -1,6 +1,6 @@
 platform: linux
 inputs:
-- name: cf-k8s-ci
+- name: korifi-ci
 - name: cf-k8s-secrets
 params:
   CLUSTER_NAME:
@@ -8,4 +8,4 @@ params:
   RELEASE_CHANNEL: REGULAR
   WORKER_COUNT: "3"
 run:
-  path: cf-k8s-ci/pipelines/scripts/create-cluster.sh
+  path: korifi-ci/pipelines/scripts/create-cluster.sh
