@@ -24,11 +24,11 @@ generate_kube_config() {
 deploy_cf() {
   pushd korifi-pr
   {
-    kubectl kustomize controllers/config/overlays/pr-e2e | kbld -f scripts/assets/korif-controllers-kbld.yml -f- | kapp deploy -y -a korif-controllers -f-
-    create_tls_secret "korif-workloads-ingress-cert" "korifi-controllers-system" "*.$CLUSTER_NAME.cf-k8s.cf"
+    kubectl kustomize controllers/config/overlays/pr-e2e | kbld -f scripts/assets/korifi-controllers-kbld.yml -f- | kapp deploy -y -a korifi-controllers -f-
+    create_tls_secret "korifi-workloads-ingress-cert" "korifi-controllers-system" "*.$CLUSTER_NAME.cf-k8s.cf"
 
-    kubectl kustomize api/config/overlays/pr-e2e | kbld -f scripts/assets/korif-api-kbld.yml -f- | kapp deploy -y -a korif-api -f-
-    create_tls_secret "korif-api-ingress-cert" "korif-api-system" "*.$CLUSTER_NAME.cf-k8s.cf"
+    kubectl kustomize api/config/overlays/pr-e2e | kbld -f scripts/assets/korifi-api-kbld.yml -f- | kapp deploy -y -a korifi-api -f-
+    create_tls_secret "korifi-api-ingress-cert" "korifi-api-system" "*.$CLUSTER_NAME.cf-k8s.cf"
 
     sed 's/vcap\.me/'$CLUSTER_NAME.cf-k8s.cf'/' controllers/config/samples/cfdomain.yaml | kubectl apply -f-
   }
