@@ -5,7 +5,11 @@ inputs:
 - name: pr-label
 
 params:
+  KORIFI_BOT_NAME:
   KORIFI_BOT_TOKEN:
+  GITHUB_ORG: cloudfoundry
+  GITHUB_TEAM: cf-k8s
+  GITHUB_REPO: korifi
 
 run:
   path: korifi-ci/pipelines/scripts/allow-e2e.sh

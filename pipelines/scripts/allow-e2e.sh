@@ -1,17 +1,23 @@
 #!/bin/bash
 
-set -eu
+set -euo pipefail
 
-PR_NUMBER=$(<pr-label/.git/resource/pr)
-PR_AUTHOR=$(<pr-label/.git/resource/author)
+API_URL=https://api.github.com
+PR_NUMBER="$(<pr-label/.git/resource/pr)"
+PR_AUTHOR="$(<pr-label/.git/resource/author)"
 
-gh auth login --with-token <<<$KORIFI_BOT_TOKEN
-
-team=$(gh repo view cloudfoundry/korifi --json assignableUsers --jq '.assignableUsers[].login')
+team="$(curl -su ${KORIFI_BOT_NAME}:${KORIFI_BOT_TOKEN} ${API_URL}/orgs/${GITHUB_ORG}/teams/${GITHUB_TEAM}/members | jq -r '.[].login')"
 
 for user in $team; do
-  if [[ "$user" == "$PR_AUTHOR" ]]; then
+  if [[ "$user" == "${PR_AUTHOR}" ]]; then
     echo Allowing e2e run for team member "$user"
-    gh pr --repo cloudfoundry/korifi edit $PR_NUMBER --add-label "e2e-allowed"
+    # note that PR labels are updated using the issues endpoint
+    curl -XPOST \
+      --silent \
+      -u ${KORIFI_BOT_NAME}:${KORIFI_BOT_TOKEN} \
+      -H "Accept: application/vnd.github.v3+json" \
+      ${API_URL}/repos/${GITHUB_ORG}/${GITHUB_REPO}/issues/${PR_NUMBER}/labels \
+      -d '{"labels":["e2e-allowed"]}'
+    break
   fi
 done
