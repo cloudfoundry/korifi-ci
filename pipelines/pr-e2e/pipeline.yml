@@ -60,6 +60,7 @@ jobs:
     - get: korifi-ci
     - get: korifi-pr
       trigger: true
+      version: every
     - get: cf-k8s-secrets
     - get: eirini-controller
 
