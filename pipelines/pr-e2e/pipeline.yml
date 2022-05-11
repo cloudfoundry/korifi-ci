@@ -113,10 +113,10 @@ jobs:
       ROOT_NAMESPACE: cf
       API_SERVER_ROOT: https://cf.pr-e2e.cf-k8s.cf
       APP_FQDN: pr-e2e.cf-k8s.cf
-      E2E_USER_NAMES: ((.:accounts_env_vars.E2E_USER_NAMES))
-      E2E_USER_PEMS: ((.:accounts_env_vars.E2E_USER_PEMS))
-      E2E_SERVICE_ACCOUNTS: ((.:accounts_env_vars.E2E_SERVICE_ACCOUNTS))
-      E2E_SERVICE_ACCOUNT_TOKENS: ((.:accounts_env_vars.E2E_SERVICE_ACCOUNT_TOKENS))
+      E2E_USER_NAME: ((.:accounts_env_vars.E2E_USER_NAME))
+      E2E_USER_PEM: ((.:accounts_env_vars.E2E_USER_PEM))
+      E2E_SERVICE_ACCOUNT: ((.:accounts_env_vars.E2E_SERVICE_ACCOUNT))
+      E2E_SERVICE_ACCOUNT_TOKEN: ((.:accounts_env_vars.E2E_SERVICE_ACCOUNT_TOKEN))
       CF_ADMIN_KEY: ((.:accounts_env_vars.CF_ADMIN_KEY))
       CF_ADMIN_CERT: ((.:accounts_env_vars.CF_ADMIN_CERT))
 
