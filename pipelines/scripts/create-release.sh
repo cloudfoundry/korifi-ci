@@ -31,8 +31,8 @@ generate_kube_config() {
 create_release() {
   pushd korifi
   {
-    kubectl kustomize api/config/overlays/kind-local-registry | kbld -f "$KBLD_CONFIG_DIR/korifi-api-kbld.yml" -f- >"$RELEASE_ARTIFACTS_DIR/korifi-api.yml"
-    kubectl kustomize controllers/config/overlays/kind-local-registry | kbld -f "$KBLD_CONFIG_DIR/korifi-controllers-kbld.yml" -f- >"$RELEASE_ARTIFACTS_DIR/korifi-controllers.yml"
+    kubectl kustomize api/config/base | kbld -f "$KBLD_CONFIG_DIR/korifi-api-kbld.yml" -f- >"$RELEASE_ARTIFACTS_DIR/korifi-api.yml"
+    kubectl kustomize controllers/config/default | kbld -f "$KBLD_CONFIG_DIR/korifi-controllers-kbld.yml" -f- >"$RELEASE_ARTIFACTS_DIR/korifi-controllers.yml"
   }
   popd
 
