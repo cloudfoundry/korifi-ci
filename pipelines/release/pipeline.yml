@@ -75,6 +75,7 @@ jobs:
       name: korifi-release-version/version
       tag: korifi-release-version/version
       tag_prefix: v
+      commitish: korifi/.git/ref
   on_failure: *slackHook
 
 resource_types:
