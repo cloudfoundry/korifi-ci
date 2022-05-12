@@ -118,7 +118,7 @@ resources:
     branch: main
     driver: git
     file: korifi-release/version
-    initial_version: 0.0.0
+    initial_version: 0.1.0
     private_key: ((github/cf-k8s-secrets.private_key))
     uri: ((github/cf-k8s-secrets.uri))
 
