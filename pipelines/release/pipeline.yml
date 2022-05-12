@@ -30,25 +30,25 @@ groups:
 jobs:
 - name: bump-major-version
   plan:
-  - get: korifi-release-version
+  - get: korifi-test-release-version
     params:
       bump: major
   - params:
-      file: korifi-release-version/version
-    put: korifi-release-version
+      file: korifi-test-release-version/version
+    put: korifi-test-release-version
   on_failure: *slackHook
 
 - name: bump-minor-version
   plan:
-  - get: korifi-release-version
+  - get: korifi-test-release-version
     params:
       bump: minor
     passed:
     - publish-release
     trigger: true
   - params:
-      file: korifi-release-version/version
-    put: korifi-release-version
+      file: korifi-test-release-version/version
+    put: korifi-test-release-version
   on_failure: *slackHook
 
 - name: publish-release
@@ -57,7 +57,7 @@ jobs:
       steps:
       - get: korifi-ci
       - get: korifi
-      - get: korifi-release-version
+      - get: korifi-test-release-version
       - get: ci-image
   - task: create-relese
     file: korifi-ci/pipelines/tasks/create-release.yml
@@ -65,15 +65,17 @@ jobs:
     params:
       CLUSTER_NAME: pr-e2e
       GCP_ZONE: europe-west1-b
+      REGISTRY_HOSTNAME: index.docker.io
       REGISTRY_USER: ((release-pipeline/dockerhub-auth.username))
       REGISTRY_PASSWORD: ((release-pipeline/dockerhub-auth.password))
   - put: korifi-github-release
     params:
       globs:
       - release-output/korifi*.tgz
-      name: korifi-release-version/version
-      tag: korifi-release-version/version
+      name: korifi-test-release-version/version
+      tag: korifi-test-release-version/version
       tag_prefix: v
+      commitish: korifi/.git/ref
   on_failure: *slackHook
 
 resource_types:
@@ -98,7 +100,7 @@ resources:
   icon: git
   source:
     branch: main
-    uri: https://github.com/cloudfoundry/korifi.git
+    uri: https://github.com/eirini-playground/korifi.git
 
 - name: korifi-github-release
   type: github-release
@@ -106,17 +108,17 @@ resources:
   source:
     access_token: ((github/korifi.create_release_access_token))
     drafts: true
-    owner: cloudfoundry
+    owner: eirini-playground
     repository: korifi
 
-- name: korifi-release-version
+- name: korifi-test-release-version
   type: semver
   icon: counter
   source:
     branch: main
     driver: git
-    file: korifi-release/version
-    initial_version: 0.0.0
+    file: korifi-release-test/version
+    initial_version: 0.1.0
     private_key: ((github/cf-k8s-secrets.private_key))
     uri: ((github/cf-k8s-secrets.uri))
 

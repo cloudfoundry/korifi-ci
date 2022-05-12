@@ -5,7 +5,7 @@ caches:
 - path: docker/buildkit
 
 inputs:
-- name: korifi-release-version
+- name: korifi-test-release-version
 - name: korifi-ci
 - name: korifi
 
@@ -16,6 +16,7 @@ params:
   GCP_SERVICE_ACCOUNT_JSON: ((gcp-serviceaccount))
   GCP_ZONE:
   CLUSTER_NAME:
+  REGISTRY_HOSTNAME:
   REGISTRY_USER:
   REGISTRY_PASSWORD:
 run:
