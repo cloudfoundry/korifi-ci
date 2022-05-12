@@ -18,14 +18,24 @@ source korifi-ci/pipelines/scripts/common/gcloud-functions
 docker_login() {
   echo $GCP_SERVICE_ACCOUNT_JSON >"$tmp/sa.json"
   export GOOGLE_APPLICATION_CREDENTIALS="$tmp/sa.json"
+
   kubectl delete secret buildkit &>/dev/null || true
-  kubectl create secret docker-registry buildkit --docker-server='https://index.docker.io/v1/' \
+  kubectl create secret docker-registry buildkit --docker-server="https://$REGISTRY_HOSTNAME/v1/" \
     --docker-username="$REGISTRY_USER" --docker-password="$REGISTRY_PASSWORD"
+
+  export KBLD_REGISTRY_HOSTNAME="$REGISTRY_HOSTNAME"
+  export KBLD_REGISTRY_USERNAME="$REGISTRY_USER"
+  export KBLD_REGISTRY_PASSWORD="$REGISTRY_PASSWORD"
 }
 
 generate_kube_config() {
   gcloud-login
   export-kubeconfig "$CLUSTER_NAME"
+}
+
+update_config_with_version() {
+  yq -i ".destinations[0].tags=[\"$VERSION\"]" "$KBLD_CONFIG_DIR/korifi-api-kbld.yml"
+  yq -i ".destinations[0].tags=[\"$VERSION\"]" "$KBLD_CONFIG_DIR/korifi-controllers-kbld.yml"
 }
 
 create_release() {
@@ -46,6 +56,7 @@ create_release() {
 main() {
   generate_kube_config
   docker_login
+  update_config_with_version
   create_release
 }
 

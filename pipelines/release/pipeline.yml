@@ -65,6 +65,7 @@ jobs:
     params:
       CLUSTER_NAME: pr-e2e
       GCP_ZONE: europe-west1-b
+      REGISTRY_HOSTNAME: index.docker.io
       REGISTRY_USER: ((release-pipeline/dockerhub-auth.username))
       REGISTRY_PASSWORD: ((release-pipeline/dockerhub-auth.password))
   - put: korifi-github-release
