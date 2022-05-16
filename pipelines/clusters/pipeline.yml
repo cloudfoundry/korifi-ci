@@ -9,7 +9,7 @@ common:
                     {
                       "type": "button",
                       "text": "View in Concourse",
-                      "url": "https://ci.cf-k8s.cf/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
+                      "url": "https://ci.korifi.cf-app.com/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
                     }
               ]
           }]

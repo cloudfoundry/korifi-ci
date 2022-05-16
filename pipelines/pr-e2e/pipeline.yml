@@ -16,7 +16,7 @@ common:
                       {
                         "type": "button",
                         "text": "View in Concourse",
-                        "url": "https://ci.cf-k8s.cf/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
+                        "url": "https://ci.korifi.cf-app.com/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
                       }
                 ]
             }]
@@ -111,8 +111,8 @@ jobs:
     image: ci-image
     params:
       ROOT_NAMESPACE: cf
-      API_SERVER_ROOT: https://cf.pr-e2e.cf-k8s.cf
-      APP_FQDN: pr-e2e.cf-k8s.cf
+      API_SERVER_ROOT: https://cf.pr-e2e.korifi.cf-app.com
+      APP_FQDN: pr-e2e.korifi.cf-app.com
       E2E_USER_NAME: ((.:accounts_env_vars.E2E_USER_NAME))
       E2E_USER_PEM: ((.:accounts_env_vars.E2E_USER_PEM))
       E2E_SERVICE_ACCOUNT: ((.:accounts_env_vars.E2E_SERVICE_ACCOUNT))
