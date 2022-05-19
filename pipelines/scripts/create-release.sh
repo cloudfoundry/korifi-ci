@@ -43,6 +43,7 @@ create_release() {
   {
     kubectl kustomize api/config/base | kbld -f "$KBLD_CONFIG_DIR/korifi-api-kbld.yml" -f- >"$RELEASE_ARTIFACTS_DIR/korifi-api.yml"
     kubectl kustomize controllers/config/default | kbld -f "$KBLD_CONFIG_DIR/korifi-controllers-kbld.yml" -f- >"$RELEASE_ARTIFACTS_DIR/korifi-controllers.yml"
+    cp -R dependencies "$RELEASE_ARTIFACTS_DIR"
   }
   popd
 

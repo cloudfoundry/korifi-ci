@@ -59,7 +59,7 @@ jobs:
       - get: korifi
       - get: korifi-release-version
       - get: ci-image
-  - task: create-relese
+  - task: create-release
     file: korifi-ci/pipelines/tasks/create-release.yml
     image: ci-image
     params:
