@@ -2,7 +2,6 @@ platform: linux
 inputs:
 - name: korifi-ci
 - name: korifi
-- name: eirini-controller
 - name: terraform-output
 params:
   CLUSTER_NAME:
