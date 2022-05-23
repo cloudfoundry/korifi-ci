@@ -62,7 +62,6 @@ jobs:
       trigger: true
       version: every
     - get: cf-k8s-secrets
-    - get: eirini-controller
 
   - put: korifi-pr
     params:
@@ -188,13 +187,6 @@ resources:
     uri: ((github/cf-k8s-secrets.uri))
     branch: main
     private_key: ((github/cf-k8s-secrets.private_key))
-
-- name: eirini-controller
-  type: git
-  icon: git
-  source:
-    uri: https://github.com/cloudfoundry/eirini-controller.git
-    branch: master
 
 - name: slack
   type: slack-notification

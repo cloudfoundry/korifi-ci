@@ -87,7 +87,6 @@ jobs:
     - get: korifi-ci
     - get: cf-k8s-secrets
     - get: korifi
-    - get: eirini-controller
   - get: semver-event-pr-e2e
     passed:
     - create-cluster-pr-e2e
@@ -137,13 +136,6 @@ resources:
   source:
     uri: https://github.com/cloudfoundry/korifi.git
     branch: main
-
-- name: eirini-controller
-  type: git
-  icon: git
-  source:
-    uri: https://github.com/cloudfoundry/eirini-controller.git
-    branch: master
 
 - name: delete-timer
   type: time
