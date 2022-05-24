@@ -36,6 +36,7 @@ generate_kube_config() {
 update_config_with_version() {
   yq -i ".destinations[0].tags=[\"$VERSION\"]" "$KBLD_CONFIG_DIR/korifi-api-kbld.yml"
   yq -i ".destinations[0].tags=[\"$VERSION\"]" "$KBLD_CONFIG_DIR/korifi-controllers-kbld.yml"
+  yq -i ".destinations[0].tags=[\"$VERSION\"]" "$KBLD_CONFIG_DIR/korifi-kpack-image-builder-kbld.yml"
 }
 
 create_release() {
@@ -43,6 +44,7 @@ create_release() {
   {
     kubectl kustomize api/config/base | kbld -f "$KBLD_CONFIG_DIR/korifi-api-kbld.yml" -f- >"$RELEASE_ARTIFACTS_DIR/korifi-api.yml"
     kubectl kustomize controllers/config/default | kbld -f "$KBLD_CONFIG_DIR/korifi-controllers-kbld.yml" -f- >"$RELEASE_ARTIFACTS_DIR/korifi-controllers.yml"
+    kubectl kustomize kpack-image-builder/config/default | kbld -f "$KBLD_CONFIG_DIR/korifi-kpack-image-builder-kbld.yml" -f- >"$RELEASE_ARTIFACTS_DIR/korifi-kpack-image-builder.yml"
     cp -R dependencies "$RELEASE_ARTIFACTS_DIR"
   }
   popd
