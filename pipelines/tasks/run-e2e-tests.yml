@@ -6,7 +6,7 @@ caches:
 
 inputs:
 - name: korifi-ci
-- name: korifi-pr
+- name: korifi
 - name: kube
 
 params:

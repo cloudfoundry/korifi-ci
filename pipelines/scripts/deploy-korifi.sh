@@ -22,16 +22,16 @@ generate_kube_config() {
 }
 
 deploy_cf() {
-  pushd korifi-pr
+  pushd korifi
   {
-    kubectl kustomize controllers/config/overlays/pr-e2e | kbld -f ../korifi-ci/pipelines/pr-e2e/assets/korifi-controllers-kbld.yml -f- | kapp deploy -y -a korifi-controllers -f-
+    kubectl kustomize controllers/config/overlays/pr-e2e | kbld -f ../korifi-ci/pipelines/main/assets/korifi-controllers-kbld.yml -f- | kapp deploy -y -a korifi-controllers -f-
     create_tls_secret "korifi-workloads-ingress-cert" "korifi-controllers-system" "*.$CLUSTER_NAME.korifi.cf-app.com"
 
-    kubectl kustomize api/config/overlays/pr-e2e | kbld -f ../korifi-ci/pipelines/pr-e2e/assets/korifi-api-kbld.yml -f- | kapp deploy -y -a korifi-api -f-
+    kubectl kustomize api/config/overlays/pr-e2e | kbld -f ../korifi-ci/pipelines/main/assets/korifi-api-kbld.yml -f- | kapp deploy -y -a korifi-api -f-
     create_tls_secret "korifi-api-ingress-cert" "korifi-api-system" "*.$CLUSTER_NAME.korifi.cf-app.com"
 
     if [[ -d kpack-image-builder/config/overlays/pr-e2e ]]; then
-      kubectl kustomize kpack-image-builder/config/overlays/pr-e2e | kbld -f ../korifi-ci/pipelines/pr-e2e/assets/korifi-kpack-image-builder-kbld.yml -f- | kapp deploy -y -a korifi-kpack-image-builder -f-
+      kubectl kustomize kpack-image-builder/config/overlays/pr-e2e | kbld -f ../korifi-ci/pipelines/main/assets/korifi-kpack-image-builder-kbld.yml -f- | kapp deploy -y -a korifi-kpack-image-builder -f-
     fi
 
     sed 's/vcap\.me/'$CLUSTER_NAME.korifi.cf-app.com'/' controllers/config/samples/cfdomain.yaml | kubectl apply -f-

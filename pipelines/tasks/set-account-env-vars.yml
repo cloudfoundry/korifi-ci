@@ -2,7 +2,7 @@ platform: linux
 
 inputs:
 - name: korifi-ci
-- name: korifi-pr
+- name: korifi
 
 outputs:
   - name: accounts

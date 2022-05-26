@@ -1,0 +1,16 @@
+platform: linux
+
+caches:
+  - path: ../../../root/.cache/go-build
+  - path: ../../../go/pkg/mod
+
+inputs:
+- name: korifi-ci
+- name: root
+
+params:
+  DIR:
+  TARGET:
+
+run:
+  path: korifi-ci/pipelines/scripts/run-make-target.sh

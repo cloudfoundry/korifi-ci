@@ -19,7 +19,7 @@ main() {
 
   generate_kube_config
 
-  source ./korifi-pr/scripts/account-creation.sh $PWD/korifi-pr/scripts
+  source ./korifi/scripts/account-creation.sh $PWD/korifi/scripts
 
   cat <<EOF >accounts/env_vars.yaml
 E2E_USER_NAME: $E2E_USER_NAME
