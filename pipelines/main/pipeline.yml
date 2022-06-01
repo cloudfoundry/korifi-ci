@@ -131,52 +131,53 @@ jobs:
         - state: pending
           context: "Concourse - E2E (main)"
 
-  - task: get-ip-addr
-    file: korifi-ci/pipelines/tasks/get-terraform-property.yml
-    image: gcloud-image
-    params:
-      CLUSTER_NAME: pr-e2e
-      PROPERTY: pr_e2e_ip
+  - do: &end-to-ends
+    - task: get-ip-addr
+      file: korifi-ci/pipelines/tasks/get-terraform-property.yml
+      image: gcloud-image
+      params:
+        CLUSTER_NAME: pr-e2e
+        PROPERTY: pr_e2e_ip
 
-  - task: install-korifi-dependencies
-    file: korifi-ci/pipelines/tasks/install-korifi-dependencies.yml
-    image: ci-image
-    params:
-      CLUSTER_NAME: pr-e2e
-      GCP_ZONE: europe-west1-b
+    - task: install-korifi-dependencies
+      file: korifi-ci/pipelines/tasks/install-korifi-dependencies.yml
+      image: ci-image
+      params:
+        CLUSTER_NAME: pr-e2e
+        GCP_ZONE: europe-west1-b
 
-  - task: deploy-korifi
-    privileged: true
-    file: korifi-ci/pipelines/tasks/deploy-korifi.yml
-    image: ci-image
-    params:
-      CLUSTER_NAME: pr-e2e
-      GCP_ZONE: europe-west1-b
+    - task: deploy-korifi
+      privileged: true
+      file: korifi-ci/pipelines/tasks/deploy-korifi.yml
+      image: ci-image
+      params:
+        CLUSTER_NAME: pr-e2e
+        GCP_ZONE: europe-west1-b
 
-  - task: set-account-env-vars
-    file: korifi-ci/pipelines/tasks/set-account-env-vars.yml
-    image: ci-image
-    params:
-      CLUSTER_NAME: pr-e2e
-      GCP_ZONE: europe-west1-b
-      ROOT_NAMESPACE: cf
+    - task: set-account-env-vars
+      file: korifi-ci/pipelines/tasks/set-account-env-vars.yml
+      image: ci-image
+      params:
+        CLUSTER_NAME: pr-e2e
+        GCP_ZONE: europe-west1-b
+        ROOT_NAMESPACE: cf
 
-  - load_var: accounts_env_vars
-    file: accounts/env_vars.yaml
+    - load_var: accounts_env_vars
+      file: accounts/env_vars.yaml
 
-  - task: run-e2e-tests
-    file: korifi-ci/pipelines/tasks/run-e2e-tests.yml
-    image: ci-image
-    params:
-      ROOT_NAMESPACE: cf
-      API_SERVER_ROOT: https://cf.pr-e2e.korifi.cf-app.com
-      APP_FQDN: pr-e2e.korifi.cf-app.com
-      E2E_USER_NAME: ((.:accounts_env_vars.E2E_USER_NAME))
-      E2E_USER_PEM: ((.:accounts_env_vars.E2E_USER_PEM))
-      E2E_SERVICE_ACCOUNT: ((.:accounts_env_vars.E2E_SERVICE_ACCOUNT))
-      E2E_SERVICE_ACCOUNT_TOKEN: ((.:accounts_env_vars.E2E_SERVICE_ACCOUNT_TOKEN))
-      CF_ADMIN_KEY: ((.:accounts_env_vars.CF_ADMIN_KEY))
-      CF_ADMIN_CERT: ((.:accounts_env_vars.CF_ADMIN_CERT))
+    - task: run-e2e-tests
+      file: korifi-ci/pipelines/tasks/run-e2e-tests.yml
+      image: ci-image
+      params:
+        ROOT_NAMESPACE: cf
+        API_SERVER_ROOT: https://cf.pr-e2e.korifi.cf-app.com
+        APP_FQDN: pr-e2e.korifi.cf-app.com
+        E2E_USER_NAME: ((.:accounts_env_vars.E2E_USER_NAME))
+        E2E_USER_PEM: ((.:accounts_env_vars.E2E_USER_PEM))
+        E2E_SERVICE_ACCOUNT: ((.:accounts_env_vars.E2E_SERVICE_ACCOUNT))
+        E2E_SERVICE_ACCOUNT_TOKEN: ((.:accounts_env_vars.E2E_SERVICE_ACCOUNT_TOKEN))
+        CF_ADMIN_KEY: ((.:accounts_env_vars.CF_ADMIN_KEY))
+        CF_ADMIN_CERT: ((.:accounts_env_vars.CF_ADMIN_CERT))
 
   - put: korifi-status
     params:
@@ -228,76 +229,24 @@ jobs:
     - get: ci-image
     - get: gcloud-image
     - get: korifi-ci
-    - get: korifi-pr
+    - get: korifi
+      resource: korifi-pr
       trigger: true
       version: every
     - get: cf-k8s-secrets
 
   - put: korifi-pr
     params:
-      path: korifi-pr
+      path: korifi
       base_context: "Concourse "
       context: " e2e-tests (pull_request)"
       status: pending
 
-  - task: get-ip-addr
-    file: korifi-ci/pipelines/tasks/get-terraform-property.yml
-    image: gcloud-image
-    params:
-      CLUSTER_NAME: pr-e2e
-      PROPERTY: pr_e2e_ip
-
-  - task: install-korifi-dependencies
-    input_mapping:
-      korifi: korifi-pr
-    file: korifi-ci/pipelines/tasks/install-korifi-dependencies.yml
-    image: ci-image
-    params:
-      CLUSTER_NAME: pr-e2e
-      GCP_ZONE: europe-west1-b
-
-  - task: deploy-korifi
-    input_mapping:
-      korifi: korifi-pr
-    privileged: true
-    file: korifi-ci/pipelines/tasks/deploy-korifi.yml
-    image: ci-image
-    params:
-      CLUSTER_NAME: pr-e2e
-      GCP_ZONE: europe-west1-b
-
-  - task: set-account-env-vars
-    input_mapping:
-      korifi: korifi-pr
-    file: korifi-ci/pipelines/tasks/set-account-env-vars.yml
-    image: ci-image
-    params:
-      CLUSTER_NAME: pr-e2e
-      GCP_ZONE: europe-west1-b
-      ROOT_NAMESPACE: cf
-
-  - load_var: accounts_env_vars
-    file: accounts/env_vars.yaml
-
-  - task: run-e2e-tests
-    input_mapping:
-      korifi: korifi-pr
-    file: korifi-ci/pipelines/tasks/run-e2e-tests.yml
-    image: ci-image
-    params:
-      ROOT_NAMESPACE: cf
-      API_SERVER_ROOT: https://cf.pr-e2e.korifi.cf-app.com
-      APP_FQDN: pr-e2e.korifi.cf-app.com
-      E2E_USER_NAME: ((.:accounts_env_vars.E2E_USER_NAME))
-      E2E_USER_PEM: ((.:accounts_env_vars.E2E_USER_PEM))
-      E2E_SERVICE_ACCOUNT: ((.:accounts_env_vars.E2E_SERVICE_ACCOUNT))
-      E2E_SERVICE_ACCOUNT_TOKEN: ((.:accounts_env_vars.E2E_SERVICE_ACCOUNT_TOKEN))
-      CF_ADMIN_KEY: ((.:accounts_env_vars.CF_ADMIN_KEY))
-      CF_ADMIN_CERT: ((.:accounts_env_vars.CF_ADMIN_CERT))
+  - do: *end-to-ends
 
   - put: korifi-pr
     params:
-      path: korifi-pr
+      path: korifi
       base_context: "Concourse "
       context: " e2e-tests (pull_request)"
       status: success
