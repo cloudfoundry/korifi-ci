@@ -1,0 +1,11 @@
+platform: linux
+
+inputs:
+- name: coverage
+- name: korifi
+
+params:
+  CC_TEST_REPORTER_ID:
+
+run:
+  path: korifi-ci/pipelines/scripts/publish-code-coverage.sh

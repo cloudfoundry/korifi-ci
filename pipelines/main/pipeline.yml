@@ -92,6 +92,12 @@ jobs:
           DIR: kpack-image-builder
           TARGET: test
 
+  - task: publish-code-coverage
+    image: ci-image
+    file: korifi-ci/pipelines/tasks/publish-code-coverage.yml
+    params:
+      CC_TEST_REPORTER_ID: ((code-climate/test-reporter.id))
+
   - put: korifi-status
     params:
       path: korifi

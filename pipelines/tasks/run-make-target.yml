@@ -8,6 +8,9 @@ inputs:
 - name: korifi-ci
 - name: root
 
+outputs:
+- name: coverage
+
 params:
   DIR:
   TARGET:
