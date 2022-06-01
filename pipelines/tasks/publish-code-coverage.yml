@@ -5,6 +5,7 @@ inputs:
 - name: coverage-controllers
 - name: coverage-kim
 - name: korifi
+- name: korifi-ci
 
 params:
   CC_TEST_REPORTER_ID:
