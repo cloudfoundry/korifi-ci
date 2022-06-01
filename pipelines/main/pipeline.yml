@@ -355,7 +355,7 @@ resources:
   check_every: 1m
   source:
     repository: cloudfoundry/korifi
-    access_token: ((github/pr-pipeline-token))
+    access_token: ((github/korifi-bot-token))
     base_branch: main
     ignore_drafts: true
     labels: ["e2e-allowed"]
@@ -366,7 +366,7 @@ resources:
   check_every: 1m
   source:
     repository: cloudfoundry/korifi
-    access_token: ((github/pr-pipeline-token))
+    access_token: ((github/korifi-bot-token))
     base_branch: main
     ignore_drafts: true
     required_review_approvals: 0
@@ -420,7 +420,7 @@ resources:
   icon: checkbox-marked
   source:
     repo: cloudfoundry/korifi
-    access_token: ((github/pr-pipeline-token))
+    access_token: ((github/korifi-bot-token))
 
 - name: golangci-lint-image
   type: registry-image
