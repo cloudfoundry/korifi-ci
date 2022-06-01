@@ -12,7 +12,7 @@ outputs:
 - name: coverage
 
 params:
-  DIR:
+  DIR: .
   TARGET:
 
 run:
