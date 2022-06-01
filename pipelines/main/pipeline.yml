@@ -58,7 +58,6 @@ jobs:
           context: "Concourse - tests (main)"
 
   - in_parallel:
-      limit: 3
       steps:
       - task: linter
         file: korifi-ci/pipelines/tasks/run-make-target.yml
