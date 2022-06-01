@@ -93,7 +93,7 @@ jobs:
         input_mapping:
           root: korifi
         output_mapping:
-          coverage: coverage-kim
+          coverage: coverage-kib
         params:
           DIR: kpack-image-builder
           TARGET: test
