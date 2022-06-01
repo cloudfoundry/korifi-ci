@@ -75,3 +75,6 @@ RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg >/u
   echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" >/etc/apt/sources.list.d/github-cli.list && \
   apt update && \
   apt install gh
+
+RUN curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 -o /usr/local/bin/cc-test-reporter && \
+  chmod +x /usr/local/bin/cc-test-reporter
