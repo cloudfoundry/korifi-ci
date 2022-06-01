@@ -72,6 +72,8 @@ jobs:
         image: ci-image
         input_mapping:
           root: korifi
+        output_mapping:
+          coverage: coverage-api
         params:
           TARGET: test-api
 
@@ -80,6 +82,8 @@ jobs:
         image: ci-image
         input_mapping:
           root: korifi
+        output_mapping:
+          coverage: coverage-controllers
         params:
           TARGET: test-controllers
 
@@ -88,6 +92,8 @@ jobs:
         image: ci-image
         input_mapping:
           root: korifi
+        output_mapping:
+          coverage: coverage-kim
         params:
           DIR: kpack-image-builder
           TARGET: test
