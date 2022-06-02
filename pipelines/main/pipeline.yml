@@ -224,8 +224,8 @@ jobs:
     file: korifi-ci/pipelines/tasks/allow-e2e.yml
     image: ci-image
     params:
-      KORIFI_BOT_TOKEN: ((github/pr-label-setter.token))
-      KORIFI_BOT_NAME: ((github/pr-label-setter.username))
+      KORIFI_BOT_TOKEN: ((github/korifi-bot-token))
+      KORIFI_BOT_NAME: korifi-bot
 
 - name: run-e2es-pr
   on_failure:
