@@ -25,6 +25,12 @@ publish_images() {
     build-korifi-api >/dev/null
     build-korifi-controllers >/dev/null
     build-korifi-kpack-image-builder >/dev/null
+
+    echo "============================================================================="
+    echo "  Dev images have been successfully published on dockerhub."
+    echo "    commit sha:  $(cat korifi/.git/ref)"
+    echo "    images tag:  $VERSION"
+    echo "============================================================================="
   }
   popd
 }
