@@ -1,0 +1,29 @@
+#!/bin/bash
+
+tmp="$(mktemp -d)"
+trap 'rm -rf $tmp' EXIT
+
+docker_login() {
+  echo "$GCP_SERVICE_ACCOUNT_JSON" >"$tmp/sa.json"
+  export GOOGLE_APPLICATION_CREDENTIALS="$tmp/sa.json"
+
+  kubectl delete secret buildkit &>/dev/null || true
+  kubectl create secret docker-registry buildkit --docker-server="https://$REGISTRY_HOSTNAME/v1/" \
+    --docker-username="$REGISTRY_USER" --docker-password="$REGISTRY_PASSWORD"
+
+  export KBLD_REGISTRY_HOSTNAME="$REGISTRY_HOSTNAME"
+  export KBLD_REGISTRY_USERNAME="$REGISTRY_USER"
+  export KBLD_REGISTRY_PASSWORD="$REGISTRY_PASSWORD"
+}
+
+build-korifi-api() {
+  kubectl kustomize api/config/base | kbld -f "$KBLD_CONFIG_DIR/korifi-api-kbld.yml" -f-
+}
+
+build-korifi-controllers() {
+  kubectl kustomize controllers/config/default | kbld -f "$KBLD_CONFIG_DIR/korifi-controllers-kbld.yml" -f-
+}
+
+build-korifi-kpack-image-builder() {
+  kubectl kustomize kpack-image-builder/config/default | kbld -f "$KBLD_CONFIG_DIR/korifi-kpack-image-builder-kbld.yml" -f-
+}

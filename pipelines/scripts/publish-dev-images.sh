@@ -3,11 +3,7 @@
 set -euo pipefail
 
 KBLD_CONFIG_DIR="$PWD/korifi-ci/pipelines/main/assets/release"
-RELEASE_OUTPUT_DIR="$PWD/release-output"
-VERSION=$(cat korifi-release-version/version)
-RELEASE_ARTIFACTS_DIR="$RELEASE_OUTPUT_DIR/korifi-$VERSION"
-
-mkdir -p "$RELEASE_ARTIFACTS_DIR"
+VERSION="dev-$(cat korifi-release-version/version)-$(cat korifi/.git/ref)"
 
 source korifi-ci/pipelines/scripts/common/gcloud-functions
 source korifi-ci/pipelines/scripts/common/kbld-korifi
@@ -23,19 +19,12 @@ update_config_with_version() {
   yq -i ".destinations[0].tags=[\"$VERSION\"]" "$KBLD_CONFIG_DIR/korifi-kpack-image-builder-kbld.yml"
 }
 
-create_release() {
+publish_images() {
   pushd korifi
   {
-    build-korifi-api >"$RELEASE_ARTIFACTS_DIR/korifi-api.yml"
-    build-korifi-controllers >"$RELEASE_ARTIFACTS_DIR/korifi-controllers.yml"
-    build-korifi-kpack-image-builder >"$RELEASE_ARTIFACTS_DIR/korifi-kpack-image-builder.yml"
-    cp -R dependencies "$RELEASE_ARTIFACTS_DIR"
-  }
-  popd
-
-  pushd "$RELEASE_OUTPUT_DIR"
-  {
-    tar czf "korifi-$VERSION.tgz" "korifi-$VERSION"
+    build-korifi-api >/dev/null
+    build-korifi-controllers >/dev/null
+    build-korifi-kpack-image-builder >/dev/null
   }
   popd
 }
@@ -44,7 +33,7 @@ main() {
   generate_kube_config
   docker_login
   update_config_with_version
-  create_release
+  publish_images
 }
 
 main

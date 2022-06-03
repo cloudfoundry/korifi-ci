@@ -25,6 +25,7 @@ groups:
   jobs:
   - run-tests-main
   - run-e2es-main
+  - publish-dev-images
 - name: pr
   jobs:
   - allow-e2es
@@ -201,7 +202,6 @@ jobs:
       statuses:
         - state: success
           context: "Concourse - E2E (main)"
-
   ensure:
     task: undeploy-korifi
     file: korifi-ci/pipelines/tasks/undeploy-korifi.yml
@@ -210,6 +210,53 @@ jobs:
     params:
       CLUSTER_NAME: pr-e2e
       GCP_ZONE: europe-west1-b
+
+- name: publish-dev-images
+  on_failure:
+    do:
+    - put: korifi-status
+      params:
+        path: korifi
+        statuses:
+        - state: failure
+          context: "Concourse - publish images (main)"
+    - *slackHook
+  plan:
+  - in_parallel:
+    - get: ci-image
+    - get: korifi
+      trigger: true
+      passed:
+        - run-e2es-main
+    - get: korifi-ci
+    - get: korifi-release-version
+
+  - put: korifi-status
+    params:
+      path: korifi
+      statuses:
+        - state: pending
+          context: "Concourse - publish images (main)"
+
+  - task: publish-dev-images
+    file: korifi-ci/pipelines/tasks/publish-dev-images.yml
+    image: ci-image
+    params:
+      CLUSTER_NAME: pr-e2e
+      GCP_ZONE: europe-west1-b
+      REGISTRY_HOSTNAME: index.docker.io
+      REGISTRY_USER: ((release-pipeline/dockerhub-auth.username))
+      REGISTRY_PASSWORD: ((release-pipeline/dockerhub-auth.password))
+
+  - put: korifi-status
+    params:
+      path: korifi
+      statuses:
+        - state: success
+          context: "Concourse - publish images (main)"
+
+
+
 
 # ===== PR =====
 - name: allow-e2es
