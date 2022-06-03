@@ -3,7 +3,8 @@
 set -euo pipefail
 
 KBLD_CONFIG_DIR="$PWD/korifi-ci/pipelines/main/assets/release"
-VERSION="dev-$(cat korifi-release-version/version)-$(cat korifi/.git/ref)"
+COMMIT_SHA=$(cat korifi/.git/ref)
+VERSION="dev-$(cat korifi-release-version/version)-$COMMIT_SHA"
 
 source korifi-ci/pipelines/scripts/common/gcloud-functions
 source korifi-ci/pipelines/scripts/common/kbld-korifi
@@ -28,7 +29,7 @@ publish_images() {
 
     echo "============================================================================="
     echo "  Dev images have been successfully published on dockerhub."
-    echo "    commit sha:  $(cat korifi/.git/ref)"
+    echo "    commit sha:  $COMMIT_SHA"
     echo "    images tag:  $VERSION"
     echo "============================================================================="
   }
