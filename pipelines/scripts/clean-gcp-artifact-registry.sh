@@ -17,7 +17,7 @@ main() {
   export -f gcloud
 
   # delete all images produced by kpack during the tests
-  gcloud artifacts packages list --repository=$KPACK_REPO_NAME --location=$KPACK_REPO_LOCATION --format=json --filter='name!~kpack' |
+  gcloud artifacts packages list --repository=$KPACK_REPO_NAME --location=$KPACK_REPO_LOCATION --format=json --filter='name!=kpack/beta' |
     jq '.[]|.name' -r |
     xargs -IN gcloud artifacts packages delete N --quiet --repository=$KPACK_REPO_NAME --location=$KPACK_REPO_LOCATION --async
 }
