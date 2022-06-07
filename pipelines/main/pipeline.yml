@@ -330,9 +330,9 @@ jobs:
   - get: korifi-release-version
     params:
       bump: major
-  - params:
+  - put: korifi-release-version
+    params:
       file: korifi-release-version/version
-    put: korifi-release-version
   on_failure: *slackHook
 
 - name: bump-minor-version
@@ -343,9 +343,9 @@ jobs:
     passed:
     - publish-release
     trigger: true
-  - params:
+  - put: korifi-release-version
+    params:
       file: korifi-release-version/version
-    put: korifi-release-version
   on_failure: *slackHook
 
 - name: publish-release
