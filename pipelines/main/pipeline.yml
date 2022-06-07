@@ -203,13 +203,17 @@ jobs:
         - state: success
           context: "Concourse - E2E (main)"
   ensure:
-    task: undeploy-korifi
-    file: korifi-ci/pipelines/tasks/undeploy-korifi.yml
-    image: ci-image
-    attempts: 10
-    params:
-      CLUSTER_NAME: pr-e2e
-      GCP_ZONE: europe-west1-b
+    in_parallel:
+    - task: clean-gcp-artifact-registry
+      file: korifi-ci/pipelines/tasks/clean-gcp-artifact-registry.yml
+      image: ci-image
+    - task: undeploy-korifi
+      file: korifi-ci/pipelines/tasks/undeploy-korifi.yml
+      image: ci-image
+      attempts: 10
+      params:
+        CLUSTER_NAME: pr-e2e
+        GCP_ZONE: europe-west1-b
 
 - name: publish-dev-images
   on_failure:
