@@ -5,7 +5,7 @@ set -euo pipefail
 source korifi-ci/pipelines/scripts/common/gcloud-functions
 
 gcloudx() {
-  gcloud --project=${PROJECT} $@
+  gcloud --project=${PROJECT} "$@"
 }
 
 main() {

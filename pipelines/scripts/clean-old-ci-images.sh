@@ -5,7 +5,7 @@ set -euo pipefail
 source korifi-ci/pipelines/scripts/common/gcloud-functions
 
 gcloudx() {
-  gcloud --project=${PROJECT} $@
+  gcloud --project=${PROJECT} "$@"
 }
 
 main() {
@@ -13,11 +13,12 @@ main() {
 
   export -f gcloudx
 
-  # retain latest only
+  # retain latest and those created within the hour
+  ts=$(date -d "1 hour ago" -Iseconds -u)
   latest=$(gcloudx artifacts docker images list ${CI_REPO_LOCATION}-docker.pkg.dev/${PROJECT}/${CI_REPO_NAME}/${PACKAGE} --sort-by='~create_time' --format=json --limit=1 |
     jq -r '.[] | .version')
 
-  gcloudx artifacts docker images list ${CI_REPO_LOCATION}-docker.pkg.dev/${PROJECT}/${CI_REPO_NAME}/${PACKAGE} --filter="version!~${latest}" --format=json |
+  gcloudx artifacts docker images list ${CI_REPO_LOCATION}-docker.pkg.dev/${PROJECT}/${CI_REPO_NAME}/${PACKAGE} --filter="createTime<${ts} AND version!~${latest}" --format=json |
     jq -r '.[] | .package + "@" + .version' |
     xargs -I {} bash -c 'gcloudx "$@"' _ artifacts docker images delete {} --async --quiet --delete-tags
 
