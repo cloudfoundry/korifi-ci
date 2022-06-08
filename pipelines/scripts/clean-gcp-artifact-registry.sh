@@ -4,9 +4,6 @@ set -euo pipefail
 
 source korifi-ci/pipelines/scripts/common/gcloud-functions
 
-tmp="$(mktemp -d)"
-trap "rm -rf $tmp" EXIT
-
 gcloudx() {
   gcloud --project=${PROJECT} $@
 }
