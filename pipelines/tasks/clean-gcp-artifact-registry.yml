@@ -9,6 +9,7 @@ params:
   KPACK_REPO_LOCATION: europe-west1
   CI_REPO_NAME: ci
   CI_REPO_LOCATION: europe-west1
+  PROJECT: cf-on-k8s-wg
 
 run:
   path: korifi-ci/pipelines/scripts/clean-gcp-artifact-registry.sh
