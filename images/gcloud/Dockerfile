@@ -1,7 +1,7 @@
 FROM google/cloud-sdk
 
-ARG TERRAFORM_VERSION=1.1.7
-ARG HELM_VERSION=v3.8.1
+ARG TERRAFORM_VERSION=1.2.2
+ARG HELM_VERSION=v3.9.0
 
 RUN apt-get update && \
     apt-get install --yes \
