@@ -30,6 +30,7 @@ create_release() {
     build-korifi-controllers >"$RELEASE_ARTIFACTS_DIR/korifi-controllers.yml"
     build-korifi-kpack-image-builder >"$RELEASE_ARTIFACTS_DIR/korifi-kpack-image-builder.yml"
     cp -R dependencies "$RELEASE_ARTIFACTS_DIR"
+    cp INSTALL.md "$RELEASE_ARTIFACTS_DIR"
   }
   popd
 
