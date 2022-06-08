@@ -5,6 +5,7 @@ ARG YQ_VERSION="v4.25.2"
 ARG KBLD_VERSION="v0.33.0"
 ARG KAPP_VERSION="v0.48.0"
 ARG BUILDKIT_CLI_VERSION="v0.1.5"
+ARG HELM_VERSION="v3.9.0"
 
 ENV PATH="$GOPATH/bin:${PATH}"
 
@@ -54,7 +55,7 @@ RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg -o 
   apt-get install gh
 
 # helm
-RUN curl -sL https://get.helm.sh/helm-v3.5.3-linux-amd64.tar.gz | tar xz --strip-components=1 -C /usr/bin linux-amd64/helm && chmod +x /usr/bin/helm
+RUN curl -sL https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz | tar xz --strip-components=1 -C /usr/bin linux-amd64/helm && chmod +x /usr/bin/helm
 
 # gcloud
 RUN curl -sL https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-${GCLOUD_VERSION}-linux-x86_64.tar.gz | \
