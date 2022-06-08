@@ -33,11 +33,14 @@ jobs:
     trigger: true
   - get: ci-image-source
     trigger: true
-  - get_params:
-      skip_download: true
+  - put: ci-image
     params:
       build: ci-image-source/images/ci
-    put: ci-image
+  - task: clean-old-ci-images
+    file: korifi-ci/pipelines/tasks/clean-old-ci-images.yml
+    image: ci-image
+    params:
+      PACKAGE: ci
   on_failure: *slackHook
 
 - name: update-gcloud-image
@@ -46,11 +49,17 @@ jobs:
     trigger: true
   - get: gcloud-image-source
     trigger: true
-  - get_params:
+  - put: gcloud-image
+    get_params:
       skip_download: true
     params:
       build: gcloud-image-source/images/gcloud
-    put: gcloud-image
+  - get: ci-image
+  - task: clean-old-ci-images
+    file: korifi-ci/pipelines/tasks/clean-old-ci-images.yml
+    image: ci-image
+    params:
+      PACKAGE: gcloud
   on_failure: *slackHook
 
 resource_types:
