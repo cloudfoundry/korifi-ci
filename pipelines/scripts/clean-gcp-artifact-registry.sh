@@ -18,6 +18,14 @@ main() {
     jq -r '.[]|.package' |
     xargs -I {} bash -c 'gcloudx "$@"' _ artifacts docker images delete {} --async --quiet
 
+  # delete all but latest kpack cluster-builder image
+  latest=$(gcloudx artifacts docker images list ${KPACK_REPO_LOCATION}-docker.pkg.dev/${PROJECT}/${KPACK_REPO_NAME}/kpack/beta --sort-by='~create_time' --format=json --limit=1 |
+    jq -r '.[] | .version')
+
+  gcloudx artifacts docker images list ${KPACK_REPO_LOCATION}-docker.pkg.dev/${PROJECT}/${KPACK_REPO_NAME}/kpack/beta --filter="version!~${latest}" --format=json |
+    jq -r '.[] | .package + "@" + .version' |
+    xargs -I {} bash -c 'gcloudx "$@"' _ artifacts docker images delete {} --async --quiet --delete-tags
+
   # delete versions of korifi images older than a day
   yesterday=$(date -d "yesterday" -Iseconds -u)
   for package in korifi-api korifi-controllers korifi-kpack-image-builder; do
@@ -26,6 +34,7 @@ main() {
       xargs -I {} bash -c 'gcloudx "$@"' _ artifacts docker images delete {} --async --quiet --delete-tags
   done
 
+  echo
   echo "################# REPOSITORY SIZES #################"
   gcloud artifacts repositories describe --location ${KPACK_REPO_LOCATION} ${KPACK_REPO_NAME}
   echo
