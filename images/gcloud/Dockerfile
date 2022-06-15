@@ -9,6 +9,7 @@ RUN apt-get update && \
       unzip \
       wget \
       vim \
+      google-cloud-sdk-gke-gcloud-auth-plugin \
   && rm -rf /var/lib/apt/lists/*
 
 RUN curl -L https://k14s.io/install.sh | bash

@@ -1,6 +1,6 @@
 FROM golang:latest
 
-ARG GCLOUD_VERSION="389.0.0"
+ARG GCLOUD_VERSION="390.0.0"
 ARG YQ_VERSION="v4.25.2"
 ARG KBLD_VERSION="v0.33.0"
 ARG KAPP_VERSION="v0.48.0"
@@ -61,6 +61,7 @@ RUN curl -sL https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz | tar x
 RUN curl -sL https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-${GCLOUD_VERSION}-linux-x86_64.tar.gz | \
   tar -xz -C /usr/local
 ENV PATH="/usr/local/google-cloud-sdk/bin:${PATH}"
+RUN gcloud components install gke-gcloud-auth-plugin --quiet
 
 # carvel
 RUN curl -sL "https://github.com/vmware-tanzu/carvel-kapp/releases/download/${KAPP_VERSION}/kapp-linux-amd64" -o /usr/local/bin/kapp && \
