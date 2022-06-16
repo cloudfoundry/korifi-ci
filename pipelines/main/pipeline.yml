@@ -1,25 +1,3 @@
-common:
-  slack_hook: &slackHook
-    put: slack
-    params:
-      attachments: |2
-          [{
-              "color": "danger",
-              "actions": [
-                    {
-                      "type": "button",
-                      "text": "View in Concourse",
-                      "url": "https://ci.korifi.cf-app.com/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
-                    }
-              ]
-          }]
-      channel: '#korifi-ci'
-      text: |
-        Pipeline *$BUILD_PIPELINE_NAME* failed :cry:
-
-        Job is *$BUILD_JOB_NAME*
-        Build name is *$BUILD_NAME*
-
 groups:
 - name: main
   jobs:
@@ -30,6 +8,10 @@ groups:
   jobs:
   - allow-e2es
   - run-e2es-pr
+- name: periodics
+  jobs:
+    - run-tests-periodic
+    - run-e2es-periodic
 - name: release
   jobs:
   - bump-major-version
@@ -47,7 +29,25 @@ jobs:
         statuses:
         - state: failure
           context: "Concourse - tests (main)"
-    - *slackHook
+    - put: slack &slackHook
+      params:
+        attachments: |2
+            [{
+                "color": "danger",
+                "actions": [
+                      {
+                        "type": "button",
+                        "text": "View in Concourse",
+                        "url": "https://ci.korifi.cf-app.com/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
+                      }
+                ]
+            }]
+        channel: '#korifi-ci'
+        text: |
+          Pipeline *$BUILD_PIPELINE_NAME* failed :cry:
+
+          Job is *$BUILD_JOB_NAME*
+          Build name is *$BUILD_NAME*
   plan:
   - in_parallel:
     - get: ci-image
@@ -73,36 +73,37 @@ jobs:
         params:
           TARGET: lint
 
-      - task: api-tests
-        file: korifi-ci/pipelines/tasks/run-make-target.yml
-        image: ci-image
-        input_mapping:
-          root: korifi
-        output_mapping:
-          coverage: coverage-api
-        params:
-          TARGET: test-api
+      - in_parallel: &unit-integration
+        - task: api-tests
+          file: korifi-ci/pipelines/tasks/run-make-target.yml
+          image: ci-image
+          input_mapping:
+            root: korifi
+          output_mapping:
+            coverage: coverage-api
+          params:
+            TARGET: test-api
 
-      - task: controllers-tests
-        file: korifi-ci/pipelines/tasks/run-make-target.yml
-        image: ci-image
-        input_mapping:
-          root: korifi
-        output_mapping:
-          coverage: coverage-controllers
-        params:
-          TARGET: test-controllers
+        - task: controllers-tests
+          file: korifi-ci/pipelines/tasks/run-make-target.yml
+          image: ci-image
+          input_mapping:
+            root: korifi
+          output_mapping:
+            coverage: coverage-controllers
+          params:
+            TARGET: test-controllers
 
-      - task: kpack-image-builder-tests
-        file: korifi-ci/pipelines/tasks/run-make-target.yml
-        image: ci-image
-        input_mapping:
-          root: korifi
-        output_mapping:
-          coverage: coverage-kib
-        params:
-          DIR: kpack-image-builder
-          TARGET: test
+        - task: kpack-image-builder-tests
+          file: korifi-ci/pipelines/tasks/run-make-target.yml
+          image: ci-image
+          input_mapping:
+            root: korifi
+          output_mapping:
+            coverage: coverage-kib
+          params:
+            DIR: kpack-image-builder
+            TARGET: test
 
   - task: publish-code-coverage
     image: ci-image
@@ -215,7 +216,7 @@ jobs:
       statuses:
         - state: success
           context: "Concourse - E2E (main)"
-  ensure:
+  ensure: &clean-pr-e2e-env
     in_parallel:
     - task: clean-gcp-artifact-registry
       file: korifi-ci/pipelines/tasks/clean-gcp-artifact-registry.yml
@@ -331,19 +332,39 @@ jobs:
       context: " e2e-tests (pull_request)"
       status: success
 
-  ensure:
-    in_parallel:
-    - task: clean-gcp-artifact-registry
-      file: korifi-ci/pipelines/tasks/clean-gcp-artifact-registry.yml
-      image: ci-image
-    - task: undeploy-korifi
-      file: korifi-ci/pipelines/tasks/undeploy-korifi.yml
-      image: ci-image
-      attempts: 10
-      params:
-        CLUSTER_NAME: pr-e2e
-        GCP_ZONE: europe-west1-b
+  ensure: *clean-pr-e2e-env
 
+# ===== periodics =====
+- name: run-tests-periodic
+  on_failure:
+    *slackHook
+  plan:
+  - in_parallel:
+    - get: ci-image
+    - get: golangci-lint-image
+    - get: korifi
+    - get: korifi-ci
+    - get: periodic-timer
+      trigger: true
+  - in_parallel: *unit-integration
+
+- name: run-e2es-periodic
+  on_failure:
+    *slackHook
+  serial: true
+  serial_groups:
+  - pr-e2e
+  plan:
+  - in_parallel:
+    - get: ci-image
+    - get: gcloud-image
+    - get: korifi-ci
+    - get: korifi
+    - get: cf-k8s-secrets
+    - get: periodic-timer
+      trigger: true
+  - do: *end-to-ends
+  ensure: *clean-pr-e2e-env
 
 # ===== release =====
 - name: bump-major-version
@@ -517,3 +538,11 @@ resources:
     initial_version: 0.1.0
     private_key: ((github/cf-k8s-secrets.private_key))
     uri: ((github/cf-k8s-secrets.uri))
+
+- name: periodic-timer
+  type: time
+  source:
+    interval: 20m
+    start: 03:00 AM
+    stop: 09:00 AM
+    location: Europe/London
