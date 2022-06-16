@@ -182,19 +182,32 @@ jobs:
     - load_var: accounts_env_vars
       file: accounts/env_vars.yaml
 
-    - task: run-e2e-tests
-      file: korifi-ci/pipelines/tasks/run-e2e-tests.yml
-      image: ci-image
-      params:
-        ROOT_NAMESPACE: cf
-        API_SERVER_ROOT: https://cf.pr-e2e.korifi.cf-app.com
-        APP_FQDN: pr-e2e.korifi.cf-app.com
-        E2E_USER_NAME: ((.:accounts_env_vars.E2E_USER_NAME))
-        E2E_USER_PEM: ((.:accounts_env_vars.E2E_USER_PEM))
-        E2E_SERVICE_ACCOUNT: ((.:accounts_env_vars.E2E_SERVICE_ACCOUNT))
-        E2E_SERVICE_ACCOUNT_TOKEN: ((.:accounts_env_vars.E2E_SERVICE_ACCOUNT_TOKEN))
-        CF_ADMIN_KEY: ((.:accounts_env_vars.CF_ADMIN_KEY))
-        CF_ADMIN_CERT: ((.:accounts_env_vars.CF_ADMIN_CERT))
+    - in_parallel:
+      - task: run-smoke-tests
+        file: korifi-ci/pipelines/tasks/run-smoke-tests.yml
+        image: ci-image
+        params:
+          CF_ADMIN_KEY: ((.:accounts_env_vars.CF_ADMIN_KEY))
+          CF_ADMIN_CERT: ((.:accounts_env_vars.CF_ADMIN_CERT))
+          SMOKE_TEST_USER: cf-admin
+          SMOKE_TEST_APPS_DOMAIN: pr-e2e.korifi.cf-app.com
+          SMOKE_TEST_APP_ROUTE_PROTOCOL: https
+          SMOKE_TEST_API_ENDPOINT: https://cf.pr-e2e.korifi.cf-app.com
+          SMOKE_TEST_SKIP_SSL: true
+
+      - task: run-e2e-tests
+        file: korifi-ci/pipelines/tasks/run-e2e-tests.yml
+        image: ci-image
+        params:
+          ROOT_NAMESPACE: cf
+          API_SERVER_ROOT: https://cf.pr-e2e.korifi.cf-app.com
+          APP_FQDN: pr-e2e.korifi.cf-app.com
+          E2E_USER_NAME: ((.:accounts_env_vars.E2E_USER_NAME))
+          E2E_USER_PEM: ((.:accounts_env_vars.E2E_USER_PEM))
+          E2E_SERVICE_ACCOUNT: ((.:accounts_env_vars.E2E_SERVICE_ACCOUNT))
+          E2E_SERVICE_ACCOUNT_TOKEN: ((.:accounts_env_vars.E2E_SERVICE_ACCOUNT_TOKEN))
+          CF_ADMIN_KEY: ((.:accounts_env_vars.CF_ADMIN_KEY))
+          CF_ADMIN_CERT: ((.:accounts_env_vars.CF_ADMIN_CERT))
 
   - put: korifi-status
     params:

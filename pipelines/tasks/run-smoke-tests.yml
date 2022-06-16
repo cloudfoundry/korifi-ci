@@ -1,0 +1,23 @@
+platform: linux
+
+caches:
+  - path: ../../../root/.cache/go-build
+  - path: ../../../go/pkg/mod
+
+inputs:
+- name: korifi-ci
+- name: korifi
+- name: kube
+
+params:
+  CF_ADMIN_KEY:
+  CF_ADMIN_CERT:
+  SMOKE_TEST_USER:
+  SMOKE_TEST_APPS_DOMAIN:
+  SMOKE_TEST_APP_ROUTE_PROTOCOL:
+  SMOKE_TEST_API_ENDPOINT:
+  SMOKE_TEST_SKIP_SSL:
+  KUBECONFIG: kube/kube.config
+
+run:
+  path: korifi-ci/pipelines/scripts/run-smoke-tests.sh
