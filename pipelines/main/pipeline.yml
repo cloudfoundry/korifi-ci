@@ -1,3 +1,25 @@
+common:
+  slack_hook: &slackHook
+    put: slack
+    params:
+      attachments: |2
+          [{
+              "color": "danger",
+              "actions": [
+                    {
+                      "type": "button",
+                      "text": "View in Concourse",
+                      "url": "https://ci.korifi.cf-app.com/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
+                    }
+              ]
+          }]
+      channel: '#korifi-ci'
+      text: |
+        Pipeline *$BUILD_PIPELINE_NAME* failed :cry:
+
+        Job is *$BUILD_JOB_NAME*
+        Build name is *$BUILD_NAME*
+
 groups:
 - name: main
   jobs:
@@ -29,25 +51,7 @@ jobs:
         statuses:
         - state: failure
           context: "Concourse - tests (main)"
-    - put: slack &slackHook
-      params:
-        attachments: |2
-            [{
-                "color": "danger",
-                "actions": [
-                      {
-                        "type": "button",
-                        "text": "View in Concourse",
-                        "url": "https://ci.korifi.cf-app.com/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
-                      }
-                ]
-            }]
-        channel: '#korifi-ci'
-        text: |
-          Pipeline *$BUILD_PIPELINE_NAME* failed :cry:
-
-          Job is *$BUILD_JOB_NAME*
-          Build name is *$BUILD_NAME*
+    - *slackHook
   plan:
   - in_parallel:
     - get: ci-image
