@@ -348,7 +348,9 @@ jobs:
     - get: golangci-lint-image
     - get: korifi
     - get: korifi-ci
-    - get: periodic-timer
+    - get: workdays-periodic-timer
+      trigger: true
+    - get: weekend-periodic-timer
       trigger: true
   - in_parallel: *unit-integration
 
@@ -365,7 +367,9 @@ jobs:
     - get: korifi-ci
     - get: korifi
     - get: cf-k8s-secrets
-    - get: periodic-timer
+    - get: workdays-periodic-timer
+      trigger: true
+    - get: weekend-periodic-timer
       trigger: true
   - do: *end-to-ends
   ensure: *clean-pr-e2e-env
@@ -543,10 +547,20 @@ resources:
     private_key: ((github/cf-k8s-secrets.private_key))
     uri: ((github/cf-k8s-secrets.uri))
 
-- name: periodic-timer
+- name: workdays-periodic-timer
   type: time
   source:
+    days: [Tuesday,Wednesday,Thursday,Friday,Saturday]
     interval: 20m
     start: 03:00 AM
-    stop: 09:00 AM
+    stop: 08:00 AM
+    location: Europe/London
+
+- name: weekend-periodic-timer
+  type: time
+  source:
+    days: [Saturday, Sunday]
+    interval: 20m
+    start: 09:00 AM
+    stop: 08:00 AM
     location: Europe/London

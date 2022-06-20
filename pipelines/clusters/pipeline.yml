@@ -141,8 +141,8 @@ resources:
   type: time
   icon: bomb
   source:
-    start: 6:00 AM
-    stop: 7:00 AM
+    start: 8:00 AM
+    stop: 9:00 AM
 
 - name: semver-event-pr-e2e
   type: semver
