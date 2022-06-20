@@ -555,6 +555,7 @@ resources:
     start: 03:00 AM
     stop: 08:00 AM
     location: Europe/London
+    initial_version: true
 
 - name: weekend-periodic-timer
   type: time
@@ -564,3 +565,4 @@ resources:
     start: 09:00 AM
     stop: 08:00 AM
     location: Europe/London
+    initial_version: true
