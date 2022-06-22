@@ -11,4 +11,5 @@ terraform -chdir="$TERRAFORM_CONFIG_PATH" init -backend-config="prefix=terraform
 terraform -chdir="$TERRAFORM_CONFIG_PATH" apply -var "name=$CLUSTER_NAME" \
   -var "node-count-per-zone=$WORKER_COUNT" \
   -var "release-channel=$RELEASE_CHANNEL" \
+  -var "node-machine-type=$NODE_MACHINE_TYPE" \
   -auto-approve

@@ -74,6 +74,7 @@ jobs:
     image: gcloud-image
     params:
       CLUSTER_NAME: pr-e2e
+      NODE_MACHINE_TYPE: e2-custom-2-6144
   on_failure: *slackHook
 
 - name: install-korifi-dependencies
