@@ -2,8 +2,6 @@ FROM golang:latest
 
 ARG GCLOUD_VERSION="390.0.0"
 ARG YQ_VERSION="v4.25.2"
-ARG KBLD_VERSION="v0.33.0"
-ARG KAPP_VERSION="v0.48.0"
 ARG BUILDKIT_CLI_VERSION="v0.1.5"
 ARG HELM_VERSION="v3.9.0"
 
@@ -64,11 +62,7 @@ ENV PATH="/usr/local/google-cloud-sdk/bin:${PATH}"
 RUN gcloud components install gke-gcloud-auth-plugin --quiet
 
 # carvel
-RUN curl -sL "https://github.com/vmware-tanzu/carvel-kapp/releases/download/${KAPP_VERSION}/kapp-linux-amd64" -o /usr/local/bin/kapp && \
-  chmod +x /usr/local/bin/kapp
-
-RUN curl -sL "https://github.com/vmware-tanzu/carvel-kbld/releases/download/${KBLD_VERSION}/kbld-linux-amd64" -o /usr/local/bin/kbld && \
-  chmod +x /usr/local/bin/kbld
+RUN curl -L https://k14s.io/install.sh | bash
 
 RUN curl -sL https://github.com/vmware-tanzu/buildkit-cli-for-kubectl/releases/download/${BUILDKIT_CLI_VERSION}/linux-${BUILDKIT_CLI_VERSION}.tgz | \
   tar -C /usr/local/bin -xzf -
