@@ -12,7 +12,7 @@ RUN apt-get update && \
       google-cloud-sdk-gke-gcloud-auth-plugin \
   && rm -rf /var/lib/apt/lists/*
 
-RUN curl -L https://k14s.io/install.sh | bash
+RUN curl -L https://carvel.dev/install.sh | bash
 
 RUN wget --quiet https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz && tar xfz helm-${HELM_VERSION}-linux-amd64.tar.gz && mv linux-amd64/helm /usr/bin/ && chmod +x /usr/bin/helm
 
