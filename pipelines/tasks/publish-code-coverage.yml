@@ -4,6 +4,7 @@ inputs:
 - name: coverage-api
 - name: coverage-controllers
 - name: coverage-kib
+- name: coverage-stset-runner
 - name: korifi
 - name: korifi-ci
 
