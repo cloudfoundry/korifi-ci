@@ -224,6 +224,7 @@ jobs:
           E2E_SERVICE_ACCOUNT_TOKEN: ((.:accounts_env_vars.E2E_SERVICE_ACCOUNT_TOKEN))
           CF_ADMIN_KEY: ((.:accounts_env_vars.CF_ADMIN_KEY))
           CF_ADMIN_CERT: ((.:accounts_env_vars.CF_ADMIN_CERT))
+          FULL_LOG_ON_ERR: yes-please
 
   - put: korifi-status
     params:

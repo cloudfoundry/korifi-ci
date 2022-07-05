@@ -15,6 +15,7 @@ params:
   GINKGO_NODES:
   ROOT_NAMESPACE:
   KUBECONFIG: kube/kube.config
+  FULL_LOG_ON_ERR:
 
 run:
   path: korifi-ci/pipelines/scripts/run-e2e-tests.sh
