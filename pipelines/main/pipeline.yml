@@ -143,6 +143,10 @@ jobs:
         - state: failure
           context: "Concourse - E2E (main)"
     - *slackHook
+    - task: get-contour-logs
+      file: korifi-ci/pipelines/tasks/get-contour-logs.yml
+      image: ci-image
+
   serial: true
   serial_groups:
   - pr-e2e
@@ -368,7 +372,11 @@ jobs:
 
 - name: run-e2es-periodic
   on_failure:
-    *slackHook
+    do:
+    - *slackHook
+    - task: get-contour-logs
+      file: korifi-ci/pipelines/tasks/get-contour-logs.yml
+      image: ci-image
   serial: true
   serial_groups:
   - pr-e2e

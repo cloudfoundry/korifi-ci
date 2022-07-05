@@ -1,0 +1,9 @@
+platform: linux
+
+params:
+  GCP_SERVICE_ACCOUNT_JSON: ((gcp-serviceaccount))
+  GCP_ZONE:
+  CLUSTER_NAME:
+
+run:
+  path: korifi-ci/pipelines/scripts/get-contour-logs.sh
