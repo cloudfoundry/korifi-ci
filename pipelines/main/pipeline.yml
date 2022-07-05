@@ -562,7 +562,6 @@ resources:
 - name: workdays-periodic-timer
   type: time
   source:
-    days: [Tuesday,Wednesday,Thursday,Friday,Saturday]
     interval: 20m
     start: 03:00 AM
     stop: 08:00 AM
@@ -574,7 +573,7 @@ resources:
   source:
     days: [Saturday, Sunday]
     interval: 20m
-    start: 09:30 AM
-    stop: 08:00 AM
+    start: 09:00 AM
+    stop: 11:59 PM
     location: Europe/London
     initial_version: true
