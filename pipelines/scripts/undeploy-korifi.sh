@@ -19,6 +19,7 @@ undeploy_cf() {
   kubectl delete subnamespaceanchor --ignore-not-found=true -n cf --all=true || true # HNC is about to be removed, so this will fail
   kubectl delete secret --ignore-not-found=true -n korifi-controllers-system korifi-workloads-ingress-cert
   kubectl delete secret --ignore-not-found=true -n korifi-api-system korifi-api-ingress-cert
+  kapp delete -y -a korifi-statefulset-runner
   kapp delete -y -a korifi-kpack-image-builder
   kapp delete -y -a korifi-controllers
   kapp delete -y -a korifi-api

@@ -21,6 +21,7 @@ update_config_with_version() {
   yq -i ".destinations[0].tags=[\"$VERSION\"]" "$KBLD_CONFIG_DIR/korifi-api-kbld.yml"
   yq -i ".destinations[0].tags=[\"$VERSION\"]" "$KBLD_CONFIG_DIR/korifi-controllers-kbld.yml"
   yq -i ".destinations[0].tags=[\"$VERSION\"]" "$KBLD_CONFIG_DIR/korifi-kpack-image-builder-kbld.yml"
+  yq -i ".destinations[0].tags=[\"$VERSION\"]" "$KBLD_CONFIG_DIR/korifi-statefulset-runner-kbld.yml"
 }
 
 create_release() {
@@ -29,6 +30,7 @@ create_release() {
     build-korifi-api >"$RELEASE_ARTIFACTS_DIR/korifi-api.yml"
     build-korifi-controllers >"$RELEASE_ARTIFACTS_DIR/korifi-controllers.yml"
     build-korifi-kpack-image-builder >"$RELEASE_ARTIFACTS_DIR/korifi-kpack-image-builder.yml"
+    build-korifi-statefulset-runner >"$RELEASE_ARTIFACTS_DIR/korifi-statefulset-runner.yml"
     cp -R dependencies "$RELEASE_ARTIFACTS_DIR"
     cp INSTALL.md "$RELEASE_ARTIFACTS_DIR"
   }

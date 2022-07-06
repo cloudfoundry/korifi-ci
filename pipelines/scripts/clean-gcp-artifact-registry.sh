@@ -28,7 +28,7 @@ main() {
 
   # delete versions of korifi images older than a day
   yesterday=$(date -d "yesterday" -Iseconds -u)
-  for package in korifi-api korifi-controllers korifi-kpack-image-builder; do
+  for package in korifi-api korifi-controllers korifi-kpack-image-builder korifi-statefulset-runner; do
     gcloudx artifacts docker images list ${CI_REPO_LOCATION}-docker.pkg.dev/${PROJECT}/${CI_REPO_NAME}/${package} --format=json --filter="createTime<${yesterday}" |
       jq -r '.[]|.package + "@" + .version' |
       xargs -I {} bash -c 'gcloudx "$@"' _ artifacts docker images delete {} --async --quiet --delete-tags
