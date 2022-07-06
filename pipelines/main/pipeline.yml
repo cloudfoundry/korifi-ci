@@ -322,6 +322,9 @@ jobs:
         context: " e2e-tests (pull_request)"
         status: failure
     - *slackHook
+    - task: get-contour-logs
+      file: korifi-ci/pipelines/tasks/get-contour-logs.yml
+      image: ci-image
   serial: true
   serial_groups:
   - pr-e2e
