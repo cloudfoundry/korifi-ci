@@ -20,6 +20,14 @@ common:
         Job is *$BUILD_JOB_NAME*
         Build name is *$BUILD_NAME*
 
+  contour_logs: &contourLogs
+    task: get-contour-logs
+    file: korifi-ci/pipelines/tasks/get-contour-logs.yml
+    image: ci-image
+    params:
+      CLUSTER_NAME: pr-e2e
+      GCP_ZONE: europe-west1-b
+
 groups:
 - name: main
   jobs:
@@ -143,9 +151,7 @@ jobs:
         - state: failure
           context: "Concourse - E2E (main)"
     - *slackHook
-    - task: get-contour-logs
-      file: korifi-ci/pipelines/tasks/get-contour-logs.yml
-      image: ci-image
+    - *contourLogs
 
   serial: true
   serial_groups:
@@ -322,9 +328,7 @@ jobs:
         context: " e2e-tests (pull_request)"
         status: failure
     - *slackHook
-    - task: get-contour-logs
-      file: korifi-ci/pipelines/tasks/get-contour-logs.yml
-      image: ci-image
+    - *contourLogs
   serial: true
   serial_groups:
   - pr-e2e
@@ -377,9 +381,7 @@ jobs:
   on_failure:
     do:
     - *slackHook
-    - task: get-contour-logs
-      file: korifi-ci/pipelines/tasks/get-contour-logs.yml
-      image: ci-image
+    - *contourLogs
   serial: true
   serial_groups:
   - pr-e2e
