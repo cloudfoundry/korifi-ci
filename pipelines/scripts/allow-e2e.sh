@@ -9,8 +9,8 @@ PR_AUTHOR="$(<pr-label/.git/resource/author)"
 team="$(curl -su ${KORIFI_BOT_NAME}:${KORIFI_BOT_TOKEN} ${API_URL}/orgs/${GITHUB_ORG}/teams/${GITHUB_TEAM}/members | jq -r '.[].login')"
 
 for user in $team; do
-  if [[ "$user" == "${PR_AUTHOR}" ]]; then
-    echo Allowing e2e run for team member "$user"
+  if [[ "$user" == "${PR_AUTHOR}" ]] || [[ "${PR_AUTHOR}" == "dependabot[bot]" ]]; then
+    echo Allowing e2e run for trusted user "$user"
     # note that PR labels are updated using the issues endpoint
     curl -XPOST \
       --silent \
