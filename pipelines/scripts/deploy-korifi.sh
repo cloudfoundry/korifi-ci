@@ -32,6 +32,8 @@ deploy_cf() {
 
     kubectl kustomize kpack-image-builder/config/overlays/pr-e2e | kbld -f ../korifi-ci/pipelines/main/assets/pr/korifi-kpack-image-builder-kbld.yml -f- | kapp deploy -y -a korifi-kpack-image-builder -f-
 
+    kubectl kustomize statefulset-runner/config/default | kbld -f ../korifi-ci/pipelines/main/assets/pr/korifi-statefulset-runner-kbld.yml -f- | kapp deploy -y -a korifi-statefulset-runner -f-
+
     sed 's/vcap\.me/'$CLUSTER_NAME.korifi.cf-app.com'/' controllers/config/samples/cfdomain.yaml | kubectl apply -f-
   }
   popd
