@@ -9,4 +9,4 @@ params:
   CLUSTER_NAME:
 
 run:
-  path: korifi-ci/pipelines/scripts/get-contour-logs.sh
+  path: korifi-ci/pipelines/scripts/get-envoy-logs.sh

@@ -17,7 +17,7 @@ generate_kube_config() {
 main() {
   export KUBECONFIG=$PWD/kube/kube.config
   generate_kube_config
-  kubectl -n projectcontour logs deployments/contour --all-containers=true --since 20m
+  kubectl -n projectcontour get pods -l app=envoy --no-headers -o custom-columns=":metadata.name" | xargs -I {} kubectl -n projectcontour logs --since 30m {} envoy
 }
 
 main

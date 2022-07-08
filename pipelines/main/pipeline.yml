@@ -20,9 +20,9 @@ common:
         Job is *$BUILD_JOB_NAME*
         Build name is *$BUILD_NAME*
 
-  contour_logs: &contourLogs
-    task: get-contour-logs
-    file: korifi-ci/pipelines/tasks/get-contour-logs.yml
+  envoy_logs: &envoyLogs
+    task: get-envoy-logs
+    file: korifi-ci/pipelines/tasks/get-envoy-logs.yml
     image: ci-image
     params:
       CLUSTER_NAME: pr-e2e
@@ -151,7 +151,7 @@ jobs:
         - state: failure
           context: "Concourse - E2E (main)"
     - *slackHook
-    - *contourLogs
+    - *envoyLogs
 
   serial: true
   serial_groups:
@@ -235,6 +235,7 @@ jobs:
           CF_ADMIN_KEY: ((.:accounts_env_vars.CF_ADMIN_KEY))
           CF_ADMIN_CERT: ((.:accounts_env_vars.CF_ADMIN_CERT))
           FULL_LOG_ON_ERR: yes-please
+          GINKGO_NODES: 8
 
   - put: korifi-status
     params:
@@ -328,7 +329,7 @@ jobs:
         context: " e2e-tests (pull_request)"
         status: failure
     - *slackHook
-    - *contourLogs
+    - *envoyLogs
   serial: true
   serial_groups:
   - pr-e2e
@@ -381,7 +382,7 @@ jobs:
   on_failure:
     do:
     - *slackHook
-    - *contourLogs
+    - *envoyLogs
   serial: true
   serial_groups:
   - pr-e2e
