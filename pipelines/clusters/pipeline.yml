@@ -153,6 +153,7 @@ jobs:
     image: ci-image
     params:
       CLUSTER_NAME: pr-e2e
+      GCP_ZONE: europe-west1-b
       KPACK_TAG: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/kpack/beta
       DOCKER_SERVER: europe-west1-docker.pkg.dev
       DOCKER_USERNAME: _json_key
