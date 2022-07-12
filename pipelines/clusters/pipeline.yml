@@ -46,16 +46,17 @@ jobs:
   serial_groups:
   - aceptance
   plan:
+  - in_parallel:
+    - get: gcloud-image
+    - get: korifi-ci
+    - get: ci-image
+    - get: cf-k8s-secrets
   - <<: *setClusterVars
     params:
       CLUSTER_NAME: acceptance
   - do: &deleteCluster
     - load_var: cluster-env-vars
       file: clusters/env_vars.yaml
-    - in_parallel:
-      - get: gcloud-image
-      - get: korifi-ci
-      - get: cf-k8s-secrets
     - task: delete-kubernetes-cluster
       privileged: true
       file: korifi-ci/pipelines/tasks/delete-cluster.yml
@@ -69,16 +70,17 @@ jobs:
   serial_groups:
   - acceptance
   plan:
+  - in_parallel:
+    - get: gcloud-image
+    - get: korifi-ci
+    - get: ci-image
+    - get: cf-k8s-secrets
   - <<: *setClusterVars
     params:
       CLUSTER_NAME: acceptance
   - do: &createCluster
     - load_var: cluster-env-vars
       file: clusters/env_vars.yaml
-    - in_parallel:
-      - get: gcloud-image
-      - get: korifi-ci
-      - get: cf-k8s-secrets
     - task: delete-disks
       file: korifi-ci/pipelines/tasks/delete-disks.yml
       image: gcloud-image
@@ -98,8 +100,13 @@ jobs:
   serial_groups:
   - clusters
   plan:
-  - get: delete-timer
-    trigger: true
+  - in_parallel:
+    - get: gcloud-image
+    - get: korifi-ci
+    - get: ci-image
+    - get: cf-k8s-secrets
+    - get: delete-timer
+      trigger: true
   - <<: *setClusterVars
     params:
       CLUSTER_NAME: pr-e2e
@@ -114,10 +121,15 @@ jobs:
   serial_groups:
   - clusters
   plan:
-  - get: semver-event-pr-e2e
-    passed:
-    - delete-cluster-pr-e2e
-    trigger: true
+  - in_parallel:
+    - get: gcloud-image
+    - get: korifi-ci
+    - get: ci-image
+    - get: cf-k8s-secrets
+    - get: semver-event-pr-e2e
+      passed:
+      - delete-cluster-pr-e2e
+      trigger: true
   - <<: *setClusterVars
     params:
       CLUSTER_NAME: pr-e2e
