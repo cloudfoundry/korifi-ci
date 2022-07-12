@@ -20,14 +20,79 @@ common:
         Job is *$BUILD_JOB_NAME*
         Build name is *$BUILD_NAME*
 
+  set_cluster_vars: &setClusterVars
+    task: set-cluster-env-vars
+    file: korifi-ci/pipelines/tasks/set-cluster-env-vars.yml
+    image: ci-image
+    params:
+      CLUSTER_NAME: undefined
+      NODE_MACHINE_TYPE: e2-custom-2-6144
+
+
 groups:
 - name: main
   jobs:
+  - create-cluster-acceptance
+  - delete-cluster-acceptance
   - create-cluster-pr-e2e
   - delete-cluster-pr-e2e
   - install-korifi-dependencies
 
 jobs:
+
+# ===== acceptance =====
+- name: delete-cluster-acceptance
+  serial: true
+  serial_groups:
+  - aceptance
+  plan:
+  - <<: *setClusterVars
+    params:
+      CLUSTER_NAME: acceptance
+  - do: &deleteCluster
+    - load_var: cluster-env-vars
+      file: clusters/env_vars.yaml
+    - in_parallel:
+      - get: gcloud-image
+      - get: korifi-ci
+      - get: cf-k8s-secrets
+    - task: delete-kubernetes-cluster
+      privileged: true
+      file: korifi-ci/pipelines/tasks/delete-cluster.yml
+      image: gcloud-image
+      params:
+        CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
+  on_failure: *slackHook
+
+- name: create-cluster-acceptance
+  serial: true
+  serial_groups:
+  - acceptance
+  plan:
+  - <<: *setClusterVars
+    params:
+      CLUSTER_NAME: acceptance
+  - do: &createCluster
+    - load_var: cluster-env-vars
+      file: clusters/env_vars.yaml
+    - in_parallel:
+      - get: gcloud-image
+      - get: korifi-ci
+      - get: cf-k8s-secrets
+    - task: delete-disks
+      file: korifi-ci/pipelines/tasks/delete-disks.yml
+      image: gcloud-image
+      params:
+        CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
+    - task: create-kubernetes-cluster
+      file: korifi-ci/pipelines/tasks/create-cluster.yml
+      image: gcloud-image
+      params:
+        CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
+        NODE_MACHINE_TYPE: ((.:cluster-env-vars.NODE_MACHINE_TYPE))
+  on_failure: *slackHook
+
+# ===== pr-e2e =====
 - name: delete-cluster-pr-e2e
   serial: true
   serial_groups:
@@ -35,16 +100,10 @@ jobs:
   plan:
   - get: delete-timer
     trigger: true
-  - in_parallel:
-    - get: gcloud-image
-    - get: korifi-ci
-    - get: cf-k8s-secrets
-  - task: delete-kubernetes-cluster
-    privileged: true
-    file: korifi-ci/pipelines/tasks/delete-cluster.yml
-    image: gcloud-image
+  - <<: *setClusterVars
     params:
       CLUSTER_NAME: pr-e2e
+  - do: *deleteCluster
   - put: semver-event-pr-e2e
     params:
       bump: major
@@ -55,26 +114,17 @@ jobs:
   serial_groups:
   - clusters
   plan:
-  - in_parallel:
-    - get: gcloud-image
-    - get: korifi-ci
-    - get: cf-k8s-secrets
-  - task: delete-disks
-    file: korifi-ci/pipelines/tasks/delete-disks.yml
-    image: gcloud-image
-  - put: semver-event-pr-e2e
-    params:
-      bump: major
   - get: semver-event-pr-e2e
     passed:
     - delete-cluster-pr-e2e
     trigger: true
-  - task: create-kubernetes-cluster
-    file: korifi-ci/pipelines/tasks/create-cluster.yml
-    image: gcloud-image
+  - <<: *setClusterVars
     params:
       CLUSTER_NAME: pr-e2e
-      NODE_MACHINE_TYPE: e2-custom-2-6144
+  - do: *createCluster
+  - put: semver-event-pr-e2e
+    params:
+      bump: major
   on_failure: *slackHook
 
 - name: install-korifi-dependencies
@@ -103,7 +153,10 @@ jobs:
     image: ci-image
     params:
       CLUSTER_NAME: pr-e2e
-      GCP_ZONE: europe-west1-b
+      KPACK_TAG: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/kpack/beta
+      DOCKER_SERVER: europe-west1-docker.pkg.dev
+      DOCKER_USERNAME: _json_key
+      DOCKER_PASSWORD: ((gcp-artifact-registry-writer))
   on_failure: *slackHook
 
 resource_types:
