@@ -8,6 +8,7 @@ outputs:
 
 params:
   CLUSTER_NAME:
+  PROPERTY:
 
 run:
   path: korifi-ci/pipelines/scripts/set-cluster-env-vars.sh
