@@ -8,7 +8,6 @@ outputs:
 
 params:
   CLUSTER_NAME:
-  NODE_MACHINE_TYPE:
 
 run:
   path: korifi-ci/pipelines/scripts/set-cluster-env-vars.sh

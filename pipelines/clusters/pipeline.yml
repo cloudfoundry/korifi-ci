@@ -31,7 +31,6 @@ common:
     image: ci-image
     params:
       CLUSTER_NAME: undefined
-      NODE_MACHINE_TYPE: e2-custom-3-6144
 
   trigger-on-cluster-event: &triggerOnClusterEvent
     get: cluster-event
@@ -104,7 +103,7 @@ jobs:
       image: gcloud-image
       params:
         CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
-        NODE_MACHINE_TYPE: ((.:cluster-env-vars.NODE_MACHINE_TYPE))
+        NODE_MACHINE_TYPE: e2-custom-3-6144
     - put: cluster-event
       params:
         bump: major
