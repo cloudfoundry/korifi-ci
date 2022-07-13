@@ -103,7 +103,7 @@ jobs:
       image: gcloud-image
       params:
         CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
-        NODE_MACHINE_TYPE: e2-custom-3-6144
+        NODE_MACHINE_TYPE: e2-custom-4-6144
     - put: cluster-event
       params:
         bump: major
