@@ -48,8 +48,11 @@ groups:
   - run-e2es-pr
 - name: periodics
   jobs:
-    - run-tests-periodic
-    - run-e2es-periodic
+  - run-tests-periodic
+  - run-e2es-periodic
+- name: acceptance
+  jobs:
+  - deploy-korifi-acceptance
 - name: release
   jobs:
   - bump-major-version
@@ -213,30 +216,31 @@ jobs:
           CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
           GCP_ZONE: europe-west1-b
 
-    - task: set-account-env-vars
-      file: korifi-ci/pipelines/tasks/set-account-env-vars.yml
-      image: ci-image
-      params:
-        CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
-        GCP_ZONE: europe-west1-b
-        ROOT_NAMESPACE: cf
-
-    - load_var: accounts_env_vars
-      file: accounts/env_vars.yaml
-
-    - in_parallel:
-      - task: run-smoke-tests
-        file: korifi-ci/pipelines/tasks/run-smoke-tests.yml
+    - do: &set-account-env-vars
+      - task: set-account-env-vars
+        file: korifi-ci/pipelines/tasks/set-account-env-vars.yml
         image: ci-image
         params:
-          CF_ADMIN_KEY: ((.:accounts_env_vars.CF_ADMIN_KEY))
-          CF_ADMIN_CERT: ((.:accounts_env_vars.CF_ADMIN_CERT))
-          SMOKE_TEST_USER: cf-admin
-          SMOKE_TEST_APPS_DOMAIN: ((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
-          SMOKE_TEST_APP_ROUTE_PROTOCOL: https
-          SMOKE_TEST_API_ENDPOINT: https://cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
-          SMOKE_TEST_SKIP_SSL: true
+          CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
+          GCP_ZONE: europe-west1-b
+          ROOT_NAMESPACE: cf
 
+      - load_var: accounts_env_vars
+        file: accounts/env_vars.yaml
+
+    - in_parallel:
+      - do: &smoke-tests
+        - task: run-smoke-tests
+          file: korifi-ci/pipelines/tasks/run-smoke-tests.yml
+          image: ci-image
+          params:
+            CF_ADMIN_KEY: ((.:accounts_env_vars.CF_ADMIN_KEY))
+            CF_ADMIN_CERT: ((.:accounts_env_vars.CF_ADMIN_CERT))
+            SMOKE_TEST_USER: cf-admin
+            SMOKE_TEST_APPS_DOMAIN: ((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
+            SMOKE_TEST_APP_ROUTE_PROTOCOL: https
+            SMOKE_TEST_API_ENDPOINT: https://cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
+            SMOKE_TEST_SKIP_SSL: true
       - task: run-e2e-tests
         file: korifi-ci/pipelines/tasks/run-e2e-tests.yml
         image: ci-image
@@ -382,6 +386,34 @@ jobs:
       status: success
 
   ensure: *clean-pr-e2e-env
+
+# ===== acceptance =====
+- name: deploy-korifi-acceptance
+  on_failure:
+    *slackHook
+  serial: true
+  serial_groups:
+  - acceptance
+  plan:
+  - in_parallel:
+    - get: korifi
+      trigger: true
+      passed:
+      - run-e2es-main
+    - get: korifi-ci
+    - get: ci-image
+    - get: cf-k8s-secrets
+    - get: gcloud-image
+
+  - <<: *setClusterVars
+    params:
+      CLUSTER_NAME: acceptance
+      PROPERTY: acceptance_ip
+
+  - do: *deploy-korifi
+  - do: *set-account-env-vars
+  - do: *smoke-tests
+
 
 # ===== periodics =====
 - name: run-tests-periodic
