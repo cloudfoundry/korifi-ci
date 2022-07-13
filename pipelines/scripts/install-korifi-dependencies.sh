@@ -11,7 +11,7 @@ export GOOGLE_APPLICATION_CREDENTIALS="$PWD/service-account.json"
 gcloud-login
 export-kubeconfig "$CLUSTER_NAME"
 
-ip_addr="$(<terraform-output/pr_e2e_ip)"
+ip_addr="$(<terraform-output/result)"
 pushd korifi
 {
   ./scripts/install-dependencies.sh
