@@ -33,6 +33,10 @@ common:
       CLUSTER_NAME: undefined
       NODE_MACHINE_TYPE: e2-custom-3-6144
 
+  trigger-on-cluster-event: &triggerOnClusterEvent
+    get: cluster-event
+    trigger: true
+
 
 groups:
 - name: main
@@ -67,6 +71,9 @@ jobs:
       image: gcloud-image
       params:
         CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
+    - put: cluster-event
+      params:
+        bump: major
   on_failure: *slackHook
 
 - name: create-cluster-acceptance
@@ -74,6 +81,9 @@ jobs:
   serial_groups:
   - acceptance
   plan:
+  - <<: *triggerOnClusterEvent
+    passed:
+    - delete-cluster-acceptance
   - <<: *setClusterVarsInputs
   - <<: *setClusterVars
     params:
@@ -95,6 +105,9 @@ jobs:
       params:
         CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
         NODE_MACHINE_TYPE: ((.:cluster-env-vars.NODE_MACHINE_TYPE))
+    - put: cluster-event
+      params:
+        bump: major
   on_failure: *slackHook
 
 # ===== pr-e2e =====
@@ -110,9 +123,6 @@ jobs:
     params:
       CLUSTER_NAME: pr-e2e
   - do: *deleteCluster
-  - put: semver-event-pr-e2e
-    params:
-      bump: major
   on_failure: *slackHook
 
 - name: create-cluster-pr-e2e
@@ -120,18 +130,14 @@ jobs:
   serial_groups:
   - clusters
   plan:
-  - get: semver-event-pr-e2e
+  - <<: *triggerOnClusterEvent
     passed:
     - delete-cluster-pr-e2e
-    trigger: true
   - <<: *setClusterVarsInputs
   - <<: *setClusterVars
     params:
       CLUSTER_NAME: pr-e2e
   - do: *createCluster
-  - put: semver-event-pr-e2e
-    params:
-      bump: major
   on_failure: *slackHook
 
 - name: install-korifi-dependencies
@@ -139,16 +145,15 @@ jobs:
   serial_groups:
   - clusters
   plan:
+  - <<: *triggerOnClusterEvent
+    passed:
+    - create-cluster-pr-e2e
   - in_parallel:
     - get: ci-image
     - get: gcloud-image
     - get: korifi-ci
     - get: cf-k8s-secrets
     - get: korifi
-  - get: semver-event-pr-e2e
-    passed:
-    - create-cluster-pr-e2e
-    trigger: true
   - task: get-ip-addr
     file: korifi-ci/pipelines/tasks/get-terraform-property.yml
     image: gcloud-image
@@ -206,14 +211,14 @@ resources:
     start: 8:00 AM
     stop: 9:00 AM
 
-- name: semver-event-pr-e2e
+- name: cluster-event
   type: semver
   icon: check-decagram
   source:
     uri: ((github/cf-k8s-secrets.uri))
     branch: events
     driver: git
-    file: semver-event-pr-e2e
+    file: cluster-event
     initial_version: 0.1.0
     private_key: ((github/cf-k8s-secrets.private_key))
 
