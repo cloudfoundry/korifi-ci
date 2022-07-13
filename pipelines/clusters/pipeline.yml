@@ -20,6 +20,11 @@ common:
         Job is *$BUILD_JOB_NAME*
         Build name is *$BUILD_NAME*
 
+  set_cluster_vars_inputs: &setClusterVarsInputs
+    in_parallel:
+    - get: korifi-ci
+    - get: ci-image
+
   set_cluster_vars: &setClusterVars
     task: set-cluster-env-vars
     file: korifi-ci/pipelines/tasks/set-cluster-env-vars.yml
@@ -46,15 +51,14 @@ jobs:
   serial_groups:
   - aceptance
   plan:
-  - in_parallel:
-    - get: gcloud-image
-    - get: korifi-ci
-    - get: ci-image
-    - get: cf-k8s-secrets
+  - <<: *setClusterVarsInputs
   - <<: *setClusterVars
     params:
       CLUSTER_NAME: acceptance
   - do: &deleteCluster
+    - in_parallel:
+      - get: gcloud-image
+      - get: cf-k8s-secrets
     - load_var: cluster-env-vars
       file: clusters/env_vars.yaml
     - task: delete-kubernetes-cluster
@@ -70,15 +74,14 @@ jobs:
   serial_groups:
   - acceptance
   plan:
-  - in_parallel:
-    - get: gcloud-image
-    - get: korifi-ci
-    - get: ci-image
-    - get: cf-k8s-secrets
+  - <<: *setClusterVarsInputs
   - <<: *setClusterVars
     params:
       CLUSTER_NAME: acceptance
   - do: &createCluster
+    - in_parallel:
+      - get: gcloud-image
+      - get: cf-k8s-secrets
     - load_var: cluster-env-vars
       file: clusters/env_vars.yaml
     - task: delete-disks
@@ -100,13 +103,9 @@ jobs:
   serial_groups:
   - clusters
   plan:
-  - in_parallel:
-    - get: gcloud-image
-    - get: korifi-ci
-    - get: ci-image
-    - get: cf-k8s-secrets
-    - get: delete-timer
-      trigger: true
+  - get: delete-timer
+    trigger: true
+  - <<: *setClusterVarsInputs
   - <<: *setClusterVars
     params:
       CLUSTER_NAME: pr-e2e
@@ -121,15 +120,11 @@ jobs:
   serial_groups:
   - clusters
   plan:
-  - in_parallel:
-    - get: gcloud-image
-    - get: korifi-ci
-    - get: ci-image
-    - get: cf-k8s-secrets
-    - get: semver-event-pr-e2e
-      passed:
-      - delete-cluster-pr-e2e
-      trigger: true
+  - get: semver-event-pr-e2e
+    passed:
+    - delete-cluster-pr-e2e
+    trigger: true
+  - <<: *setClusterVarsInputs
   - <<: *setClusterVars
     params:
       CLUSTER_NAME: pr-e2e
