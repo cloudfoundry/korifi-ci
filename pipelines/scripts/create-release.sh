@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-KBLD_CONFIG_DIR="$PWD/korifi-ci/pipelines/main/assets/release"
+KBLD_CONFIG_DIR="$PWD/korifi-ci/build/kbld/release"
 RELEASE_OUTPUT_DIR="$PWD/release-output"
 VERSION=$(cat korifi-release-version/version)
 RELEASE_ARTIFACTS_DIR="$RELEASE_OUTPUT_DIR/korifi-$VERSION"
