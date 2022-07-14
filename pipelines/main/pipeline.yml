@@ -207,6 +207,10 @@ jobs:
         params:
           CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
           GCP_ZONE: europe-west1-b
+          KPACK_TAG: europe-west1-docker.pkg.dev/cf-on-k8s-wg/((.:cluster-env-vars.CLUSTER_NAME))-images/kpack/beta
+          DOCKER_SERVER: europe-west1-docker.pkg.dev
+          DOCKER_USERNAME: _json_key
+          DOCKER_PASSWORD: ((gcp-artifact-registry-writer))
 
       - task: deploy-korifi
         privileged: true
