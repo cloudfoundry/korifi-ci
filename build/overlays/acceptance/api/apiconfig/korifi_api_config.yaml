@@ -1,4 +1,4 @@
-externalFQDN: cf.pr-e2e.korifi.cf-app.com
+externalFQDN: cf.acceptance.korifi.cf-app.com
 internalPort: 9000
 
 rootNamespace: cf
@@ -10,4 +10,4 @@ defaultLifecycleConfig:
 packageRegistryBase: europe-west1-docker.pkg.dev/cf-on-k8s-wg/acceptance-images
 packageRegistrySecretName: image-registry-credentials # Create this secret in the rootNamespace
 authEnabled: true
-defaultDomainName: pr-e2e.korifi.cf-app.com
+defaultDomainName: acceptance.korifi.cf-app.com
