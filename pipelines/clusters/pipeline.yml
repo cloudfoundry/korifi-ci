@@ -44,7 +44,6 @@ groups:
   - delete-cluster-acceptance
   - create-cluster-pr-e2e
   - delete-cluster-pr-e2e
-  - install-korifi-dependencies
 
 jobs:
 
@@ -139,38 +138,6 @@ jobs:
   - do: *createCluster
   on_failure: *slackHook
 
-- name: install-korifi-dependencies
-  serial: true
-  serial_groups:
-  - clusters
-  plan:
-  - <<: *triggerOnClusterEvent
-    passed:
-    - create-cluster-pr-e2e
-  - in_parallel:
-    - get: ci-image
-    - get: gcloud-image
-    - get: korifi-ci
-    - get: cf-k8s-secrets
-    - get: korifi
-  - task: get-ip-addr
-    file: korifi-ci/pipelines/tasks/get-terraform-property.yml
-    image: gcloud-image
-    params:
-      CLUSTER_NAME: pr-e2e
-      PROPERTY: pr_e2e_ip
-  - task: install-korifi-dependencies
-    file: korifi-ci/pipelines/tasks/install-korifi-dependencies.yml
-    image: ci-image
-    params:
-      CLUSTER_NAME: pr-e2e
-      GCP_ZONE: europe-west1-b
-      KPACK_TAG: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/kpack/beta
-      DOCKER_SERVER: europe-west1-docker.pkg.dev
-      DOCKER_USERNAME: _json_key
-      DOCKER_PASSWORD: ((gcp-artifact-registry-writer))
-  on_failure: *slackHook
-
 resource_types:
 - name: slack-notification
   type: registry-image
@@ -195,13 +162,6 @@ resources:
     uri: ((github/cf-k8s-secrets.uri))
     branch: main
     private_key: ((github/cf-k8s-secrets.private_key))
-
-- name: korifi
-  type: git
-  icon: git
-  source:
-    uri: https://github.com/cloudfoundry/korifi.git
-    branch: main
 
 - name: delete-timer
   type: time
