@@ -54,7 +54,7 @@ jobs:
   serial_groups:
   - aceptance
   plan:
-  - <<: *setClusterVarsInputs
+  - *setClusterVarsInputs
   - <<: *setClusterVars
     params:
       CLUSTER_NAME: acceptance
@@ -83,7 +83,7 @@ jobs:
   - <<: *triggerOnClusterEvent
     passed:
     - delete-cluster-acceptance
-  - <<: *setClusterVarsInputs
+  - *setClusterVarsInputs
   - <<: *setClusterVars
     params:
       CLUSTER_NAME: acceptance
@@ -117,7 +117,7 @@ jobs:
   plan:
   - get: delete-timer
     trigger: true
-  - <<: *setClusterVarsInputs
+  - *setClusterVarsInputs
   - <<: *setClusterVars
     params:
       CLUSTER_NAME: pr-e2e
@@ -132,7 +132,7 @@ jobs:
   - <<: *triggerOnClusterEvent
     passed:
     - delete-cluster-pr-e2e
-  - <<: *setClusterVarsInputs
+  - *setClusterVarsInputs
   - <<: *setClusterVars
     params:
       CLUSTER_NAME: pr-e2e
