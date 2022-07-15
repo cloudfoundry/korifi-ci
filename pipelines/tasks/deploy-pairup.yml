@@ -1,0 +1,15 @@
+platform: linux
+
+inputs:
+- name: pairup
+- name: korifi-ci
+
+params:
+  GCP_SERVICE_ACCOUNT_JSON: ((gcp-serviceaccount))
+  CF_ADMIN_KEY:
+  CF_ADMIN_CERT:
+  CF_API_URL:
+  FIREBASE_CONF:
+
+run:
+  path: korifi-ci/pipelines/scripts/deploy-pairup.sh

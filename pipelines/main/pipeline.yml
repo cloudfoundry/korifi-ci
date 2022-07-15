@@ -422,6 +422,27 @@ jobs:
   - do: *set-account-env-vars
   - do: *smoke-tests
 
+- name: deploy-pairup
+  on_failure:
+    *slackHook
+  serial: true
+  serial_groups:
+  - acceptance
+  plan:
+  - in_parallel:
+    - get: korifi-ci
+      trigger: true
+      passed:
+        - deploy-korifi-acceptance
+    - get: pairup
+  - task: deploy-pairup
+    file: korifi-ci/pipelines/tasks/deploy-pairup.yml
+    image: ci-image
+    params:
+      CF_ADMIN_KEY: ((.:accounts_env_vars.CF_ADMIN_KEY))
+      CF_ADMIN_CERT: ((.:accounts_env_vars.CF_ADMIN_CERT))
+      CF_API_URL: cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
+      FIREBASE_CONF: ((acceptance/pairup.config))
 
 # ===== periodics =====
 - name: run-tests-periodic
@@ -601,6 +622,13 @@ resources:
   icon: git
   source:
     uri: https://github.com/cloudfoundry/korifi.git
+    branch: main
+
+- name: pairup
+  type: git
+  icon: git
+  source:
+    uri: https://github.com/eirini-forks/pairup.git
     branch: main
 
 - name: korifi-status
