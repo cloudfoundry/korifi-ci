@@ -432,9 +432,6 @@ jobs:
   plan:
   - in_parallel:
     - get: korifi-ci
-      trigger: true
-      passed:
-        - deploy-korifi-acceptance
     - get: pairup
   - task: deploy-pairup
     file: korifi-ci/pipelines/tasks/deploy-pairup.yml
@@ -630,7 +627,7 @@ resources:
   icon: git
   source:
     uri: https://github.com/eirini-forks/pairup.git
-    branch: main
+    branch: master
 
 - name: korifi-status
   type: github-status
