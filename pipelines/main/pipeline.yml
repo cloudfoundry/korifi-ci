@@ -53,6 +53,7 @@ groups:
 - name: acceptance
   jobs:
   - deploy-korifi-acceptance
+  - deploy-pairup
 - name: release
   jobs:
   - bump-major-version
