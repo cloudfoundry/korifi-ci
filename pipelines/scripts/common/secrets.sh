@@ -1,6 +1,16 @@
 CERT_MANAGER_NAMESPACE=cert-manager
 WILDCARD_CERT_NAME=cluster-wildcard-cert
 
+function clone_letsencrypt_cert() {
+  local secret_name=${1:?}
+  local secret_namespace=${2:?}
+
+  kubectl -n "$CERT_MANAGER_NAMESPACE" get secret "$WILDCARD_CERT_NAME" -o yaml |
+    yq 'del( .metadata.resourceVersion, .metadata.uid, .metadata.creationTimestamp, .metadata.selfLink, .metadata.namespace )' |
+    yq ".metadata.name = \"$secret_name\"" |
+    kubectl apply --namespace="$secret_namespace" -f -
+}
+
 function create_tls_secret() {
   local secret_name=${1:?}
   local secret_namespace=${2:?}
@@ -84,6 +94,6 @@ spec:
     name: letsencrypt
 EOF
 
-    kubectl -n "$CERT_MANAGER_NAMESPACE" wait --for=condition=Ready "certificate/$WILDCARD_CERT_NAME"
+    kubectl -n "$CERT_MANAGER_NAMESPACE" wait --for=condition=Ready=True "certificate/$WILDCARD_CERT_NAME"
   fi
 }

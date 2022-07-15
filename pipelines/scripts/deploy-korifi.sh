@@ -25,10 +25,18 @@ deploy_cf() {
   pushd korifi
   {
     kubectl kustomize "../korifi-ci/build/overlays/$CLUSTER_NAME/controllers" | kbld -f "../korifi-ci/build/kbld/$CLUSTER_NAME/korifi-controllers-kbld.yml" -f- | kapp deploy -y -a korifi-controllers -f-
-    create_tls_secret "korifi-workloads-ingress-cert" "korifi-controllers-system" "*.$CLUSTER_NAME.korifi.cf-app.com"
+    if [[ -n "$USE_LETSENCRYPT" ]]; then
+      clone_letsencrypt_cert "korifi-workloads-ingress-cert" "korifi-controllers-system"
+    else
+      create_tls_secret "korifi-workloads-ingress-cert" "korifi-controllers-system" "*.$CLUSTER_NAME.korifi.cf-app.com"
+    fi
 
     kubectl kustomize "../korifi-ci/build/overlays/$CLUSTER_NAME/api" | kbld -f "../korifi-ci/build/kbld/$CLUSTER_NAME/korifi-api-kbld.yml" -f- | kapp deploy -y -a korifi-api -f-
-    create_tls_secret "korifi-api-ingress-cert" "korifi-api-system" "*.$CLUSTER_NAME.korifi.cf-app.com"
+    if [[ -n "$USE_LETSENCRYPT" ]]; then
+      clone_letsencrypt_cert "korifi-api-ingress-cert" "korifi-api-system"
+    else
+      create_tls_secret "korifi-api-ingress-cert" "korifi-api-system" "*.$CLUSTER_NAME.korifi.cf-app.com"
+    fi
 
     kubectl kustomize "../korifi-ci/build/overlays/$CLUSTER_NAME/kpack-image-builder" | kbld -f "../korifi-ci/build/kbld/$CLUSTER_NAME/korifi-kpack-image-builder-kbld.yml" -f- | kapp deploy -y -a korifi-kpack-image-builder -f-
 

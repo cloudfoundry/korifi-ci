@@ -16,6 +16,7 @@ params:
   GCP_SERVICE_ACCOUNT_JSON: ((gcp-serviceaccount))
   GCP_ZONE:
   CLUSTER_NAME:
+  USE_LETSENCRYPT:
 
 run:
   path: korifi-ci/pipelines/scripts/deploy-korifi.sh
