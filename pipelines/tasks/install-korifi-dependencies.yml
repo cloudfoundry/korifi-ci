@@ -8,9 +8,12 @@ params:
   DOCKER_SERVER:
   DOCKER_USERNAME:
   DOCKER_PASSWORD:
+  GCP_PROJECT_ID:
   CLUSTER_NAME:
   GCP_ZONE:
   GCP_SERVICE_ACCOUNT_JSON: ((gcp-serviceaccount))
   DEP_DIR:
+  USE_LETSENCRYPT:
+  DNS_SERVICE_ACCOUNT_JSON: ((gcp/ci-dns-admin.key))
 run:
   path: korifi-ci/pipelines/scripts/install-korifi-dependencies.sh

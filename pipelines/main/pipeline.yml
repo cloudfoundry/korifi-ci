@@ -206,6 +206,7 @@ jobs:
         image: ci-image
         params:
           CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
+          GCP_PROJECT_ID: cf-on-k8s-wg
           GCP_ZONE: europe-west1-b
           KPACK_TAG: europe-west1-docker.pkg.dev/cf-on-k8s-wg/((.:cluster-env-vars.CLUSTER_NAME))-images/kpack/beta
           DOCKER_SERVER: europe-west1-docker.pkg.dev
