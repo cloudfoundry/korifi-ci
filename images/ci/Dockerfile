@@ -74,3 +74,8 @@ RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg >/u
 
 RUN curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 -o /usr/local/bin/cc-test-reporter && \
   chmod +x /usr/local/bin/cc-test-reporter
+
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add - \
+  && echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list \
+  && sudo apt update \
+  && sudo apt install -y yarn
