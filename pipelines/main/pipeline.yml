@@ -212,6 +212,7 @@ jobs:
           DOCKER_SERVER: europe-west1-docker.pkg.dev
           DOCKER_USERNAME: _json_key
           DOCKER_PASSWORD: ((gcp-artifact-registry-writer))
+          USE_LETSENCRYPT: ((.:cluster-env-vars.USE_LETSENCRYPT))
 
       - task: deploy-korifi
         privileged: true
@@ -414,6 +415,7 @@ jobs:
     params:
       CLUSTER_NAME: acceptance
       PROPERTY: acceptance_ip
+      USE_LETSENCRYPT: true
 
   - do: *deploy-korifi
   - do: *set-account-env-vars
