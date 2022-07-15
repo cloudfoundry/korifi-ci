@@ -431,8 +431,19 @@ jobs:
   - acceptance
   plan:
   - in_parallel:
+    - get: ci-image
+    - get: korifi
     - get: korifi-ci
     - get: pairup
+      trigger: true
+
+  - <<: *setClusterVars
+    params:
+      CLUSTER_NAME: acceptance
+  - load_var: cluster-env-vars
+    file: clusters/env_vars.yaml
+  - do: *set-account-env-vars
+
   - task: deploy-pairup
     file: korifi-ci/pipelines/tasks/deploy-pairup.yml
     image: ci-image
@@ -441,6 +452,8 @@ jobs:
       CF_ADMIN_CERT: ((.:accounts_env_vars.CF_ADMIN_CERT))
       CF_API_URL: cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
       FIREBASE_CONF: ((acceptance/pairup.config))
+      CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
+      GCP_ZONE: europe-west1-b
 
 # ===== periodics =====
 - name: run-tests-periodic

@@ -7,7 +7,7 @@ source korifi-ci/pipelines/scripts/common/gcloud-functions
 gcloud-login
 export-kubeconfig "$CLUSTER_NAME"
 
-kubectl config set-credentials "$SMOKE_TEST_USER" \
+kubectl config set-credentials cf-admin \
   --client-certificate=<(base64 -d <<<"$CF_ADMIN_CERT") \
   --client-key=<(base64 -d <<<"$CF_ADMIN_KEY") \
   --embed-certs
