@@ -35,7 +35,15 @@ applications:
     SECRET_KEY_BASE: ((secret-key-base))
     ACTION_CABLE_HOST: postfacto.((domain))
     USE_POSTGRES_FOR_ACTION_CABLE: true
-    RAILS_ENV: production
+EOF
+
+cat <<EOF >>postfacto/package/assets/config/database.yml
+
+production:
+  adapter: postgresql
+  encoding: unicode
+  database: postfacto
+  pool: 5
 EOF
 
 sed -i "34i gem 'mini_racer'" postfacto/package/assets/Gemfile
