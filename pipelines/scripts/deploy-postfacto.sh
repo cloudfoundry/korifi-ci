@@ -51,7 +51,7 @@ applications:
     DATABASE_URL: postgres://((postgres-user)):((postgres-password))@((postgres-address)):5432/postfacto
     SECRET_KEY_BASE: ((secret-key-base))
     ACTION_CABLE_HOST: postfacto.((domain))
-    USE_POSTGRES_FOR_ACTION_CABLE=true
+    USE_POSTGRES_FOR_ACTION_CABLE: true
 EOF
 
 sed -i "34i gem 'mini_racer'" postfacto/package/assets/Gemfile
