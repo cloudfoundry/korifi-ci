@@ -19,24 +19,7 @@ cf create-space -o postfacto postfacto
 cf target -o postfacto -s postfacto
 
 unzip postfacto/package.zip -d postfacto/
-cat <<EOF >postfacto/package/assets/client/config.js
-window.Retro = {
-  config: {
-    "globalNamespace": "Retro",
-    "title": "Postfacto",
-    "scripts": ["application.js"],
-    "stylesheets": ["application.css"],
-    "useRevManifest": true,
-    "api_base_url": "/api",
-    "websocket_url": "/cable",
-    "websocket_port": 443,
-    "enable_analytics": false,
-    "contact": "",
-    "terms": "",
-    "privacy": ""
-  }
-}
-EOF
+cp postfacto/package/tas/config/config.js postfacto/package/assets/client/
 
 cat <<EOF >manifest.yml
 applications:
@@ -48,7 +31,7 @@ applications:
   env:
     WEBSOCKET_PORT: 443
     SESSION_TIME: 60
-    DATABASE_URL: postgres://((postgres-user)):((postgres-password))@((postgres-address)):5432/postfacto
+    DATABASE_URL: postgresql://((postgres-user)):((postgres-password))@((postgres-address)):5432/postfacto
     SECRET_KEY_BASE: ((secret-key-base))
     ACTION_CABLE_HOST: postfacto.((domain))
     USE_POSTGRES_FOR_ACTION_CABLE: true
