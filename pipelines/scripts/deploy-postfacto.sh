@@ -41,6 +41,11 @@ sed -i "34i gem 'mini_racer'" postfacto/package/assets/Gemfile
 sed -i "s/ruby '2.7.3'/ruby '2.7.5'/" postfacto/package/assets/Gemfile
 # sed -i "328i \ \ x86_64-linux" postfacto/package/assets/Gemfile.lock
 rm postfacto/package/assets/Gemfile.lock
+mkdir postfacto/package/assets/.bundle
+cat <<EOF >postfacto/package/assets/.bundle
+---
+BUNDLE_WITHOUT: "development"
+EOF
 
 cf push -f manifest.yml \
   -p postfacto/package/assets \
