@@ -31,7 +31,7 @@ applications:
   env:
     WEBSOCKET_PORT: 443
     SESSION_TIME: 60
-    DATABASE_URL: postgresql://((postgres-user)):((postgres-password))@((postgres-address)):5432/postfacto
+    DATABASE_URL: postgres://((postgres-user)):((postgres-password))@((postgres-address)):5432/postfacto
     SECRET_KEY_BASE: ((secret-key-base))
     ACTION_CABLE_HOST: postfacto.((domain))
     USE_POSTGRES_FOR_ACTION_CABLE: true
