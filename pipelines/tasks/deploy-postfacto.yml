@@ -1,0 +1,18 @@
+platform: linux
+
+inputs:
+- name: postfacto
+- name: korifi-ci
+
+params:
+  GCP_SERVICE_ACCOUNT_JSON: ((gcp-serviceaccount))
+  CF_ADMIN_KEY:
+  CF_ADMIN_CERT:
+  CF_API_URL:
+  POSTGRES_ADDRESS: ((acceptance/postfacto.postgresAddr))
+  POSTGRES_USER: ((acceptance/postfacto.postgresUser))
+  POSTGRES_PASSWORD: ((acceptance/postfacto.postgresPassword))
+  SECRET_KEY_BASE: ((acceptance/postfacto.secretKeyBase))
+
+run:
+  path: korifi-ci/pipelines/scripts/deploy-postfacto.sh

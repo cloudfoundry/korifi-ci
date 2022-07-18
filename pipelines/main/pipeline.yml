@@ -54,6 +54,7 @@ groups:
   jobs:
   - deploy-korifi-acceptance
   - deploy-pairup
+  - deploy-postfacto
 - name: release
   jobs:
   - bump-major-version
@@ -455,6 +456,37 @@ jobs:
       CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
       GCP_ZONE: europe-west1-b
 
+- name: deploy-postfacto
+  on_failure:
+    *slackHook
+  serial: true
+  serial_groups:
+  - acceptance
+  plan:
+  - in_parallel:
+    - get: ci-image
+    - get: korifi
+    - get: korifi-ci
+    - get: postfacto
+      trigger: true
+
+  - <<: *setClusterVars
+    params:
+      CLUSTER_NAME: acceptance
+  - load_var: cluster-env-vars
+    file: clusters/env_vars.yaml
+  - do: *set-account-env-vars
+
+  - task: deploy-postfacto
+    file: korifi-ci/pipelines/tasks/deploy-postfacto.yml
+    image: ci-image
+    params:
+      CF_ADMIN_KEY: ((.:accounts_env_vars.CF_ADMIN_KEY))
+      CF_ADMIN_CERT: ((.:accounts_env_vars.CF_ADMIN_CERT))
+      CF_API_URL: cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
+      CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
+      GCP_ZONE: europe-west1-b
+
 # ===== periodics =====
 - name: run-tests-periodic
   on_failure:
@@ -641,6 +673,17 @@ resources:
   source:
     uri: https://github.com/eirini-forks/pairup.git
     branch: master
+
+- name: postfacto
+  type: github-release
+  icon: egg-easter
+  check_every: 12h0m0s
+  source:
+    access_token: ((github/korifi-bot-token))
+    owner: pivotal
+    globs: package.zip
+    repository: postfacto
+
 
 - name: korifi-status
   type: github-status
