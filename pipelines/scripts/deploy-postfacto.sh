@@ -44,7 +44,7 @@ applications:
   disk_quota: 1G
   instances: 2
   memory: 1G
-  command: 'sh -c "bundle exec rake db:migrate && bundle exec rails s -p $PORT -e $RAILS_ENV"'
+  command: 'sh -c "bundle exec rake db:migrate && bundle exec rails s -p \$PORT -e \$RAILS_ENV"'
   env:
     WEBSOCKET_PORT: 443
     SESSION_TIME: 60
