@@ -35,6 +35,8 @@ applications:
     SECRET_KEY_BASE: ((secret-key-base))
     ACTION_CABLE_HOST: postfacto.((domain))
     USE_POSTGRES_FOR_ACTION_CABLE: true
+    ADMIN_EMAIL: ((admin-email))
+    ADMIN_PASSWORD: ((admin-password))
 EOF
 
 sed -i "s/ruby '2.7.3'/ruby '2.7.5'/" postfacto/package/assets/Gemfile
@@ -56,6 +58,8 @@ cf push -f manifest.yml \
   --var postgres-address="$POSTGRES_ADDRESS" \
   --var postgres-user="$POSTGRES_USER" \
   --var postgres-password="$POSTGRES_PASSWORD" \
-  --var secret-key-base="$SECRET_KEY_BASE"
+  --var secret-key-base="$SECRET_KEY_BASE" \
+  --var admin-email="$ADMIN_EMAIL" \
+  --var admin-password="$ADMIN_PASSWORD"
 
-cf run-task postfacto -c "bash -c ADMIN_EMAIL=$ADMIN_EMAIL ADMIN_PASSWORD=$ADMIN_PASSWORD rake admin:create_user"
+cf run-task postfacto -c "rake admin:create_user"
