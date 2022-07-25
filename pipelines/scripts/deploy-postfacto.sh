@@ -37,18 +37,8 @@ applications:
     USE_POSTGRES_FOR_ACTION_CABLE: true
 EOF
 
-cat <<EOF >>postfacto/package/assets/config/database.yml
-
-production:
-  adapter: postgresql
-  encoding: unicode
-  database: postfacto
-  pool: 5
-EOF
-
 sed -i "34i gem 'mini_racer'" postfacto/package/assets/Gemfile
 sed -i "s/ruby '2.7.3'/ruby '2.7.5'/" postfacto/package/assets/Gemfile
-sed -i "328i \ \ x86_64-linux" postfacto/package/assets/Gemfile.lock
 
 cf push -f manifest.yml \
   -p postfacto/package/assets \
