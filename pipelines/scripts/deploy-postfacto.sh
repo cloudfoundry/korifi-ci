@@ -37,8 +37,15 @@ applications:
     USE_POSTGRES_FOR_ACTION_CABLE: true
 EOF
 
-sed -i "34i gem 'mini_racer'" postfacto/package/assets/Gemfile
 sed -i "s/ruby '2.7.3'/ruby '2.7.5'/" postfacto/package/assets/Gemfile
+sed -i "/uglifier/d" postfacto/package/assets/Gemfile
+sed -i "/sassc-rails/d" postfacto/package/assets/Gemfile
+cat <<EOF >>postfacto/package/assets/Gemfile
+group :asset do
+  gem 'uglifier'
+  gem 'sassc-rails', '~> 2.0.0'
+end
+EOF
 
 cf push -f manifest.yml \
   -p postfacto/package/assets \
