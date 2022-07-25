@@ -24,10 +24,6 @@ cp postfacto/package/tas/config/config.js postfacto/package/assets/client/
 cat <<EOF >manifest.yml
 applications:
 - name: postfacto
-  disk_quota: 1G
-  instances: 2
-  memory: 1G
-  command: 'sh -c "bundle exec rake db:migrate && bundle exec rails s -p \$PORT -e \$RAILS_ENV"'
   env:
     WEBSOCKET_PORT: 443
     SESSION_TIME: 60
@@ -37,6 +33,12 @@ applications:
     USE_POSTGRES_FOR_ACTION_CABLE: true
     ADMIN_EMAIL: ((admin-email))
     ADMIN_PASSWORD: ((admin-password))
+  processes:
+  - type: web
+    command: 'sh -c "bundle exec rake db:migrate && bundle exec rails s -p \$PORT -e \$RAILS_ENV"'
+    disk_quota: 1G
+    instances: 2
+    memory: 1G
 EOF
 
 sed -i "s/ruby '2.7.3'/ruby '2.7.5'/" postfacto/package/assets/Gemfile
