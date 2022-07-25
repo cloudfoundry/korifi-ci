@@ -57,3 +57,5 @@ cf push -f manifest.yml \
   --var postgres-user="$POSTGRES_USER" \
   --var postgres-password="$POSTGRES_PASSWORD" \
   --var secret-key-base="$SECRET_KEY_BASE"
+
+cf run-task postfacto "ADMIN_EMAIL=$ADMIN_EMAIL ADMIN_PASSWORD=$ADMIN_PASSWORD rake admin:create_user"

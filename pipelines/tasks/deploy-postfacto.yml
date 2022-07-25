@@ -13,6 +13,8 @@ params:
   POSTGRES_USER: ((acceptance/postfacto.postgresUser))
   POSTGRES_PASSWORD: ((acceptance/postfacto.postgresPassword))
   SECRET_KEY_BASE: ((acceptance/postfacto.secretKeyBase))
+  ADMIN_EMAIL: ((acceptance/postfacto.adminEmail))
+  ADMIN_PASSWORD: ((acceptance/postfacto.adminPassword))
 
 run:
   path: korifi-ci/pipelines/scripts/deploy-postfacto.sh
