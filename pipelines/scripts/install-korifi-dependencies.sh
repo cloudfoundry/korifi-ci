@@ -22,7 +22,9 @@ pushd korifi
   fi
   kubectl patch service envoy -n projectcontour -p "{\"spec\": { \"loadBalancerIP\": $ip_addr }}"
 
-  if [[ "$USE_PATCHED_KPACK" == "true" ]]; then
-    kubectl apply -f korifi-ci/build/patched-kpack.yml
-  fi
 }
+popd
+
+if [[ "$USE_PATCHED_KPACK" == "true" ]]; then
+  kubectl apply -f korifi-ci/build/patched-kpack.yml
+fi
