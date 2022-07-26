@@ -31,8 +31,6 @@ applications:
     SECRET_KEY_BASE: ((secret-key-base))
     ACTION_CABLE_HOST: postfacto.((domain))
     USE_POSTGRES_FOR_ACTION_CABLE: true
-    ADMIN_EMAIL: ((admin-email))
-    ADMIN_PASSWORD: ((admin-password))
   processes:
   - type: web
     command: 'sh -c "bundle exec rake db:migrate && bundle exec rails s -p \$PORT -e \$RAILS_ENV"'
@@ -60,8 +58,6 @@ cf push -f manifest.yml \
   --var postgres-address="$POSTGRES_ADDRESS" \
   --var postgres-user="$POSTGRES_USER" \
   --var postgres-password="$POSTGRES_PASSWORD" \
-  --var secret-key-base="$SECRET_KEY_BASE" \
-  --var admin-email="$ADMIN_EMAIL" \
-  --var admin-password="$ADMIN_PASSWORD"
+  --var secret-key-base="$SECRET_KEY_BASE"
 
-cf run-task postfacto -c "rake admin:create_user"
+cf run-task postfacto -c "ADMIN_EMAIL=$ADMIN_EMAIL ADMIN_PASSWORD=$ADMIN_PASSWORD bundle exec rake admin:create_user"
