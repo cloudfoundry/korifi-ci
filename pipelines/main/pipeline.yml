@@ -426,7 +426,7 @@ jobs:
   - do: *set-account-env-vars
   - do: *smoke-tests
 
-  - name: deploy-pairup
+- name: deploy-pairup
   on_failure:
     *slackHook
   serial: true
