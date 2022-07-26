@@ -31,6 +31,7 @@ applications:
     SECRET_KEY_BASE: ((secret-key-base))
     ACTION_CABLE_HOST: postfacto.((domain))
     USE_POSTGRES_FOR_ACTION_CABLE: true
+    RAILS_LOG_TO_STDOUT: true
   processes:
   - type: web
     command: 'sh -c "bundle exec rake db:migrate && bundle exec rails s -p \$PORT -e \$RAILS_ENV"'
