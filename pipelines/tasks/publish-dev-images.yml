@@ -1,9 +1,5 @@
 platform: linux
 
-caches:
-- path: docker/overlay2
-- path: docker/buildkit
-
 inputs:
 - name: korifi-release-version
 - name: korifi-ci
