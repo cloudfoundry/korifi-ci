@@ -2,7 +2,7 @@ platform: linux
 
 caches:
   - path: /home/ci/.cache/go-build
-  - path: /go/pkg/mod
+  - path: /home/ci/go/pkg/mod
 
 inputs:
 - name: korifi-ci
