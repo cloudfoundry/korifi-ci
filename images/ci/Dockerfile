@@ -80,5 +80,5 @@ RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add - \
   && sudo apt update \
   && sudo apt install -y yarn
 
-RUN useradd -m ci -s /bin/bash -U && chmod -R 777 /go
+RUN useradd -m ci -s /bin/bash -U && chmod -R 777 /go && chown -R ci:ci /go
 USER ci:ci
