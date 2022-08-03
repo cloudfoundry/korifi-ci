@@ -141,6 +141,17 @@ jobs:
             DIR: statefulset-runner
             TARGET: test
 
+        - task: job-task-runner-tests
+          file: korifi-ci/pipelines/tasks/run-make-target.yml
+          image: ci-image
+          input_mapping:
+            root: korifi
+          output_mapping:
+            coverage: coverage-job-task-runner
+          params:
+            DIR: job-task-runner
+            TARGET: test
+
   - task: publish-code-coverage
     image: ci-image
     file: korifi-ci/pipelines/tasks/publish-code-coverage.yml

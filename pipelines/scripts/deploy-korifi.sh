@@ -42,6 +42,8 @@ deploy_cf() {
 
     kubectl kustomize "../korifi-ci/build/overlays/$CLUSTER_NAME/statefulset-runner" | kbld -f "../korifi-ci/build/kbld/$CLUSTER_NAME/korifi-statefulset-runner-kbld.yml" -f- | kapp deploy -y -a korifi-statefulset-runner -f-
 
+    kubectl kustomize "../korifi-ci/build/overlays/$CLUSTER_NAME/job-task-runner" | kbld -f "../korifi-ci/build/kbld/$CLUSTER_NAME/korifi-job-task-runner-kbld.yml" -f- | kapp deploy -y -a korifi-job-task-runner -f-
+
     sed 's/vcap\.me/'$CLUSTER_NAME.korifi.cf-app.com'/' controllers/config/samples/cfdomain.yaml | kubectl apply -f-
   }
   popd

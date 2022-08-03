@@ -5,6 +5,7 @@ inputs:
 - name: coverage-controllers
 - name: coverage-kib
 - name: coverage-stset-runner
+- name: coverage-job-task-runner
 - name: korifi
 - name: korifi-ci
 
