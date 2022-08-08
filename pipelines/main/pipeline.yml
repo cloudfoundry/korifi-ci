@@ -36,6 +36,16 @@ common:
       CLUSTER_NAME: undefined
       PROPERTY: undefined
 
+  deploy_korifi_component: &deploy-korifi-component
+    task: task-name
+    file: path/to/task.yml
+    image: ci-image
+    timeout: 30m
+    params:
+      CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
+      GCP_ZONE: europe-west1-b
+      USE_LETSENCRYPT: ((.:cluster-env-vars.USE_LETSENCRYPT))
+
 groups:
 - name: main
   jobs:
@@ -229,15 +239,26 @@ jobs:
           USE_LETSENCRYPT: ((.:cluster-env-vars.USE_LETSENCRYPT))
           USE_PATCHED_KPACK: ((.:cluster-env-vars.USE_PATCHED_KPACK))
 
-      - task: deploy-korifi
-        privileged: true
-        file: korifi-ci/pipelines/tasks/deploy-korifi.yml
-        image: ci-image
-        timeout: 30m
-        params:
-          CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
-          GCP_ZONE: europe-west1-b
-          USE_LETSENCRYPT: ((.:cluster-env-vars.USE_LETSENCRYPT))
+      - in_parallel:
+        - <<: *deploy-korifi-component
+          task: deploy-korifi-api
+          file: korifi-ci/pipelines/tasks/deploy-korifi-api.yml
+
+        - <<: *deploy-korifi-component
+          task: deploy-korifi-controller
+          file: korifi-ci/pipelines/tasks/deploy-korifi-controller.yml
+
+        - <<: *deploy-korifi-component
+          task: deploy-korifi-job-runner
+          file: korifi-ci/pipelines/tasks/deploy-korifi-job-runner.yml
+
+        - <<: *deploy-korifi-component
+          task: deploy-korifi-sts-runner
+          file: korifi-ci/pipelines/tasks/deploy-korifi-sts-runner.yml
+
+        - <<: *deploy-korifi-component
+          task: deploy-korifi-kpack-builder
+          file: korifi-ci/pipelines/tasks/deploy-korifi-kpack-builder.yml
 
     - do: &set-account-env-vars
       - task: set-account-env-vars

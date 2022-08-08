@@ -21,7 +21,7 @@ generate_kube_config() {
   export GOOGLE_APPLICATION_CREDENTIALS="$tmp/sa.json"
 }
 
-deploy_cf() {
+deploy() {
   pushd korifi
   {
     kubectl kustomize "../korifi-ci/build/overlays/$CLUSTER_NAME/controllers" | kbld -f "../korifi-ci/build/kbld/$CLUSTER_NAME/korifi-controllers-kbld.yml" -f- | kapp deploy -y -a korifi-controllers -f-
@@ -30,19 +30,6 @@ deploy_cf() {
     else
       create_tls_secret "korifi-workloads-ingress-cert" "korifi-controllers-system" "*.$CLUSTER_NAME.korifi.cf-app.com"
     fi
-
-    kubectl kustomize "../korifi-ci/build/overlays/$CLUSTER_NAME/api" | kbld -f "../korifi-ci/build/kbld/$CLUSTER_NAME/korifi-api-kbld.yml" -f- | kapp deploy -y -a korifi-api -f-
-    if [[ -n "$USE_LETSENCRYPT" ]]; then
-      clone_letsencrypt_cert "korifi-api-ingress-cert" "korifi-api-system"
-    else
-      create_tls_secret "korifi-api-ingress-cert" "korifi-api-system" "*.$CLUSTER_NAME.korifi.cf-app.com"
-    fi
-
-    kubectl kustomize "../korifi-ci/build/overlays/$CLUSTER_NAME/kpack-image-builder" | kbld -f "../korifi-ci/build/kbld/$CLUSTER_NAME/korifi-kpack-image-builder-kbld.yml" -f- | kapp deploy -y -a korifi-kpack-image-builder -f-
-
-    kubectl kustomize "../korifi-ci/build/overlays/$CLUSTER_NAME/statefulset-runner" | kbld -f "../korifi-ci/build/kbld/$CLUSTER_NAME/korifi-statefulset-runner-kbld.yml" -f- | kapp deploy -y -a korifi-statefulset-runner -f-
-
-    kubectl kustomize "../korifi-ci/build/overlays/$CLUSTER_NAME/job-task-runner" | kbld -f "../korifi-ci/build/kbld/$CLUSTER_NAME/korifi-job-task-runner-kbld.yml" -f- | kapp deploy -y -a korifi-job-task-runner -f-
 
     sed 's/vcap\.me/'$CLUSTER_NAME.korifi.cf-app.com'/' controllers/config/samples/cfdomain.yaml | kubectl apply -f-
   }
@@ -54,7 +41,7 @@ main() {
   export KUBECONFIG=$PWD/kube/kube.config
   generate_kube_config
   docker_login
-  deploy_cf
+  deploy
 }
 
 main

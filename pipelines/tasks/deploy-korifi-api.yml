@@ -15,4 +15,4 @@ params:
   USE_LETSENCRYPT:
 
 run:
-  path: korifi-ci/pipelines/scripts/deploy-korifi.sh
+  path: korifi-ci/pipelines/scripts/deploy-korifi-api.sh
