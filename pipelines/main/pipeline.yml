@@ -239,14 +239,14 @@ jobs:
           USE_LETSENCRYPT: ((.:cluster-env-vars.USE_LETSENCRYPT))
           USE_PATCHED_KPACK: ((.:cluster-env-vars.USE_PATCHED_KPACK))
 
+      - <<: *deploy-korifi-component
+        task: deploy-korifi-controller
+        file: korifi-ci/pipelines/tasks/deploy-korifi-controller.yml
+
       - in_parallel:
         - <<: *deploy-korifi-component
           task: deploy-korifi-api
           file: korifi-ci/pipelines/tasks/deploy-korifi-api.yml
-
-        - <<: *deploy-korifi-component
-          task: deploy-korifi-controller
-          file: korifi-ci/pipelines/tasks/deploy-korifi-controller.yml
 
         - <<: *deploy-korifi-component
           task: deploy-korifi-job-runner

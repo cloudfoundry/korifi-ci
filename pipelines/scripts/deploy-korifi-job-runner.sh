@@ -9,9 +9,10 @@ tmp="$(mktemp -d)"
 trap "rm -rf $tmp" EXIT
 
 docker_login() {
-  kubectl delete secret buildkit &>/dev/null || true
-  kubectl create secret docker-registry buildkit --docker-server='europe-west1-docker.pkg.dev' \
-    --docker-username=_json_key --docker-password="$REGISTRY_SERVICE_ACCOUNT_JSON"
+  if ! kubectl get secret buildkit; then
+    kubectl create secret docker-registry buildkit --docker-server='europe-west1-docker.pkg.dev' \
+      --docker-username=_json_key --docker-password="$REGISTRY_SERVICE_ACCOUNT_JSON"
+  fi
 }
 
 generate_kube_config() {
