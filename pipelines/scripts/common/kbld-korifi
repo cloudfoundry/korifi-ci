@@ -24,6 +24,10 @@ build-korifi-controllers() {
   kubectl kustomize controllers/config/default | kbld -f "$KBLD_CONFIG_DIR/korifi-controllers-kbld.yml" -f-
 }
 
+build-korifi-job-task-runner() {
+  kubectl kustomize job-task-runner/config/default | kbld -f "$KBLD_CONFIG_DIR/korifi-job-task-runner-kbld.yml" -f-
+}
+
 build-korifi-kpack-image-builder() {
   kubectl kustomize kpack-image-builder/config/default | kbld -f "$KBLD_CONFIG_DIR/korifi-kpack-image-builder-kbld.yml" -f-
 }
