@@ -8,12 +8,6 @@ source korifi-ci/pipelines/scripts/common/secrets.sh
 tmp="$(mktemp -d)"
 trap "rm -rf $tmp" EXIT
 
-docker_login() {
-  kubectl delete secret buildkit &>/dev/null || true
-  kubectl create secret docker-registry buildkit --docker-server='europe-west1-docker.pkg.dev' \
-    --docker-username=_json_key --docker-password="$REGISTRY_SERVICE_ACCOUNT_JSON"
-}
-
 generate_kube_config() {
   gcloud-login
   export-kubeconfig "$CLUSTER_NAME"
@@ -21,7 +15,7 @@ generate_kube_config() {
   export GOOGLE_APPLICATION_CREDENTIALS="$tmp/sa.json"
 }
 
-deploy_cf() {
+deploy() {
   pushd korifi
   {
     kubectl kustomize "../korifi-ci/build/overlays/$CLUSTER_NAME/kpack-image-builder" | kbld -f "../korifi-ci/build/kbld/$CLUSTER_NAME/korifi-kpack-image-builder-kbld.yml" -f- | kapp deploy -y -a korifi-kpack-image-builder -f-
@@ -33,8 +27,7 @@ deploy_cf() {
 main() {
   export KUBECONFIG=$PWD/kube/kube.config
   generate_kube_config
-  docker_login
-  deploy_cf
+  deploy
 }
 
 main

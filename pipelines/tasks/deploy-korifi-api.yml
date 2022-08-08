@@ -8,7 +8,6 @@ outputs:
 - name: kube
 
 params:
-  REGISTRY_SERVICE_ACCOUNT_JSON: ((gcp-artifact-registry-writer))
   GCP_SERVICE_ACCOUNT_JSON: ((gcp-serviceaccount))
   GCP_ZONE:
   CLUSTER_NAME:

@@ -8,6 +8,7 @@ source korifi-ci/pipelines/scripts/common/secrets.sh
 tmp="$(mktemp -d)"
 trap "rm -rf $tmp" EXIT
 
+# refresh the kbld kubectl builder secret before the parallel builds kick in
 docker_login() {
   kubectl delete secret buildkit &>/dev/null || true
   kubectl create secret docker-registry buildkit --docker-server='europe-west1-docker.pkg.dev' \
