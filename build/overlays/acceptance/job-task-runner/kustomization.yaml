@@ -4,3 +4,9 @@ kind: Kustomization
 # we absolutely need korifi cloned as a sibling to korifi-ci
 resources:
 - ../../../../../korifi/job-task-runner/config/default
+
+configMapGenerator:
+- behavior: merge
+  files:
+  - job_task_runner_config.yaml
+  name: config
