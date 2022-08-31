@@ -17,7 +17,7 @@ git add .
 git config user.email "cloudfoundry-korifi@groups.vmware.com"
 git config user.name "Korifi-Bot"
 git commit -m 'Updating vendir dependencies'
-git push origin "$branch"
+git push "https://$GITHUB_TOKEN@github.com/cloudfoundry/korifi.git" "$branch"
 
 curl \
   -X POST \
