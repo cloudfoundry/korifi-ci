@@ -60,6 +60,7 @@ groups:
   jobs:
   - run-tests-periodic
   - run-e2es-periodic
+  - bump-tests-vendor
 - name: acceptance
   jobs:
   - deploy-korifi-acceptance
@@ -567,6 +568,20 @@ jobs:
   - do: *end-to-ends
   ensure: *clean-pr-e2e-env
 
+- name: bump-tests-vendor
+  on_failure:
+    *slackHook
+  plan:
+    - in_parallel:
+      - get: ci-image
+      - get: korifi-ci
+      - get: korifi
+      - get: bump-timer
+        trigger: true
+    - task: bump-tests-vendor
+      file: korifi-ci/pipelines/tasks/bump-tests-vendor.yml
+      image: ci-image
+
 # ===== release =====
 - name: bump-major-version
   plan:
@@ -774,5 +789,14 @@ resources:
     interval: 20m
     start: 09:00 AM
     stop: 11:59 PM
+    location: Europe/London
+    initial_version: true
+
+- name: bump-timer
+  type: time
+  source:
+    days: [Monday,Tuesday,Wednesday,Thursday,Friday]
+    start: 03:00 AM
+    stop: 08:00 AM
     location: Europe/London
     initial_version: true
