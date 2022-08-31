@@ -5,7 +5,7 @@ inputs:
 - name: korifi
 
 params:
-- GITHUB_TOKEN: ((korifi-bot-create-pr-token))
+ GITHUB_TOKEN: ((korifi-bot-create-pr-token))
 
 run:
   path: korifi-ci/pipelines/scripts/bump-tests-vendor.sh
