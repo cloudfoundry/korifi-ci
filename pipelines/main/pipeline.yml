@@ -238,7 +238,6 @@ jobs:
           DOCKER_USERNAME: _json_key
           DOCKER_PASSWORD: ((gcp-artifact-registry-writer))
           USE_LETSENCRYPT: ((.:cluster-env-vars.USE_LETSENCRYPT))
-          USE_PATCHED_KPACK: ((.:cluster-env-vars.USE_PATCHED_KPACK))
 
       - <<: *deploy-korifi-component
         task: deploy-korifi-controller
@@ -457,7 +456,6 @@ jobs:
       CLUSTER_NAME: acceptance
       PROPERTY: acceptance_ip
       USE_LETSENCRYPT: true
-      USE_PATCHED_KPACK: true
 
   - do: *deploy-korifi
   - do: *set-account-env-vars

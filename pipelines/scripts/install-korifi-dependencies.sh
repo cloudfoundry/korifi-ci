@@ -24,7 +24,3 @@ pushd korifi
 
 }
 popd
-
-if [[ "$USE_PATCHED_KPACK" == "true" ]]; then
-  kubectl apply -f korifi-ci/build/patched-kpack.yml
-fi

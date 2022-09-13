@@ -14,6 +14,5 @@ params:
   GCP_SERVICE_ACCOUNT_JSON: ((gcp-serviceaccount))
   USE_LETSENCRYPT:
   DNS_SERVICE_ACCOUNT_JSON: ((gcp/ci-dns-admin.key))
-  USE_PATCHED_KPACK:
 run:
   path: korifi-ci/pipelines/scripts/install-korifi-dependencies.sh
