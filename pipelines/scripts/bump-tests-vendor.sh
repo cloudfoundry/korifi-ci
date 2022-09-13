@@ -2,6 +2,23 @@
 
 set -euo pipefail
 
+function pr_exists_for_branch {
+  curl \
+    -H "Authorization: Bearer $GITHUB_TOKEN" \
+    -H "Accept: application/vnd.github+json" \
+    "https://api.github.com/repos/cloudfoundry/korifi/pulls?head=cloudfoundry:$1" |
+    grep "cloudfoundry:$1"
+}
+
+function create_pr_for_branch {
+  curl \
+    -X POST \
+    -H "Authorization: Bearer $GITHUB_TOKEN" \
+    -H "Accept: application/vnd.github+json" \
+    https://api.github.com/repos/cloudfoundry/korifi/pulls \
+    --data '{"title":"Updating vendir dependencies","body":"Generated from korifi CI","head":"'"$1"'","base":"main"}'
+}
+
 cd korifi/tests
 
 vendir sync
@@ -11,17 +28,14 @@ if [[ ! $(git status --porcelain) ]]; then
   exit 0
 fi
 
-branch="bump-vendir-$(date +%s)"
-git checkout -b "$branch"
+branch="ci/bump-vendir"
+git switch -C "$branch"
 git add .
 git config user.email "cloudfoundry-korifi@groups.vmware.com"
 git config user.name "Korifi-Bot"
 git commit -m 'Updating vendir dependencies'
-git push "https://$GITHUB_TOKEN@github.com/cloudfoundry/korifi.git" "$branch"
+git push -f "https://$GITHUB_TOKEN@github.com/cloudfoundry/korifi.git" "$branch"
 
-curl \
-  -X POST \
-  -H "Authorization: Bearer $GITHUB_TOKEN" \
-  -H "Accept: application/vnd.github+json" \
-  https://api.github.com/repos/cloudfoundry/korifi/pulls \
-  --data '{"title":"Updating vendir dependencies","body":"Generated from korifi CI","head":"'"$branch"'","base":"main"}'
+if ! pr_exists_for_branch "$branch"; then
+  create_pr_for_branch "$branch"
+fi
