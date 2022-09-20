@@ -2,7 +2,7 @@ externalFQDN: cf.pr-e2e.korifi.cf-app.com
 internalPort: 9000
 
 rootNamespace: cf
-buildReconciler: kpack-image-builder
+builderName: kpack-image-builder
 defaultLifecycleConfig:
   type: buildpack
   stack: cflinuxfs3
