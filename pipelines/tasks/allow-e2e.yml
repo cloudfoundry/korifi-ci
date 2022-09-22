@@ -8,7 +8,7 @@ params:
   KORIFI_BOT_NAME:
   KORIFI_BOT_TOKEN:
   GITHUB_ORG: cloudfoundry
-  GITHUB_TEAM: cf-k8s
+  GITHUB_TEAM: wg-cf-on-k8s-korifi-approvers
   GITHUB_REPO: korifi
 
 run:
