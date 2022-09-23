@@ -598,7 +598,6 @@ jobs:
       bump: minor
     passed:
     - publish-release
-    trigger: true
   - put: korifi-release-version
     params:
       file: korifi-release-version/version
