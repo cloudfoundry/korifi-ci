@@ -35,6 +35,7 @@ create_release() {
     build-korifi-statefulset-runner >"$RELEASE_ARTIFACTS_DIR/korifi-statefulset-runner.yml"
     cp -R dependencies "$RELEASE_ARTIFACTS_DIR"
     cp INSTALL.md "$RELEASE_ARTIFACTS_DIR"
+    cp INSTALL_kind.md "$RELEASE_ARTIFACTS_DIR"
   }
   popd
 
