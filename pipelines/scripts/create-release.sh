@@ -33,7 +33,6 @@ create_release() {
     build-korifi-job-task-runner >"$RELEASE_ARTIFACTS_DIR/korifi-job-task-runner.yml"
     build-korifi-kpack-image-builder >"$RELEASE_ARTIFACTS_DIR/korifi-kpack-image-builder.yml"
     build-korifi-statefulset-runner >"$RELEASE_ARTIFACTS_DIR/korifi-statefulset-runner.yml"
-    cp -R dependencies "$RELEASE_ARTIFACTS_DIR"
     cp INSTALL.md "$RELEASE_ARTIFACTS_DIR"
     cp INSTALL_kind.md "$RELEASE_ARTIFACTS_DIR"
   }
