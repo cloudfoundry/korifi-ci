@@ -19,9 +19,8 @@ function create_pr_for_branch {
     --data '{"title":"Updating vendir dependencies","body":"Generated from korifi CI","head":"'"$1"'","base":"main"}'
 }
 
-cd korifi/tests
-
-vendir sync
+cd korifi
+make vendir-update-dependencies
 
 if [[ ! $(git status --porcelain) ]]; then
   echo "All vendir dependencies already up to date"
