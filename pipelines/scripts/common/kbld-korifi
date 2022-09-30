@@ -17,7 +17,7 @@ docker_login() {
 }
 
 build-korifi-api() {
-  kubectl kustomize api/config/base | kbld -f "$KBLD_CONFIG_DIR/korifi-api-kbld.yml" -f-
+  kbld -f "$KBLD_CONFIG_DIR/korifi-api-kbld.yml" -f "$VALUES_BASE/api/values.yaml"
 }
 
 build-korifi-controllers() {

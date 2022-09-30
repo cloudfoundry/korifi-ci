@@ -3,6 +3,7 @@
 set -euo pipefail
 
 KBLD_CONFIG_DIR="$PWD/korifi-ci/build/kbld/release"
+VALUES_BASE="$PWD/korifi-ci/build/overlays/acceptance"
 COMMIT_SHA=$(cat korifi/.git/ref)
 VERSION="dev-$(cat korifi-release-version/version)-$COMMIT_SHA"
 
