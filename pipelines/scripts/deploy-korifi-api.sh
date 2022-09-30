@@ -23,7 +23,7 @@ deploy() {
         -f "../korifi-ci/build/kbld/$CLUSTER_NAME/korifi-api-kbld.yml" \
         -f "../korifi-ci/build/overlays/$CLUSTER_NAME/api/values.yaml" \
         --images-annotation=false >"$tmp/values.yaml"
-      helm update --install api helm/api \
+      helm upgrade --install api helm/api \
         --values "$tmp/values.yaml" \
         --wait
     else
