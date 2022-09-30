@@ -21,7 +21,7 @@ build-korifi-api() {
 }
 
 build-korifi-controllers() {
-  kubectl kustomize controllers/config/default | kbld -f "$KBLD_CONFIG_DIR/korifi-controllers-kbld.yml" -f-
+  kbld -f "$KBLD_CONFIG_DIR/korifi-controllers-kbld.yml" -f "$VALUES_BASE/controllers/values.yaml"
 }
 
 build-korifi-job-task-runner() {

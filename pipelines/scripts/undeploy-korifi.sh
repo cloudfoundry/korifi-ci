@@ -21,7 +21,13 @@ undeploy_cf() {
   kapp delete -y -a korifi-job-task-runner
   kapp delete -y -a korifi-statefulset-runner
   kapp delete -y -a korifi-kpack-image-builder
-  kapp delete -y -a korifi-controller
+
+  if helm status controllers; then
+    helm delete controllers --wait
+  else
+    kapp delete -y -a korifi-controller
+  fi
+
   if helm status api; then
     helm delete api --wait
   else

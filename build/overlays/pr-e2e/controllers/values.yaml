@@ -1,0 +1,2 @@
+taskTTL: 5s
+image: cloudfoundry/korifi-controllers:latest
