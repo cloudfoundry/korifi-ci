@@ -18,7 +18,20 @@ generate_kube_config() {
 deploy() {
   pushd korifi
   {
-    kubectl kustomize "../korifi-ci/build/overlays/$CLUSTER_NAME/api" | kbld -f "../korifi-ci/build/kbld/$CLUSTER_NAME/korifi-api-kbld.yml" -f- | kapp deploy -y -a korifi-api -f-
+    if [[ -d helm/api ]]; then
+      kbld \
+        -f "../korifi-ci/build/kbld/$CLUSTER_NAME/korifi-api-kbld.yml" \
+        -f "../korifi-ci/build/overlays/$CLUSTER_NAME/api/values.yaml" \
+        --images-annotation=false >"$tmp/values.yaml"
+      helm update --install api helm/api \
+        --values "$tmp/values.yaml" \
+        --wait
+    else
+      kubectl kustomize "../korifi-ci/build/overlays/$CLUSTER_NAME/api" |
+        kbld -f "../korifi-ci/build/kbld/$CLUSTER_NAME/korifi-api-kbld.yml" -f- |
+        kapp deploy -y -a korifi-api -f-
+    fi
+
     if [[ -n "$USE_LETSENCRYPT" ]]; then
       clone_letsencrypt_cert "korifi-api-ingress-cert" "korifi-api-system"
     else

@@ -1,0 +1,6 @@
+apiServer:
+  url: cf.pr-e2e.korifi.cf-app.com
+image: cloudfoundry/korifi-api:latest
+packageRegistry:
+  base: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images
+defaultDomainName: pr-e2e.korifi.cf-app.com
