@@ -1,0 +1,2 @@
+packageRegistry:
+  base: europe-west1-docker.pkg.dev/cf-on-k8s-wg/acceptance-images/kpack/beta

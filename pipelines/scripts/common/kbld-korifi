@@ -29,7 +29,7 @@ build-korifi-job-task-runner() {
 }
 
 build-korifi-kpack-image-builder() {
-  kubectl kustomize kpack-image-builder/config/default | kbld -f "$KBLD_CONFIG_DIR/korifi-kpack-image-builder-kbld.yml" -f-
+  kbld -f "$KBLD_CONFIG_DIR/korifi-kpack-image-builder-kbld.yml" -f "$VALUES_BASE/kpack-image-builder/values.yaml"
 }
 
 build-korifi-statefulset-runner() {

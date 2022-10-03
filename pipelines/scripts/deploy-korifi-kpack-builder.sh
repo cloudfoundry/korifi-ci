@@ -18,10 +18,21 @@ generate_kube_config() {
 deploy() {
   pushd korifi
   {
-    kubectl kustomize "../korifi-ci/build/overlays/$CLUSTER_NAME/kpack-image-builder" | kbld -f "../korifi-ci/build/kbld/$CLUSTER_NAME/korifi-kpack-image-builder-kbld.yml" -f- | kapp deploy -y -a korifi-kpack-image-builder -f-
+    if [[ -d helm/kpack-image-builder ]]; then
+      kbld \
+        -f "../korifi-ci/build/kbld/$CLUSTER_NAME/korifi-kpack-image-builder-kbld.yml" \
+        -f "../korifi-ci/build/overlays/$CLUSTER_NAME/kpack-image-builder/values.yaml" \
+        --images-annotation=false >"$tmp/values.yaml"
+      helm upgrade --install kpack-image-builder helm/kpack-image-builder \
+        --values "$tmp/values.yaml" \
+        --wait
+    else
+      kubectl kustomize "../korifi-ci/build/overlays/$CLUSTER_NAME/kpack-image-builder" |
+        kbld -f "../korifi-ci/build/kbld/$CLUSTER_NAME/korifi-kpack-image-builder-kbld.yml" -f- |
+        kapp deploy -y -a korifi-kpack-image-builder -f-
+    fi
   }
   popd
-
 }
 
 main() {
