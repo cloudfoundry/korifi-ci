@@ -27,7 +27,6 @@ undeploy_cf() {
   else
     kapp delete -y -a korifi-controller
   fi
-  kubectl delete ns korifi-controllers-system
 
   if helm status api; then
     helm delete api --wait
