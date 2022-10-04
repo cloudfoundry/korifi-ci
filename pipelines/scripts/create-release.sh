@@ -18,21 +18,16 @@ generate_kube_config() {
 }
 
 update_config_with_version() {
-  yq -i ".destinations[0].tags=[\"latest\", \"$VERSION\"]" "$KBLD_CONFIG_DIR/korifi-api-kbld.yml"
-  yq -i ".destinations[0].tags=[\"latest\", \"$VERSION\"]" "$KBLD_CONFIG_DIR/korifi-controllers-kbld.yml"
-  yq -i ".destinations[0].tags=[\"latest\", \"$VERSION\"]" "$KBLD_CONFIG_DIR/korifi-job-task-runner-kbld.yml"
-  yq -i ".destinations[0].tags=[\"latest\", \"$VERSION\"]" "$KBLD_CONFIG_DIR/korifi-kpack-image-builder-kbld.yml"
-  yq -i ".destinations[0].tags=[\"latest\", \"$VERSION\"]" "$KBLD_CONFIG_DIR/korifi-statefulset-runner-kbld.yml"
+  yq -i "with(.destinations[]; .tags=[\"latest\", \"$VERSION\"])" "$KBLD_CONFIG_DIR/korifi-kbld.yml"
 }
 
 create_release() {
   pushd korifi
   {
-    build-korifi-api >"$RELEASE_ARTIFACTS_DIR/korifi-api.yml"
-    build-korifi-controllers >"$RELEASE_ARTIFACTS_DIR/korifi-controllers.yml"
-    build-korifi-job-task-runner >"$RELEASE_ARTIFACTS_DIR/korifi-job-task-runner.yml"
-    build-korifi-kpack-image-builder >"$RELEASE_ARTIFACTS_DIR/korifi-kpack-image-builder.yml"
-    build-korifi-statefulset-runner >"$RELEASE_ARTIFACTS_DIR/korifi-statefulset-runner.yml"
+    helm dependency update helm/korifi
+    cp -a helm/korifi "$RELEASE_ARTIFACTS_DIR"
+    export VALUES_BASE=helm/korifi
+    build-korifi >"$RELEASE_ARTIFACTS_DIR/korifi/values.yaml"
     cp INSTALL.md "$RELEASE_ARTIFACTS_DIR"
     cp INSTALL_kind.md "$RELEASE_ARTIFACTS_DIR"
   }

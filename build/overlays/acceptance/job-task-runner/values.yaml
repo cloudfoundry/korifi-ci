@@ -1,2 +1,0 @@
-image: cloudfoundry/korifi-job-task-runner:latest
-jobTTL: 24h

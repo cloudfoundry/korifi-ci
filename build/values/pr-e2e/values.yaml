@@ -1,0 +1,23 @@
+api:
+  apiServer:
+    url: cf.pr-e2e.korifi.cf-app.com
+  image: cloudfoundry/korifi-api:latest
+  packageRegistry:
+    base: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images
+  defaultDomainName: pr-e2e.korifi.cf-app.com
+
+controllers:
+  taskTTL: 5s
+  image: cloudfoundry/korifi-controllers:latest
+
+job-task-runner:
+  image: cloudfoundry/korifi-job-task-runner:latest
+  jobTTL: 5s
+
+kpack-image-builder:
+  image: cloudfoundry/korifi-kpack-image-builder:latest
+  packageRegistry:
+    base: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/kpack/beta
+
+statefulset-runner:
+  image: cloudfoundry/korifi-statefulset-runner:latest

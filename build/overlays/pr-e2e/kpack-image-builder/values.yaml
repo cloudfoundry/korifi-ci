@@ -1,3 +1,0 @@
-image: cloudfoundry/korifi-kpack-image-builder:latest
-packageRegistry:
-  base: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/kpack/beta

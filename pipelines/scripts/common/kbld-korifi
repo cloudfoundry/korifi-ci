@@ -16,22 +16,6 @@ docker_login() {
   export KBLD_REGISTRY_PASSWORD="$REGISTRY_PASSWORD"
 }
 
-build-korifi-api() {
-  kbld -f "$KBLD_CONFIG_DIR/korifi-api-kbld.yml" -f "$VALUES_BASE/api/values.yaml"
-}
-
-build-korifi-controllers() {
-  kbld -f "$KBLD_CONFIG_DIR/korifi-controllers-kbld.yml" -f "$VALUES_BASE/controllers/values.yaml"
-}
-
-build-korifi-job-task-runner() {
-  kbld -f "$KBLD_CONFIG_DIR/korifi-job-task-runner-kbld.yml" -f "$VALUES_BASE/job-task-runner/values.yaml"
-}
-
-build-korifi-kpack-image-builder() {
-  kbld -f "$KBLD_CONFIG_DIR/korifi-kpack-image-builder-kbld.yml" -f "$VALUES_BASE/kpack-image-builder/values.yaml"
-}
-
-build-korifi-statefulset-runner() {
-  kbld -f "$KBLD_CONFIG_DIR/korifi-statefulset-runner-kbld.yml" -f "$VALUES_BASE/statefulset-runner/values.yaml"
+build-korifi() {
+  kbld -f "$KBLD_CONFIG_DIR/korifi-kbld.yml" -f "$VALUES_BASE/values.yaml"
 }
