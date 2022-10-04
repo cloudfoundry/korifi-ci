@@ -18,17 +18,13 @@ generate_kube_config() {
 deploy() {
   pushd korifi
   {
-    if [[ -d helm/statefulset-runner ]]; then
-      kbld \
-        -f "../korifi-ci/build/kbld/$CLUSTER_NAME/korifi-statefulset-runner-kbld.yml" \
-        -f "../korifi-ci/build/overlays/$CLUSTER_NAME/statefulset-runner/values.yaml" \
-        --images-annotation=false >"$tmp/values.yaml"
-      helm upgrade --install statefulset-runner helm/statefulset-runner \
-        --values "$tmp/values.yaml" \
-        --wait
-    else
-      kubectl kustomize "../korifi-ci/build/overlays/$CLUSTER_NAME/statefulset-runner" | kbld -f "../korifi-ci/build/kbld/$CLUSTER_NAME/korifi-statefulset-runner-kbld.yml" -f- | kapp deploy -y -a korifi-statefulset-runner -f-
-    fi
+    kbld \
+      -f "../korifi-ci/build/kbld/$CLUSTER_NAME/korifi-statefulset-runner-kbld.yml" \
+      -f "../korifi-ci/build/overlays/$CLUSTER_NAME/statefulset-runner/values.yaml" \
+      --images-annotation=false >"$tmp/values.yaml"
+    helm upgrade --install statefulset-runner helm/statefulset-runner \
+      --values "$tmp/values.yaml" \
+      --wait
   }
   popd
 

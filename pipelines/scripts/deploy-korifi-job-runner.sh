@@ -18,7 +18,17 @@ generate_kube_config() {
 deploy() {
   pushd korifi
   {
-    kubectl kustomize "../korifi-ci/build/overlays/$CLUSTER_NAME/job-task-runner" | kbld -f "../korifi-ci/build/kbld/$CLUSTER_NAME/korifi-job-task-runner-kbld.yml" -f- | kapp deploy -y -a korifi-job-task-runner -f-
+    if [[ -d helm/statefulset-runner ]]; then
+      kbld \
+        -f "../korifi-ci/build/kbld/$CLUSTER_NAME/korifi-job-task-runner-kbld.yml" \
+        -f "../korifi-ci/build/overlays/$CLUSTER_NAME/job-task-runner/values.yaml" \
+        --images-annotation=false >"$tmp/values.yaml"
+      helm upgrade --install job-task-runner helm/job-task-runner \
+        --values "$tmp/values.yaml" \
+        --wait
+    else
+      kubectl kustomize "../korifi-ci/build/overlays/$CLUSTER_NAME/job-task-runner" | kbld -f "../korifi-ci/build/kbld/$CLUSTER_NAME/korifi-job-task-runner-kbld.yml" -f- | kapp deploy -y -a korifi-job-task-runner -f-
+    fi
   }
   popd
 
