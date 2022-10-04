@@ -19,14 +19,14 @@ undeploy_cf() {
   kubectl delete secret --ignore-not-found=true -n korifi-controllers-system korifi-workloads-ingress-cert
   kubectl delete secret --ignore-not-found=true -n korifi-api-system korifi-api-ingress-cert
   kapp delete -y -a korifi-job-task-runner
-  kapp delete -y -a korifi-statefulset-runner
 
-  if helm status kpack-image-builder; then
-    helm delete kpack-image-builder --wait
+  if helm status statefulset-runner; then
+    helm delete statefulset-runner --wait
   else
-    kapp delete -y -a korifi-kpack-image-builder
+    kapp delete -y -a korifi-statefulset-runner
   fi
 
+  helm delete kpack-image-builder --wait
   helm delete controllers --wait
   helm delete api --wait
 }

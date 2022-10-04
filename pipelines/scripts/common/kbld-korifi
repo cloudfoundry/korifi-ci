@@ -33,5 +33,5 @@ build-korifi-kpack-image-builder() {
 }
 
 build-korifi-statefulset-runner() {
-  kubectl kustomize statefulset-runner/config/default | kbld -f "$KBLD_CONFIG_DIR/korifi-statefulset-runner-kbld.yml" -f-
+  kbld -f "$KBLD_CONFIG_DIR/korifi-statefulset-runner-kbld.yml" -f "$VALUES_BASE/statefulset-runner/values.yaml"
 }
