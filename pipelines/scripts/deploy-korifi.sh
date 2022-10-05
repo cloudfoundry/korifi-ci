@@ -30,6 +30,8 @@ deploy() {
       -f "../korifi-ci/build/values/$CLUSTER_NAME/values.yaml" \
       --images-annotation=false >"$tmp/values.yaml"
 
+    helm dependency update helm/korifi
+
     helm upgrade --install korifi helm/korifi \
       --values "$tmp/values.yaml" \
       --wait
