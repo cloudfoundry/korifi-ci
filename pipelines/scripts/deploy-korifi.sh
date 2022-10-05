@@ -8,6 +8,13 @@ source korifi-ci/pipelines/scripts/common/secrets.sh
 tmp="$(mktemp -d)"
 trap "rm -rf $tmp" EXIT
 
+# refresh the kbld kubectl builder secret before the parallel builds kick in
+docker_login() {
+  kubectl delete secret buildkit &>/dev/null || true
+  kubectl create secret docker-registry buildkit --docker-server='europe-west1-docker.pkg.dev' \
+    --docker-username=_json_key --docker-password="$REGISTRY_SERVICE_ACCOUNT_JSON"
+}
+
 generate_kube_config() {
   gcloud-login
   export-kubeconfig "$CLUSTER_NAME"
@@ -43,6 +50,7 @@ deploy() {
 main() {
   export KUBECONFIG=$PWD/kube/kube.config
   generate_kube_config
+  docker_login
   deploy
 }
 
