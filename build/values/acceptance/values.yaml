@@ -1,10 +1,12 @@
+global:
+  defaultAppDomainName: acceptance.korifi.cf-app.com
+
 api:
   apiServer:
     url: cf.acceptance.korifi.cf-app.com
   image: cloudfoundry/korifi-api:latest
   packageRegistry:
     base: europe-west1-docker.pkg.dev/cf-on-k8s-wg/acceptance-images
-  defaultDomainName: acceptance.korifi.cf-app.com
 
 controllers:
   image: cloudfoundry/korifi-controllers:latest
