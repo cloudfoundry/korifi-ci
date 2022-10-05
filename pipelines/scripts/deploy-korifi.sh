@@ -39,12 +39,7 @@ deploy() {
     if [[ -n "$USE_LETSENCRYPT" ]]; then
       clone_letsencrypt_cert "korifi-api-ingress-cert" "korifi-api-system"
       clone_letsencrypt_cert "korifi-workloads-ingress-cert" "korifi-controllers-system"
-    else
-      create_tls_secret "korifi-api-ingress-cert" "korifi-api-system" "*.$CLUSTER_NAME.korifi.cf-app.com"
-      create_tls_secret "korifi-workloads-ingress-cert" "korifi-controllers-system" "*.$CLUSTER_NAME.korifi.cf-app.com"
     fi
-
-    sed 's/vcap\.me/'$CLUSTER_NAME.korifi.cf-app.com'/' controllers/config/samples/cfdomain.yaml | kubectl apply -f-
   }
   popd
 }

@@ -1,5 +1,6 @@
 global:
   defaultAppDomainName: acceptance.korifi.cf-app.com
+  generateIngressCertificates: false
 
 api:
   apiServer:
