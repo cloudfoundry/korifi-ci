@@ -19,7 +19,7 @@ undeploy_cf() {
   kubectl delete secret --ignore-not-found=true -n korifi-controllers-system korifi-workloads-ingress-cert
   kubectl delete secret --ignore-not-found=true -n korifi-api-system korifi-api-ingress-cert
 
-  kubectl delete namespace cf
+  kubectl delete namespace cf --ignore-not-found
 
   helm delete korifi --wait
 }
