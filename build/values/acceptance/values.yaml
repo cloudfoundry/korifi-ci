@@ -19,8 +19,7 @@ job-task-runner:
 
 kpack-image-builder:
   image: cloudfoundry/korifi-kpack-image-builder:latest
-  packageRegistry:
-    base: europe-west1-docker.pkg.dev/cf-on-k8s-wg/acceptance-images/kpack/beta
+  packageRegistry: europe-west1-docker.pkg.dev/cf-on-k8s-wg/acceptance-images/kpack/beta
   exampleClusterBuilder:
     create: true
     kpackBuilderRegistry: europe-west1-docker.pkg.dev/cf-on-k8s-wg/acceptance-images/kpack/beta
