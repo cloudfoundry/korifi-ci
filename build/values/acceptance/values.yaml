@@ -8,8 +8,7 @@ api:
   apiServer:
     url: cf.acceptance.korifi.cf-app.com
   image: cloudfoundry/korifi-api:latest
-  packageRegistry:
-    base: europe-west1-docker.pkg.dev/cf-on-k8s-wg/acceptance-images
+  packageRegistry: europe-west1-docker.pkg.dev/cf-on-k8s-wg/acceptance-images
 
 controllers:
   image: cloudfoundry/korifi-controllers:latest

@@ -8,8 +8,7 @@ api:
   apiServer:
     url: cf.pr-e2e.korifi.cf-app.com
   image: cloudfoundry/korifi-api:latest
-  packageRegistry:
-    base: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images
+  packageRegistry: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images
 
 controllers:
   taskTTL: 5s
