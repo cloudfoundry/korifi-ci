@@ -2,6 +2,8 @@ global:
   defaultAppDomainName: pr-e2e.korifi.cf-app.com
   generateIngressCertificates: true
 
+createAdminUser: true
+
 api:
   apiServer:
     url: cf.pr-e2e.korifi.cf-app.com
@@ -21,6 +23,9 @@ kpack-image-builder:
   image: cloudfoundry/korifi-kpack-image-builder:latest
   packageRegistry:
     base: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/kpack/beta
+  exampleClusterBuilder:
+    create: true
+    kpackBuilderRegistry: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/kpack/beta
 
 statefulset-runner:
   image: cloudfoundry/korifi-statefulset-runner:latest

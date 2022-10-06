@@ -4,10 +4,6 @@ inputs:
 - name: korifi
 - name: terraform-output
 params:
-  KPACK_TAG:
-  DOCKER_SERVER:
-  DOCKER_USERNAME:
-  DOCKER_PASSWORD:
   GCP_PROJECT_ID:
   CLUSTER_NAME:
   GCP_ZONE:

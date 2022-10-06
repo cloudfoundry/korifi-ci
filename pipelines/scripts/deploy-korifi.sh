@@ -44,11 +44,19 @@ deploy() {
   popd
 }
 
+create_registry_secret() {
+  kubectl create secret -n cf docker-registry image-registry-credentials \
+    --docker-server="${DOCKER_SERVER}" \
+    --docker-username="${DOCKER_USERNAME}" \
+    --docker-password="${DOCKER_PASSWORD}"
+}
+
 main() {
   export KUBECONFIG=$PWD/kube/kube.config
   generate_kube_config
   docker_login
   deploy
+  create_registry_secret
 }
 
 main

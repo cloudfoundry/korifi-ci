@@ -13,6 +13,9 @@ params:
   GCP_ZONE:
   CLUSTER_NAME:
   USE_LETSENCRYPT:
+  DOCKER_SERVER:
+  DOCKER_USERNAME:
+  DOCKER_PASSWORD:
 
 run:
   path: korifi-ci/pipelines/scripts/deploy-korifi.sh
