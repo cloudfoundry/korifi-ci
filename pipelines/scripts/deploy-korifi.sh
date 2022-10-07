@@ -45,6 +45,7 @@ deploy() {
 }
 
 create_registry_secret() {
+  kubectl delete secret -n cf image-registry-credentials --ignore-not-found
   kubectl create secret -n cf docker-registry image-registry-credentials \
     --docker-server="${DOCKER_SERVER}" \
     --docker-username="${DOCKER_USERNAME}" \
