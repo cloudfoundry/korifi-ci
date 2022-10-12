@@ -2,13 +2,14 @@ global:
   defaultAppDomainName: acceptance.korifi.cf-app.com
   generateIngressCertificates: false
 
+# todo: delete createAdminUser
 createAdminUser: true
 
 api:
   apiServer:
     url: cf.acceptance.korifi.cf-app.com
   image: cloudfoundry/korifi-api:latest
-  packageRegistry: europe-west1-docker.pkg.dev/cf-on-k8s-wg/acceptance-images
+  packageRegistry: europe-west1-docker.pkg.dev/cf-on-k8s-wg/acceptance-images/source-package
 
 controllers:
   image: cloudfoundry/korifi-controllers:latest
@@ -19,10 +20,13 @@ job-task-runner:
 
 kpack-image-builder:
   image: cloudfoundry/korifi-kpack-image-builder:latest
+  # todo: delete packageRegistry
   packageRegistry: europe-west1-docker.pkg.dev/cf-on-k8s-wg/acceptance-images/kpack/beta
+  dropletRegistry: europe-west1-docker.pkg.dev/cf-on-k8s-wg/acceptance-images/droplet
+  # todo: delete exampleClusterBuilder
   exampleClusterBuilder:
-    create: true
     kpackBuilderRegistry: europe-west1-docker.pkg.dev/cf-on-k8s-wg/acceptance-images/kpack/beta
+  builderRegistry: europe-west1-docker.pkg.dev/cf-on-k8s-wg/acceptance-images/kpack-builder
 
 
 statefulset-runner:
