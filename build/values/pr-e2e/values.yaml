@@ -26,6 +26,7 @@ kpack-image-builder:
   dropletRegistry: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/droplet
   # todo: delete exampleClusterBuilder
   exampleClusterBuilder:
+    create: true
     kpackBuilderRegistry: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/kpack/beta
   builderRegistry: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/kpack-builder
 
