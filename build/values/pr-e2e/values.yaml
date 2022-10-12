@@ -28,7 +28,7 @@ kpack-image-builder:
   exampleClusterBuilder:
     create: true
     kpackBuilderRegistry: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/kpack/beta
-  builderRegistry: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/kpack-builder
+  builderRepository: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/kpack-builder
 
 statefulset-runner:
   image: cloudfoundry/korifi-statefulset-runner:latest
