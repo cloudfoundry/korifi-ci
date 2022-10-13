@@ -32,7 +32,17 @@ deploy() {
 
     helm dependency update helm/korifi
 
+    cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    pod-security.kubernetes.io/enforce: restricted
+  name: korifi
+EOF
+
     helm upgrade --install korifi helm/korifi \
+      --namespace korifi \
       --values "$tmp/values.yaml" \
       --wait
 
