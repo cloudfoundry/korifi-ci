@@ -2,9 +2,6 @@ global:
   defaultAppDomainName: pr-e2e.korifi.cf-app.com
   generateIngressCertificates: true
 
-# todo: delete createAdminUser
-createAdminUser: true
-
 api:
   apiServer:
     url: cf.pr-e2e.korifi.cf-app.com
@@ -21,13 +18,7 @@ job-task-runner:
 
 kpack-image-builder:
   image: cloudfoundry/korifi-kpack-image-builder:latest
-  # todo: delete packageRegistry
-  packageRegistry: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/kpack/beta
   dropletRegistry: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/droplet
-  # todo: delete exampleClusterBuilder
-  exampleClusterBuilder:
-    create: true
-    kpackBuilderRegistry: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/kpack/beta
   builderRepository: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/kpack-builder
 
 statefulset-runner:
