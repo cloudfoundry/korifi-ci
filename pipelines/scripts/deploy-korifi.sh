@@ -47,8 +47,8 @@ EOF
       --wait
 
     if [[ -n "$USE_LETSENCRYPT" ]]; then
-      clone_letsencrypt_cert "korifi-api-ingress-cert" "korifi-api-system"
-      clone_letsencrypt_cert "korifi-workloads-ingress-cert" "korifi-controllers-system"
+      clone_letsencrypt_cert "korifi-api-ingress-cert" "korifi"
+      clone_letsencrypt_cert "korifi-workloads-ingress-cert" "korifi"
     fi
   }
   popd

@@ -16,8 +16,8 @@ undeploy_cf() {
   echo $GCP_SERVICE_ACCOUNT_JSON >"$tmp/sa.json"
   export GOOGLE_APPLICATION_CREDENTIALS="$tmp/sa.json"
 
-  kubectl delete secret --ignore-not-found=true -n korifi-controllers-system korifi-workloads-ingress-cert
-  kubectl delete secret --ignore-not-found=true -n korifi-api-system korifi-api-ingress-cert
+  kubectl delete secret --ignore-not-found=true -n korifi korifi-workloads-ingress-cert
+  kubectl delete secret --ignore-not-found=true -n korifi korifi-api-ingress-cert
 
   kubectl delete namespace cf --ignore-not-found
 
