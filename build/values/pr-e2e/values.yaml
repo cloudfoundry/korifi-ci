@@ -6,7 +6,9 @@ api:
   apiServer:
     url: cf.pr-e2e.korifi.cf-app.com
   image: cloudfoundry/korifi-api:latest
+  # todo: delete packageRegistry
   packageRegistry: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/source-package
+  packageRepositoryPrefix: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/source-package
 
 controllers:
   taskTTL: 5s
@@ -18,7 +20,9 @@ job-task-runner:
 
 kpack-image-builder:
   image: cloudfoundry/korifi-kpack-image-builder:latest
+  # todo: delete dropletRegistry
   dropletRegistry: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/droplet
+  dropletRepositoryPrefix: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/droplet
   builderRepository: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/kpack-builder
 
 statefulset-runner:
