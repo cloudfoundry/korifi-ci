@@ -6,8 +6,6 @@ api:
   apiServer:
     url: cf.acceptance.korifi.cf-app.com
   image: cloudfoundry/korifi-api:latest
-  # todo: delete packageRegistry
-  packageRegistry: europe-west1-docker.pkg.dev/cf-on-k8s-wg/acceptance-images/source-package
   packageRepositoryPrefix: europe-west1-docker.pkg.dev/cf-on-k8s-wg/acceptance-images/source-package
 
 controllers:
@@ -19,8 +17,6 @@ job-task-runner:
 
 kpack-image-builder:
   image: cloudfoundry/korifi-kpack-image-builder:latest
-  # todo: delete dropletRegistry
-  dropletRegistry: europe-west1-docker.pkg.dev/cf-on-k8s-wg/acceptance-images/droplet
   dropletRepositoryPrefix: europe-west1-docker.pkg.dev/cf-on-k8s-wg/acceptance-images/droplet
   builderRepository: europe-west1-docker.pkg.dev/cf-on-k8s-wg/acceptance-images/kpack-builder
 
