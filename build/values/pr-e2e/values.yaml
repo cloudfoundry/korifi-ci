@@ -1,3 +1,5 @@
+adminUserName: cf-admin
+
 global:
   defaultAppDomainName: pr-e2e.korifi.cf-app.com
   generateIngressCertificates: true

@@ -1,3 +1,5 @@
+adminUserName: cf-admin
+
 global:
   defaultAppDomainName: acceptance.korifi.cf-app.com
   generateIngressCertificates: false
