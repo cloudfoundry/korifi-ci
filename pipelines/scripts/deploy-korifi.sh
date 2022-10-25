@@ -18,7 +18,7 @@ docker_login() {
 generate_kube_config() {
   gcloud-login
   export-kubeconfig "$CLUSTER_NAME"
-  echo $GCP_SERVICE_ACCOUNT_JSON >"$tmp/sa.json"
+  echo "$GCP_SERVICE_ACCOUNT_JSON" >"$tmp/sa.json"
   export GOOGLE_APPLICATION_CREDENTIALS="$tmp/sa.json"
 }
 
@@ -54,7 +54,17 @@ EOF
   popd
 }
 
-create_registry_secret() {
+create_root_namespace() {
+  cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/enforce: restricted
+  name: cf
+EOF
+
   kubectl delete secret -n cf image-registry-credentials --ignore-not-found
   kubectl create secret -n cf docker-registry image-registry-credentials \
     --docker-server="${DOCKER_SERVER}" \
@@ -66,8 +76,8 @@ main() {
   export KUBECONFIG=$PWD/kube/kube.config
   generate_kube_config
   docker_login
+  create_root_namespace
   deploy
-  create_registry_secret
 }
 
 main
