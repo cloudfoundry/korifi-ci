@@ -280,6 +280,13 @@ jobs:
           FULL_LOG_ON_ERR: yes-please
           GINKGO_NODES: 8
 
+  - task: undeploy-korifi
+    file: korifi-ci/pipelines/tasks/undeploy-korifi.yml
+    image: ci-image
+    params:
+      CLUSTER_NAME: pr-e2e
+      GCP_ZONE: europe-west1-b
+
   - put: korifi-status
     params:
       path: korifi

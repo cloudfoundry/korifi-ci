@@ -21,7 +21,9 @@ undeploy_cf() {
 
   kubectl delete namespace cf --ignore-not-found
 
-  helm delete --namespace korifi korifi --wait
+  if helm status --namespace korifi korifi; then
+    helm delete --namespace korifi korifi --wait
+  fi
 }
 
 main() {
