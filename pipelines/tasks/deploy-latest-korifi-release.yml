@@ -1,7 +1,6 @@
 platform: linux
 
 inputs:
-- name: korifi-release-version
 - name: korifi-ci
 - name: kube
 
@@ -16,4 +15,4 @@ params:
   DOCKER_PASSWORD:
 
 run:
-  path: korifi-ci/pipelines/scripts/deploy-released-korifi.sh
+  path: korifi-ci/pipelines/scripts/deploy-latest-korifi-release.sh

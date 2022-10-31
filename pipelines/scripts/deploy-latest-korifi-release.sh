@@ -4,8 +4,6 @@ set -euo pipefail
 
 source korifi-ci/pipelines/scripts/common/secrets.sh
 
-VERSION=$(cat korifi-release-version/version)
-
 tmp="$(mktemp -d)"
 trap "rm -rf $tmp" EXIT
 
@@ -19,8 +17,11 @@ metadata:
   name: korifi
 EOF
 
+  location=$(curl -i https://github.com/cloudfoundry/korifi/releases/latest | grep "location: ")
+  version="${location##*tag/v}"
+
   helm upgrade --install korifi \
-    "https://github.com/cloudfoundry/korifi/releases/download/v${VERSION}/korifi-${VERSION}.tgz" \
+    "https://github.com/cloudfoundry/korifi/releases/download/v${version}/korifi-${version}.tgz" \
     --namespace korifi \
     --values "korifi-ci/build/values/$CLUSTER_NAME/values.yaml" \
     --wait
