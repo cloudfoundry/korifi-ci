@@ -27,7 +27,7 @@ deploy() {
   {
     kbld \
       -f "../korifi-ci/build/kbld/$CLUSTER_NAME/korifi-kbld.yml" \
-      -f "../korifi-ci/build/values/$CLUSTER_NAME/values.yaml" \
+      -f "../korifi-ci/build/values/$CLUSTER_NAME/image-values.yaml" \
       --images-annotation=false >"$tmp/values.yaml"
 
     helm dependency update helm/korifi
@@ -44,6 +44,7 @@ EOF
     helm upgrade --install korifi helm/korifi \
       --namespace korifi \
       --values "$tmp/values.yaml" \
+      --values "../korifi-ci/build/values/$CLUSTER_NAME/values.yaml" \
       --wait
 
     if [[ -n "$USE_LETSENCRYPT" ]]; then

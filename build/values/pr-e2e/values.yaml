@@ -7,21 +7,14 @@ global:
 api:
   apiServer:
     url: cf.pr-e2e.korifi.cf-app.com
-  image: cloudfoundry/korifi-api:latest
   packageRepositoryPrefix: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/source-package
 
 controllers:
   taskTTL: 5s
-  image: cloudfoundry/korifi-controllers:latest
 
 job-task-runner:
-  image: cloudfoundry/korifi-job-task-runner:latest
   jobTTL: 5s
 
 kpack-image-builder:
-  image: cloudfoundry/korifi-kpack-image-builder:latest
   dropletRepositoryPrefix: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/droplet
   builderRepository: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/kpack-builder
-
-statefulset-runner:
-  image: cloudfoundry/korifi-statefulset-runner:latest
