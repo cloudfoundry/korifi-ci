@@ -307,7 +307,7 @@ jobs:
           CLUSTER_NAME: pr-e2e
           GCP_ZONE: europe-west1-b
       - task: deploy-latest-release
-        file: korifi-ci/pipelines/tasks/deploy-released-korifi.yml
+        file: korifi-ci/pipelines/tasks/deploy-latest-korifi-release.yml
         image: ci-image
         timeout: 30m
         params:

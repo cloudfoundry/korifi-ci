@@ -17,7 +17,7 @@ metadata:
   name: korifi
 EOF
 
-  location=$(curl -i https://github.com/cloudfoundry/korifi/releases/latest | grep "location: ")
+  location=$(curl -i https://github.com/cloudfoundry/korifi/releases/latest | grep "location: " | tr -d '\r')
   version="${location##*tag/v}"
 
   helm upgrade --install korifi \
