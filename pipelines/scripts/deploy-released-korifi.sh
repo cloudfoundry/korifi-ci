@@ -22,7 +22,7 @@ EOF
   helm upgrade --install korifi \
     "https://github.com/cloudfoundry/korifi/releases/download/v${VERSION}/korifi-${VERSION}.tgz" \
     --namespace korifi \
-    --values "../korifi-ci/build/values/$CLUSTER_NAME/values.yaml" \
+    --values "korifi-ci/build/values/$CLUSTER_NAME/values.yaml" \
     --wait
 
   if [[ -n "$USE_LETSENCRYPT" ]]; then
