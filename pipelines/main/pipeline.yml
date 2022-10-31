@@ -393,6 +393,8 @@ jobs:
       trigger: true
       version: every
     - get: cf-k8s-secrets
+    - get: korifi-release-version
+      passed: publish-release
 
   - put: korifi-pr
     params:
@@ -415,7 +417,19 @@ jobs:
       context: " e2e-tests (pull_request)"
       status: success
 
-  ensure: *clean-pr-e2e-env
+  ensure:
+  - do: *clean-pr-e2e-env
+  - task: deploy-latest-release
+    file: korifi-ci/pipelines/tasks/deploy-released-korifi.yml
+    image: ci-image
+    timeout: 30m
+    params:
+      CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
+      GCP_ZONE: europe-west1-b
+      USE_LETSENCRYPT: ((.:cluster-env-vars.USE_LETSENCRYPT))
+      DOCKER_SERVER: europe-west1-docker.pkg.dev
+      DOCKER_USERNAME: _json_key
+      DOCKER_PASSWORD: ((gcp-artifact-registry-writer))
 
 # ===== acceptance =====
 - name: deploy-korifi-acceptance
