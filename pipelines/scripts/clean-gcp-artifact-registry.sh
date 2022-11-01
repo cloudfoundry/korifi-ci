@@ -18,11 +18,6 @@ main() {
     jq -r '.[]|.package' |
     xargs -I {} bash -c 'gcloudx "$@"' _ artifacts docker images delete {} --async --quiet
 
-  # delete all kpack cluster-builder images
-  gcloudx artifacts docker images list ${KPACK_REPO_LOCATION}-docker.pkg.dev/${PROJECT}/${KPACK_REPO_NAME}/kpack/beta --format=json |
-    jq -r '.[] | .package + "@" + .version' |
-    xargs -I {} bash -c 'gcloudx "$@"' _ artifacts docker images delete {} --async --quiet --delete-tags
-
   # delete all korifi images
   for package in korifi-api korifi-controllers korifi-job-task-runner korifi-kpack-image-builder korifi-statefulset-runner; do
     gcloudx artifacts docker images list ${CI_REPO_LOCATION}-docker.pkg.dev/${PROJECT}/${CI_REPO_NAME}/${package} --format=json |
