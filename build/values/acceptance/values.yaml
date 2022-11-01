@@ -7,20 +7,12 @@ global:
 api:
   apiServer:
     url: cf.acceptance.korifi.cf-app.com
-  image: cloudfoundry/korifi-api:latest
   packageRepositoryPrefix: europe-west1-docker.pkg.dev/cf-on-k8s-wg/acceptance-images/source-package
 
-controllers:
-  image: cloudfoundry/korifi-controllers:latest
-
 job-task-runner:
-  image: cloudfoundry/korifi-job-task-runner:latest
   jobTTL: 24h
 
 kpack-image-builder:
-  image: cloudfoundry/korifi-kpack-image-builder:latest
   dropletRepositoryPrefix: europe-west1-docker.pkg.dev/cf-on-k8s-wg/acceptance-images/droplet
   builderRepository: europe-west1-docker.pkg.dev/cf-on-k8s-wg/acceptance-images/kpack-builder
 
-statefulset-runner:
-  image: cloudfoundry/korifi-statefulset-runner:latest
