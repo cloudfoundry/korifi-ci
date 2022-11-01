@@ -642,7 +642,7 @@ jobs:
 - name: delete-cluster-acceptance
   serial: true
   serial_groups:
-  - aceptance
+  - acceptance
   plan:
   - in_parallel:
     - get: korifi-ci
