@@ -13,23 +13,19 @@ main() {
 
   export -f gcloudx
 
-  # delete all images produced by kpack during the tests - but not the kpack cluster-builder image
-  gcloudx artifacts docker images list ${KPACK_REPO_LOCATION}-docker.pkg.dev/${PROJECT}/${KPACK_REPO_NAME} --format=json --filter="package!~/kpack/beta\$" |
+  # delete all images produced by kpack during the tests
+  gcloudx artifacts docker images list ${KPACK_REPO_LOCATION}-docker.pkg.dev/${PROJECT}/${KPACK_REPO_NAME} --format=json |
     jq -r '.[]|.package' |
     xargs -I {} bash -c 'gcloudx "$@"' _ artifacts docker images delete {} --async --quiet
 
-  # delete all but latest kpack cluster-builder image
-  latest=$(gcloudx artifacts docker images list ${KPACK_REPO_LOCATION}-docker.pkg.dev/${PROJECT}/${KPACK_REPO_NAME}/kpack/beta --sort-by='~create_time' --format=json --limit=1 |
-    jq -r '.[] | .version')
-
-  gcloudx artifacts docker images list ${KPACK_REPO_LOCATION}-docker.pkg.dev/${PROJECT}/${KPACK_REPO_NAME}/kpack/beta --filter="version!~${latest}" --format=json |
+  # delete all kpack cluster-builder images
+  gcloudx artifacts docker images list ${KPACK_REPO_LOCATION}-docker.pkg.dev/${PROJECT}/${KPACK_REPO_NAME}/kpack/beta --format=json |
     jq -r '.[] | .package + "@" + .version' |
     xargs -I {} bash -c 'gcloudx "$@"' _ artifacts docker images delete {} --async --quiet --delete-tags
 
-  # delete versions of korifi images older than a day
-  yesterday=$(date -d "yesterday" -Iseconds -u)
+  # delete all korifi images
   for package in korifi-api korifi-controllers korifi-job-task-runner korifi-kpack-image-builder korifi-statefulset-runner; do
-    gcloudx artifacts docker images list ${CI_REPO_LOCATION}-docker.pkg.dev/${PROJECT}/${CI_REPO_NAME}/${package} --format=json --filter="createTime<${yesterday}" |
+    gcloudx artifacts docker images list ${CI_REPO_LOCATION}-docker.pkg.dev/${PROJECT}/${CI_REPO_NAME}/${package} --format=json |
       jq -r '.[]|.package + "@" + .version' |
       xargs -I {} bash -c 'gcloudx "$@"' _ artifacts docker images delete {} --async --quiet --delete-tags
   done
