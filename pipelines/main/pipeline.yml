@@ -114,8 +114,7 @@ jobs:
           output_mapping:
             coverage: coverage-api
           params:
-            DIR: api
-            TARGET: test
+            TARGET: test-api
 
         - task: controllers-tests
           file: korifi-ci/pipelines/tasks/run-make-target.yml
@@ -125,8 +124,7 @@ jobs:
           output_mapping:
             coverage: coverage-controllers
           params:
-            DIR: controllers
-            TARGET: test
+            TARGET: test-controllers
 
         - task: kpack-image-builder-tests
           file: korifi-ci/pipelines/tasks/run-make-target.yml
