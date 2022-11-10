@@ -719,6 +719,7 @@ jobs:
   - do: *deleteCluster
   - task: clean-gcp-artifact-registry
     file: korifi-ci/pipelines/tasks/clean-gcp-artifact-registry.yml
+    attempts: 10
     image: ci-image
   on_failure: *slackHook
 
