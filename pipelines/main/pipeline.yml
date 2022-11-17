@@ -63,10 +63,8 @@ groups:
   - publish-release
 - name: clusters
   jobs:
-  - create-cluster-acceptance
-  - delete-cluster-acceptance
-  - create-cluster-pr-e2e
-  - delete-cluster-pr-e2e
+  - recreate-cluster-acceptance
+  - recreate-cluster-pr-e2e
 
 jobs:
 # ===== main =====
@@ -637,7 +635,7 @@ jobs:
 # ===== clusters =====
 
 # ===== clusters:acceptance =====
-- name: delete-cluster-acceptance
+- name: recreate-cluster-acceptance
   serial: true
   serial_groups:
   - acceptance
@@ -648,7 +646,7 @@ jobs:
   - <<: *setClusterVars
     params:
       CLUSTER_NAME: acceptance
-  - do: &deleteCluster
+  - do: &recreateCluster
     - in_parallel:
       - get: gcloud-image
       - get: cf-k8s-secrets
@@ -660,32 +658,6 @@ jobs:
       image: gcloud-image
       params:
         CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
-    - put: cluster-event
-      params:
-        bump: major
-  on_failure: *slackHook
-
-- name: create-cluster-acceptance
-  serial: true
-  serial_groups:
-  - acceptance
-  plan:
-  - in_parallel:
-    - get: cluster-event
-      trigger: true
-      passed:
-      - delete-cluster-acceptance
-    - get: korifi-ci
-    - get: ci-image
-  - <<: *setClusterVars
-    params:
-      CLUSTER_NAME: acceptance
-  - do: &createCluster
-    - in_parallel:
-      - get: gcloud-image
-      - get: cf-k8s-secrets
-    - load_var: cluster-env-vars
-      file: clusters/env_vars.yaml
     - task: delete-disks
       file: korifi-ci/pipelines/tasks/delete-disks.yml
       image: gcloud-image
@@ -697,13 +669,10 @@ jobs:
       params:
         CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
         NODE_MACHINE_TYPE: e2-custom-4-6144
-    - put: cluster-event
-      params:
-        bump: major
   on_failure: *slackHook
 
 # ===== clusters:pr-e2e =====
-- name: delete-cluster-pr-e2e
+- name: recreate-cluster-pr-e2e
   serial: true
   serial_groups:
   - pr-e2e
@@ -716,29 +685,11 @@ jobs:
   - <<: *setClusterVars
     params:
       CLUSTER_NAME: pr-e2e
-  - do: *deleteCluster
+  - do: *recreateCluster
   - task: clean-gcp-artifact-registry
     file: korifi-ci/pipelines/tasks/clean-gcp-artifact-registry.yml
     attempts: 10
     image: ci-image
-  on_failure: *slackHook
-
-- name: create-cluster-pr-e2e
-  serial: true
-  serial_groups:
-  - pr-e2e
-  plan:
-  - in_parallel:
-    - get: cluster-event
-      trigger: true
-      passed:
-      - delete-cluster-pr-e2e
-    - get: korifi-ci
-    - get: ci-image
-  - <<: *setClusterVars
-    params:
-      CLUSTER_NAME: pr-e2e
-  - do: *createCluster
   on_failure: *slackHook
 
 resource_types:
@@ -913,14 +864,3 @@ resources:
   source:
     start: 8:00 AM
     stop: 9:00 AM
-
-- name: cluster-event
-  type: semver
-  icon: check-decagram
-  source:
-    uri: ((github/cf-k8s-secrets.uri))
-    branch: events
-    driver: git
-    file: cluster-event
-    initial_version: 0.1.0
-    private_key: ((github/cf-k8s-secrets.private_key))
