@@ -18,3 +18,5 @@ job-task-runner:
 kpack-image-builder:
   dropletRepositoryPrefix: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/droplet
   builderRepository: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/kpack-builder
+  clusterStackBuildImage: paketobuildpacks/build:base-cnb
+  clusterStackRunImage: paketobuildpacks/run:base-cnb
