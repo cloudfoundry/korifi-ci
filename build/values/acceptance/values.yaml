@@ -13,6 +13,8 @@ job-task-runner:
   jobTTL: 24h
 
 kpack-image-builder:
+  dropletRepository: europe-west1-docker.pkg.dev/cf-on-k8s-wg/acceptance-images/droplet
+  # remove dropletRepositoryPrefix once commit removing it has reached main
   dropletRepositoryPrefix: europe-west1-docker.pkg.dev/cf-on-k8s-wg/acceptance-images/droplet
   builderRepository: europe-west1-docker.pkg.dev/cf-on-k8s-wg/acceptance-images/kpack-builder
 
