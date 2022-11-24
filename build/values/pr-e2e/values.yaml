@@ -7,6 +7,8 @@ global:
 api:
   apiServer:
     url: cf.pr-e2e.korifi.cf-app.com
+  packageRepository: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/packages
+  # remove packageRepositoryPrefix once commit removing it has reached main
   packageRepositoryPrefix: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/source-package
 
 controllers:
