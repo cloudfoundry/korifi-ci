@@ -3,9 +3,11 @@ inputs:
 - name: korifi-ci
 - name: cf-k8s-secrets
 params:
+  AWS_ACCESS_KEY_ID: ((aws/terraform.access-key-id))
+  AWS_SECRET_ACCESS_KEY: ((aws/terraform.secret-access-key))
   CLUSTER_NAME:
   GCP_SERVICE_ACCOUNT_JSON: ((gcp-serviceaccount))
-  RELEASE_CHANNEL: REGULAR
+  RELEASE_CHANNEL:
   WORKER_COUNT: 2
   NODE_MACHINE_TYPE:
 run:

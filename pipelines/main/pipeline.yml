@@ -64,6 +64,7 @@ groups:
 - name: clusters
   jobs:
   - recreate-cluster-acceptance
+  - recreate-cluster-eks
   - recreate-cluster-pr-e2e
 
 jobs:
@@ -646,7 +647,7 @@ jobs:
   - <<: *setClusterVars
     params:
       CLUSTER_NAME: acceptance
-  - do: &recreateCluster
+  - do: &recreateGCPCluster
     - in_parallel:
       - get: gcloud-image
       - get: cf-k8s-secrets
@@ -663,12 +664,50 @@ jobs:
       image: gcloud-image
       params:
         CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
+        CLUSTER_TYPE: GKE
     - task: create-kubernetes-cluster
       file: korifi-ci/pipelines/tasks/create-cluster.yml
       image: gcloud-image
       params:
         CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
         NODE_MACHINE_TYPE: e2-custom-4-6144
+  on_failure: *slackHook
+
+- name: recreate-cluster-eks
+  serial: true
+  serial_groups:
+  - eks
+  plan:
+  - in_parallel:
+    - get: pr-e2e-delete-timer
+      trigger: true
+    - get: korifi-ci
+    - get: ci-image
+  - <<: *setClusterVars
+    params:
+      CLUSTER_NAME: eks-e2e-cluster
+  - do:
+    - in_parallel:
+      - get: gcloud-image
+      - get: cf-k8s-secrets
+    - load_var: cluster-env-vars
+      file: clusters/env_vars.yaml
+    - task: delete-kubernetes-cluster
+      privileged: true
+      file: korifi-ci/pipelines/tasks/delete-cluster.yml
+      image: gcloud-image
+      params:
+        CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
+        CLUSTER_TYPE: EKS
+    - task: delete-disks
+      file: korifi-ci/pipelines/tasks/delete-disks-eks.yml
+      image: gcloud-image
+    - task: create-kubernetes-cluster
+      file: korifi-ci/pipelines/tasks/create-cluster.yml
+      image: gcloud-image
+      params:
+        CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
+        NODE_MACHINE_TYPE: m5.xlarge
   on_failure: *slackHook
 
 # ===== clusters:pr-e2e =====
@@ -685,7 +724,7 @@ jobs:
   - <<: *setClusterVars
     params:
       CLUSTER_NAME: pr-e2e
-  - do: *recreateCluster
+  - do: *recreateGCPCluster
   - task: clean-gcp-artifact-registry
     file: korifi-ci/pipelines/tasks/clean-gcp-artifact-registry.yml
     attempts: 10
