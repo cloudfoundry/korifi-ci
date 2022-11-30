@@ -8,15 +8,16 @@ outputs:
 - name: kube
 
 params:
-  REGISTRY_SERVICE_ACCOUNT_JSON: ((gcp-artifact-registry-writer))
-  GCP_SERVICE_ACCOUNT_JSON: ((gcp-serviceaccount))
-  GCP_ZONE:
+  AWS_REGION:
   CLUSTER_NAME:
   CLUSTER_TYPE:
-  USE_LETSENCRYPT:
+  DOCKER_PASSWORD:
   DOCKER_SERVER:
   DOCKER_USERNAME:
-  DOCKER_PASSWORD:
+  GCP_SERVICE_ACCOUNT_JSON: ((gcp-serviceaccount))
+  GCP_ZONE:
+  REGISTRY_SERVICE_ACCOUNT_JSON: ((gcp-artifact-registry-writer))
+  USE_LETSENCRYPT:
 
 run:
   path: korifi-ci/pipelines/scripts/deploy-korifi.sh

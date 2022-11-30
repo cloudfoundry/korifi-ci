@@ -4,10 +4,12 @@ inputs:
 - name: korifi-ci
 
 params:
-  REGISTRY_SERVICE_ACCOUNT_JSON: ((gcp-artifact-registry-writer))
+  AWS_REGION:
+  CLUSTER_NAME:
+  CLUSTER_TYPE:
   GCP_SERVICE_ACCOUNT_JSON: ((gcp-serviceaccount))
   GCP_ZONE:
-  CLUSTER_NAME:
+  REGISTRY_SERVICE_ACCOUNT_JSON: ((gcp-artifact-registry-writer))
 
 run:
   path: korifi-ci/pipelines/scripts/undeploy-korifi.sh

@@ -8,9 +8,11 @@ outputs:
   - name: accounts
 
 params:
+  AWS_REGION:
   GCP_SERVICE_ACCOUNT_JSON: ((gcp-pr-e2e-k8s-admin))
   GCP_ZONE:
   CLUSTER_NAME:
+  CLUSTER_TYPE:
   GINKGO_NODES:
   ROOT_NAMESPACE:
 

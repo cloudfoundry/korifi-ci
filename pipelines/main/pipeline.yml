@@ -219,6 +219,7 @@ jobs:
         image: ci-image
         timeout: 30m
         params:
+          AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
           CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
           CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
           GCP_PROJECT_ID: ((.:cluster-env-vars.GCP_PROJECT_ID))
@@ -227,16 +228,19 @@ jobs:
 
       - task: update-dns
         file: korifi-ci/pipelines/tasks/update-dns.yml
-        image: ci-image
+        image: gcloud-image
         params:
+          AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
           CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
           CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
+          GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
 
       - task: deploy-korifi
         file: korifi-ci/pipelines/tasks/deploy-korifi.yml
         image: ci-image
         timeout: 30m
         params:
+          AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
           CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
           CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
           GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
@@ -250,9 +254,10 @@ jobs:
         file: korifi-ci/pipelines/tasks/set-account-env-vars.yml
         image: ci-image
         params:
+          AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
           CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
           CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
-          GCP_ZONE: europe-west1-b
+          GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
           ROOT_NAMESPACE: cf
 
       - load_var: accounts_env_vars
@@ -293,6 +298,7 @@ jobs:
     file: korifi-ci/pipelines/tasks/undeploy-korifi.yml
     image: ci-image
     params:
+      AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
       CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
       CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
       GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
@@ -310,6 +316,7 @@ jobs:
       image: ci-image
       attempts: 10
       params:
+        AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
         CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
         CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
         GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
@@ -318,6 +325,7 @@ jobs:
       image: ci-image
       timeout: 30m
       params:
+        AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
         CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
         CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
         GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
@@ -668,17 +676,21 @@ jobs:
       file: clusters/env_vars.yaml
     - task: delete-dns
       file: korifi-ci/pipelines/tasks/delete-dns.yml
-      image: ci-image
+      image: gcloud-image
       params:
+        AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
         CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
         CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
+        GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
     - task: delete-kubernetes-cluster
       privileged: true
       file: korifi-ci/pipelines/tasks/delete-cluster.yml
       image: gcloud-image
       params:
+        AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
         CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
         CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
+        GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
     - task: delete-disks
       file: korifi-ci/pipelines/tasks/delete-disks.yml
       image: gcloud-image
@@ -686,6 +698,7 @@ jobs:
         AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
         CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
         CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
+        GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
     - task: create-kubernetes-cluster
       file: korifi-ci/pipelines/tasks/create-cluster.yml
       image: gcloud-image
