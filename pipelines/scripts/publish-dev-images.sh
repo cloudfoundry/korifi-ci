@@ -29,7 +29,7 @@ publish_images() {
 }
 
 main() {
-  export-kubeconfig "$CLUSTER_NAME"
+  export-kubeconfig
   docker_login
   update_config_with_version
   publish_images

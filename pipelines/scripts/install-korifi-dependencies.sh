@@ -6,9 +6,8 @@ set -euo pipefail
 source korifi-ci/pipelines/scripts/common/gcloud-functions
 source korifi-ci/pipelines/scripts/common/secrets.sh
 
-export-kubeconfig "$CLUSTER_NAME"
+export-kubeconfig
 
-ip_addr="$(<terraform-output/result)"
 pushd korifi
 {
   ./scripts/install-dependencies.sh
@@ -16,7 +15,5 @@ pushd korifi
     ensure_letsencrypt_issuer
     ensure_domain_wildcard_cert
   fi
-  kubectl patch service envoy -n projectcontour -p "{\"spec\": { \"loadBalancerIP\": $ip_addr }}"
-
 }
 popd

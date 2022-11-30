@@ -65,7 +65,7 @@ EOF
 
 main() {
   export KUBECONFIG=$PWD/kube/kube.config
-  export-kubeconfig "$CLUSTER_NAME"
+  export-kubeconfig
   docker_login
   create_root_namespace
   deploy

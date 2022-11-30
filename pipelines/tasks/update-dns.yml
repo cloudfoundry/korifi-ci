@@ -5,5 +5,8 @@ inputs:
 params:
   AWS_ACCESS_KEY_ID: ((aws/terraform.access-key-id))
   AWS_SECRET_ACCESS_KEY: ((aws/terraform.secret-access-key))
+  CLUSTER_NAME:
+  CLUSTER_TYPE:
+  GCP_SERVICE_ACCOUNT_JSON: ((gcp-serviceaccount))
 run:
-  path: korifi-ci/pipelines/scripts/delete-disks-eks.sh
+  path: korifi-ci/pipelines/scripts/update-dns.sh

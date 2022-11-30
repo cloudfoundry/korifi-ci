@@ -17,7 +17,7 @@ undeploy_cf() {
 
 main() {
   export KUBECONFIG=$PWD/kube.config
-  export-kubeconfig "$CLUSTER_NAME"
+  export-kubeconfig
   undeploy_cf
 }
 

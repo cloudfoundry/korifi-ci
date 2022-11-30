@@ -7,8 +7,12 @@ outputs:
   - name: clusters
 
 params:
+  AWS_REGION:
   CLUSTER_NAME:
-  PROPERTY:
+  CLUSTER_TYPE:
+  GCP_PROJECT_ID:
+  GCP_ZONE:
+  NODE_MACHINE_TYPE:
 
 run:
   path: korifi-ci/pipelines/scripts/set-cluster-env-vars.sh

@@ -26,6 +26,7 @@ common:
     image: ci-image
     params:
       CLUSTER_NAME: pr-e2e
+      CLUSTER_TYPE: GKE
       GCP_ZONE: europe-west1-b
 
   set_cluster_vars: &setClusterVars
@@ -33,8 +34,11 @@ common:
     file: korifi-ci/pipelines/tasks/set-cluster-env-vars.yml
     image: ci-image
     params:
+      AWS_REGION: eu-west-1
       CLUSTER_NAME: undefined
-      PROPERTY: undefined
+      CLUSTER_TYPE: undefined
+      GCP_PROJECT_ID: cf-on-k8s-wg
+      GCP_ZONE: europe-west1-b
 
 groups:
 - name: main
@@ -209,18 +213,12 @@ jobs:
   - <<: *setClusterVars
     params:
       CLUSTER_NAME: pr-e2e
-      PROPERTY: pr_e2e_ip
+      CLUSTER_TYPE: GKE
 
   - do: &end-to-ends
     - do: &deploy-korifi
       - load_var: cluster-env-vars
         file: clusters/env_vars.yaml
-      - task: get-ip-addr
-        file: korifi-ci/pipelines/tasks/get-terraform-property.yml
-        image: gcloud-image
-        params:
-          CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
-          PROPERTY: ((.:cluster-env-vars.PROPERTY))
 
       - task: install-korifi-dependencies
         file: korifi-ci/pipelines/tasks/install-korifi-dependencies.yml
@@ -228,9 +226,17 @@ jobs:
         timeout: 30m
         params:
           CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
-          GCP_PROJECT_ID: cf-on-k8s-wg
-          GCP_ZONE: europe-west1-b
+          CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
+          GCP_PROJECT_ID: ((.:cluster-env-vars.GCP_PROJECT_ID))
+          GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
           USE_LETSENCRYPT: ((.:cluster-env-vars.USE_LETSENCRYPT))
+
+      - task: update-dns
+        file: korifi-ci/pipelines/tasks/update-dns.yml
+        image: ci-image
+        params:
+          CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
+          CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
 
       - task: deploy-korifi
         file: korifi-ci/pipelines/tasks/deploy-korifi.yml
@@ -238,7 +244,8 @@ jobs:
         timeout: 30m
         params:
           CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
-          GCP_ZONE: europe-west1-b
+          CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
+          GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
           USE_LETSENCRYPT: ((.:cluster-env-vars.USE_LETSENCRYPT))
           DOCKER_SERVER: europe-west1-docker.pkg.dev
           DOCKER_USERNAME: _json_key
@@ -250,6 +257,7 @@ jobs:
         image: ci-image
         params:
           CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
+          CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
           GCP_ZONE: europe-west1-b
           ROOT_NAMESPACE: cf
 
@@ -291,8 +299,9 @@ jobs:
     file: korifi-ci/pipelines/tasks/undeploy-korifi.yml
     image: ci-image
     params:
-      CLUSTER_NAME: pr-e2e
-      GCP_ZONE: europe-west1-b
+      CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
+      CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
+      GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
 
   - put: korifi-status
     params:
@@ -307,15 +316,17 @@ jobs:
       image: ci-image
       attempts: 10
       params:
-        CLUSTER_NAME: pr-e2e
-        GCP_ZONE: europe-west1-b
+        CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
+        CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
+        GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
     - task: deploy-latest-release
       file: korifi-ci/pipelines/tasks/deploy-latest-korifi-release.yml
       image: ci-image
       timeout: 30m
       params:
         CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
-        GCP_ZONE: europe-west1-b
+        CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
+        GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
         USE_LETSENCRYPT: ((.:cluster-env-vars.USE_LETSENCRYPT))
         DOCKER_SERVER: europe-west1-docker.pkg.dev
         DOCKER_USERNAME: _json_key
@@ -353,6 +364,7 @@ jobs:
     image: ci-image
     params:
       CLUSTER_NAME: pr-e2e
+      CLUSTER_TYPE: GKE
       GCP_ZONE: europe-west1-b
       REGISTRY_HOSTNAME: index.docker.io
       REGISTRY_USER: ((release-pipeline/dockerhub-auth.username))
@@ -419,7 +431,7 @@ jobs:
   - <<: *setClusterVars
     params:
       CLUSTER_NAME: pr-e2e
-      PROPERTY: pr_e2e_ip
+      CLUSTER_TYPE: GKE
 
   - do: *end-to-ends
 
@@ -455,7 +467,7 @@ jobs:
   - <<: *setClusterVars
     params:
       CLUSTER_NAME: acceptance
-      PROPERTY: acceptance_ip
+      CLUSTER_TYPE: GKE
       USE_LETSENCRYPT: true
 
   - do: *deploy-korifi
@@ -479,6 +491,7 @@ jobs:
   - <<: *setClusterVars
     params:
       CLUSTER_NAME: acceptance
+      CLUSTER_TYPE: GKE
   - load_var: cluster-env-vars
     file: clusters/env_vars.yaml
   - do: *set-account-env-vars
@@ -492,7 +505,8 @@ jobs:
       CF_API_URL: cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
       FIREBASE_CONF: ((acceptance/pairup.config))
       CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
-      GCP_ZONE: europe-west1-b
+      CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
+      GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
 
 - name: deploy-postfacto
   on_failure:
@@ -511,6 +525,7 @@ jobs:
   - <<: *setClusterVars
     params:
       CLUSTER_NAME: acceptance
+      CLUSTER_TYPE: GKE
   - load_var: cluster-env-vars
     file: clusters/env_vars.yaml
   - do: *set-account-env-vars
@@ -523,7 +538,8 @@ jobs:
       CF_ADMIN_CERT: ((.:accounts_env_vars.CF_ADMIN_CERT))
       CF_API_URL: cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
       CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
-      GCP_ZONE: europe-west1-b
+      CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
+      GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
 
 # ===== periodics =====
 - name: run-tests-periodic
@@ -563,7 +579,7 @@ jobs:
   - <<: *setClusterVars
     params:
       CLUSTER_NAME: pr-e2e
-      PROPERTY: pr_e2e_ip
+      CLUSTER_TYPE: GKE
   - do: *end-to-ends
   ensure: *clean-pr-e2e-env
 
@@ -619,6 +635,7 @@ jobs:
     image: ci-image
     params:
       CLUSTER_NAME: pr-e2e
+      CLUSTER_TYPE: GKE
       GCP_ZONE: europe-west1-b
       REGISTRY_HOSTNAME: index.docker.io
       REGISTRY_USER: ((release-pipeline/dockerhub-auth.username))
@@ -647,24 +664,34 @@ jobs:
   - <<: *setClusterVars
     params:
       CLUSTER_NAME: acceptance
-  - do: &recreateGCPCluster
+      CLUSTER_TYPE: GKE
+      NODE_MACHINE_TYPE: e2-custom-4-6144
+  - do: &recreateCluster
     - in_parallel:
       - get: gcloud-image
       - get: cf-k8s-secrets
     - load_var: cluster-env-vars
       file: clusters/env_vars.yaml
+    - task: delete-dns
+      file: korifi-ci/pipelines/tasks/delete-dns.yml
+      image: ci-image
+      params:
+        CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
+        CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
     - task: delete-kubernetes-cluster
       privileged: true
       file: korifi-ci/pipelines/tasks/delete-cluster.yml
       image: gcloud-image
       params:
         CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
+        CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
     - task: delete-disks
       file: korifi-ci/pipelines/tasks/delete-disks.yml
       image: gcloud-image
       params:
+        AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
         CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
-        CLUSTER_TYPE: GKE
+        CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
     - task: create-kubernetes-cluster
       file: korifi-ci/pipelines/tasks/create-cluster.yml
       image: gcloud-image
@@ -686,28 +713,9 @@ jobs:
   - <<: *setClusterVars
     params:
       CLUSTER_NAME: eks-e2e
-  - do:
-    - in_parallel:
-      - get: gcloud-image
-      - get: cf-k8s-secrets
-    - load_var: cluster-env-vars
-      file: clusters/env_vars.yaml
-    - task: delete-kubernetes-cluster
-      privileged: true
-      file: korifi-ci/pipelines/tasks/delete-cluster.yml
-      image: gcloud-image
-      params:
-        CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
-        CLUSTER_TYPE: EKS
-    - task: delete-disks
-      file: korifi-ci/pipelines/tasks/delete-disks-eks.yml
-      image: gcloud-image
-    - task: create-kubernetes-cluster
-      file: korifi-ci/pipelines/tasks/create-cluster.yml
-      image: gcloud-image
-      params:
-        CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
-        NODE_MACHINE_TYPE: m5.xlarge
+      CLUSTER_TYPE: GKE
+      NODE_MACHINE_TYPE: m5.xlarge
+  - do: *recreateCluster
   on_failure: *slackHook
 
 # ===== clusters:pr-e2e =====
@@ -724,7 +732,9 @@ jobs:
   - <<: *setClusterVars
     params:
       CLUSTER_NAME: pr-e2e
-  - do: *recreateGCPCluster
+      CLUSTER_TYPE: GKE
+      NODE_MACHINE_TYPE: e2-custom-4-6144
+  - do: *recreateCluster
   - task: clean-gcp-artifact-registry
     file: korifi-ci/pipelines/tasks/clean-gcp-artifact-registry.yml
     attempts: 10

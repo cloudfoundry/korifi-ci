@@ -60,9 +60,9 @@ resource "aws_security_group" "elb" {
 }
 EOF
 
-    ELB_NAME="$(aws elb describe-load-balancers --region eu-west-1 | jq -r '.LoadBalancerDescriptions[0].LoadBalancerName')"
+    ELB_NAME="$(aws elb describe-load-balancers --region "$AWS_REGION" | jq -r '.LoadBalancerDescriptions[0].LoadBalancerName')"
     terraform import aws_elb.contour "$ELB_NAME"
-    terraform import aws_security_group.elb "$(aws elb describe-load-balancers --region eu-west-1 --load-balancer-name "$ELB_NAME" | jq -r '.LoadBalancerDescriptions[0].SecurityGroups[0]')"
+    terraform import aws_security_group.elb "$(aws elb describe-load-balancers --region "$AWS_REGION" --load-balancer-name "$ELB_NAME" | jq -r '.LoadBalancerDescriptions[0].SecurityGroups[0]')"
   fi
 
   terraform destroy \

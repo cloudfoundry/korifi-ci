@@ -6,7 +6,7 @@ source korifi-ci/pipelines/scripts/common/gcloud-functions
 
 main() {
   export KUBECONFIG=$PWD/kube.config
-  export-kubeconfig "$CLUSTER_NAME"
+  export-kubeconfig
 
   source ./korifi/scripts/account-creation.sh $PWD/korifi/scripts
 

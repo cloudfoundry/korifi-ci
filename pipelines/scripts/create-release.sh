@@ -37,7 +37,7 @@ create_release() {
 }
 
 main() {
-  export-kubeconfig "$CLUSTER_NAME"
+  export-kubeconfig
   docker_login
   update_config_with_version
   create_release
