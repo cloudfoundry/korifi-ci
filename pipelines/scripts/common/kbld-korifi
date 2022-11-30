@@ -1,12 +1,6 @@
 #!/bin/bash
 
-tmp="$(mktemp -d)"
-trap 'rm -rf $tmp' EXIT
-
 docker_login() {
-  echo "$GCP_SERVICE_ACCOUNT_JSON" >"$tmp/sa.json"
-  export GOOGLE_APPLICATION_CREDENTIALS="$tmp/sa.json"
-
   kubectl delete secret buildkit &>/dev/null || true
   kubectl create secret docker-registry buildkit --docker-server="https://$REGISTRY_HOSTNAME/v1/" \
     --docker-username="$REGISTRY_USER" --docker-password="$REGISTRY_PASSWORD"

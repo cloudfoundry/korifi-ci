@@ -4,7 +4,6 @@ set -euo pipefail
 
 source korifi-ci/pipelines/scripts/common/gcloud-functions
 
-gcloud-login
 export-kubeconfig "$CLUSTER_NAME"
 
 kubectl config set-credentials cf-admin \

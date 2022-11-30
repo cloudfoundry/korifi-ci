@@ -1,3 +1,5 @@
+#!/bin/bash
+
 CERT_MANAGER_NAMESPACE=cert-manager
 WILDCARD_CERT_NAME=cluster-wildcard-cert
 
@@ -9,37 +11,6 @@ function clone_letsencrypt_cert() {
     yq 'del( .metadata.resourceVersion, .metadata.uid, .metadata.creationTimestamp, .metadata.selfLink, .metadata.namespace )' |
     yq ".metadata.name = \"$secret_name\"" |
     kubectl apply --namespace="$secret_namespace" -f -
-}
-
-function create_tls_secret() {
-  local secret_name=${1:?}
-  local secret_namespace=${2:?}
-  local tls_cn=${3:?}
-
-  tmp_dir=$(mktemp -d -t cf-tls-XXXXXX)
-  trap "rm -rf $tmp_dir" EXIT
-
-  openssl req -x509 -newkey rsa:4096 \
-    -keyout ${tmp_dir}/tls.key \
-    -out ${tmp_dir}/tls.crt \
-    -nodes \
-    -subj "/CN=${tls_cn}" \
-    -extensions SAN -config <(cat /etc/ssl/openssl.cnf <(printf "[ SAN ]\nsubjectAltName='DNS:${tls_cn}'")) \
-    -days 365
-
-  cat <<EOF >${tmp_dir}/kustomization.yml
-secretGenerator:
-- name: ${secret_name}
-  namespace: ${secret_namespace}
-  files:
-  - tls.crt=tls.crt
-  - tls.key=tls.key
-  type: "kubernetes.io/tls"
-generatorOptions:
-  disableNameSuffixHash: true
-EOF
-
-  kubectl apply -k $tmp_dir
 }
 
 function ensure_letsencrypt_issuer() {

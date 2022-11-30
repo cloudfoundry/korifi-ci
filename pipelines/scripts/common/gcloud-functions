@@ -8,6 +8,9 @@ gcloud-login() {
 }
 
 export-kubeconfig() {
+  gcloud-login
   declare -r name=$1
   gcloud container clusters get-credentials "$name" --zone "$GCP_ZONE"
+  echo "$GCP_SERVICE_ACCOUNT_JSON" >"/tmp/sa.json"
+  export GOOGLE_APPLICATION_CREDENTIALS="/tmp/sa.json"
 }

@@ -6,10 +6,6 @@ set -euo pipefail
 source korifi-ci/pipelines/scripts/common/gcloud-functions
 source korifi-ci/pipelines/scripts/common/secrets.sh
 
-echo "$GCP_SERVICE_ACCOUNT_JSON" >"$PWD/service-account.json"
-export GOOGLE_APPLICATION_CREDENTIALS="$PWD/service-account.json"
-
-gcloud-login
 export-kubeconfig "$CLUSTER_NAME"
 
 ip_addr="$(<terraform-output/result)"

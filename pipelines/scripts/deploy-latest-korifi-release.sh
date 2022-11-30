@@ -4,9 +4,6 @@ set -euo pipefail
 
 source korifi-ci/pipelines/scripts/common/secrets.sh
 
-tmp="$(mktemp -d)"
-trap "rm -rf $tmp" EXIT
-
 deploy() {
   cat <<EOF | kubectl apply -f -
 apiVersion: v1

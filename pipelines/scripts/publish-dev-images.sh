@@ -10,11 +10,6 @@ VERSION="dev-$(cat korifi-release-version/version)-$COMMIT_SHA"
 source korifi-ci/pipelines/scripts/common/gcloud-functions
 source korifi-ci/pipelines/scripts/common/kbld-korifi
 
-generate_kube_config() {
-  gcloud-login
-  export-kubeconfig "$CLUSTER_NAME"
-}
-
 update_config_with_version() {
   yq -i "with(.destinations[]; .tags=[\"$VERSION\"])" "$KBLD_CONFIG_DIR/korifi-kbld.yml"
 }
@@ -34,7 +29,7 @@ publish_images() {
 }
 
 main() {
-  generate_kube_config
+  export-kubeconfig "$CLUSTER_NAME"
   docker_login
   update_config_with_version
   publish_images

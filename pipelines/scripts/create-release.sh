@@ -12,11 +12,6 @@ mkdir -p "$RELEASE_ARTIFACTS_DIR"
 source korifi-ci/pipelines/scripts/common/gcloud-functions
 source korifi-ci/pipelines/scripts/common/kbld-korifi
 
-generate_kube_config() {
-  gcloud-login
-  export-kubeconfig "$CLUSTER_NAME"
-}
-
 update_config_with_version() {
   yq -i "with(.destinations[]; .tags=[\"latest\", \"$VERSION\"])" "$KBLD_CONFIG_DIR/korifi-kbld.yml"
 }
@@ -42,7 +37,7 @@ create_release() {
 }
 
 main() {
-  generate_kube_config
+  export-kubeconfig "$CLUSTER_NAME"
   docker_login
   update_config_with_version
   create_release

@@ -5,21 +5,11 @@ set -euo pipefail
 source korifi-ci/pipelines/scripts/common/gcloud-functions
 source korifi-ci/pipelines/scripts/common/secrets.sh
 
-tmp="$(mktemp -d)"
-trap "rm -rf $tmp" EXIT
-
 # refresh the kbld kubectl builder secret before the parallel builds kick in
 docker_login() {
   kubectl delete secret buildkit &>/dev/null || true
   kubectl create secret docker-registry buildkit --docker-server='europe-west1-docker.pkg.dev' \
     --docker-username=_json_key --docker-password="$REGISTRY_SERVICE_ACCOUNT_JSON"
-}
-
-generate_kube_config() {
-  gcloud-login
-  export-kubeconfig "$CLUSTER_NAME"
-  echo "$GCP_SERVICE_ACCOUNT_JSON" >"$tmp/sa.json"
-  export GOOGLE_APPLICATION_CREDENTIALS="$tmp/sa.json"
 }
 
 deploy() {
@@ -28,7 +18,7 @@ deploy() {
     kbld \
       -f "../korifi-ci/build/kbld/$CLUSTER_NAME/korifi-kbld.yml" \
       -f "../korifi-ci/build/values/image-values.yaml" \
-      --images-annotation=false >"$tmp/values.yaml"
+      --images-annotation=false >"/tmp/values.yaml"
 
     helm dependency update helm/korifi
 
@@ -43,7 +33,7 @@ EOF
 
     helm upgrade --install korifi helm/korifi \
       --namespace korifi \
-      --values "$tmp/values.yaml" \
+      --values "/tmp/values.yaml" \
       --values "../korifi-ci/build/values/$CLUSTER_NAME/values.yaml" \
       --wait
 
@@ -75,7 +65,7 @@ EOF
 
 main() {
   export KUBECONFIG=$PWD/kube/kube.config
-  generate_kube_config
+  export-kubeconfig "$CLUSTER_NAME"
   docker_login
   create_root_namespace
   deploy
