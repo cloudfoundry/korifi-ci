@@ -685,7 +685,7 @@ jobs:
     - get: ci-image
   - <<: *setClusterVars
     params:
-      CLUSTER_NAME: eks-e2e-cluster
+      CLUSTER_NAME: eks-e2e
   - do:
     - in_parallel:
       - get: gcloud-image

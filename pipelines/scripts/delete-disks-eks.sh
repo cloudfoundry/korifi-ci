@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -euxo pipefail
+set -euo pipefail
 
 echo "Deleting unattached EBS CSI volumes in EC2"
 aws ec2 describe-volumes \
