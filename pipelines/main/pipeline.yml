@@ -720,7 +720,7 @@ jobs:
   - <<: *setClusterVars
     params:
       CLUSTER_NAME: eks-e2e
-      CLUSTER_TYPE: GKE
+      CLUSTER_TYPE: EKS
       NODE_MACHINE_TYPE: m5.xlarge
   - do: *recreateCluster
   on_failure: *slackHook
