@@ -8,12 +8,13 @@ gcloud-login() {
 }
 
 export-kubeconfig() {
+  gcloud-login
+  echo "$GCP_SERVICE_ACCOUNT_JSON" >"/tmp/sa.json"
+  export GOOGLE_APPLICATION_CREDENTIALS="/tmp/sa.json"
+
   case "$CLUSTER_TYPE" in
     "GKE")
-      gcloud-login
       gcloud container clusters get-credentials "$CLUSTER_NAME" --zone "$GCP_ZONE"
-      echo "$GCP_SERVICE_ACCOUNT_JSON" >"/tmp/sa.json"
-      export GOOGLE_APPLICATION_CREDENTIALS="/tmp/sa.json"
       ;;
     "EKS")
       aws eks update-kubeconfig --region "$AWS_REGION" --name "$CLUSTER_NAME"

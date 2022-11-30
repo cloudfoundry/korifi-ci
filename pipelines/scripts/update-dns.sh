@@ -27,6 +27,7 @@ TERRAFORM_CONFIG_PATH=cf-k8s-secrets/ci-deployment/$CLUSTER_NAME/dns
 terraform -chdir="$TERRAFORM_CONFIG_PATH" init \
   -backend-config="prefix=terraform/state/${CLUSTER_NAME}-dns" \
   -upgrade=true
+
 terraform -chdir="$TERRAFORM_CONFIG_PATH" apply \
   -var "cluster_name=$CLUSTER_NAME" \
   -var "elb_dns_name=$ELB_DNS_NAME" \
