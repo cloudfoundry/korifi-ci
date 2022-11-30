@@ -7,11 +7,11 @@ outputs:
   - name: clusters
 
 params:
-  AWS_REGION:
+  AWS_REGION: eu-west-1
   CLUSTER_NAME:
   CLUSTER_TYPE:
-  GCP_PROJECT_ID:
-  GCP_ZONE:
+  GCP_PROJECT_ID: cf-on-k8s-wg
+  GCP_ZONE: europe-west1-b
   NODE_MACHINE_TYPE:
 
 run:

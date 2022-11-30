@@ -33,12 +33,6 @@ common:
     task: set-cluster-env-vars
     file: korifi-ci/pipelines/tasks/set-cluster-env-vars.yml
     image: ci-image
-    params:
-      AWS_REGION: eu-west-1
-      CLUSTER_NAME: undefined
-      CLUSTER_TYPE: undefined
-      GCP_PROJECT_ID: cf-on-k8s-wg
-      GCP_ZONE: europe-west1-b
 
 groups:
 - name: main
