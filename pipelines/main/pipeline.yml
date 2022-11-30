@@ -697,7 +697,7 @@ jobs:
       image: gcloud-image
       params:
         CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
-        NODE_MACHINE_TYPE: e2-custom-4-6144
+        NODE_MACHINE_TYPE: ((.:cluster-env-vars.NODE_MACHINE_TYPE))
   on_failure: *slackHook
 
 - name: recreate-cluster-eks
