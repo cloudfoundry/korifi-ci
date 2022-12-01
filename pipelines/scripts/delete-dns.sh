@@ -40,8 +40,18 @@ resource "aws_security_group" "elb" {
 EOF
 
       ELB_NAME="$(aws elb describe-load-balancers --region "$AWS_REGION" | jq -r '.LoadBalancerDescriptions[0].LoadBalancerName')"
-      terraform -chdir="$TERRAFORM_CONFIG_PATH" import aws_elb.contour "$ELB_NAME"
-      terraform -chdir="$TERRAFORM_CONFIG_PATH" import aws_security_group.elb \
+      terraform \
+        -chdir="$TERRAFORM_CONFIG_PATH" \
+        import \
+        -var "cluster_name=$CLUSTER_NAME" \
+        -var "elb_dns_name=$ELB_DNS_NAME" \
+        aws_elb.contour "$ELB_NAME"
+      terraform \
+        -chdir="$TERRAFORM_CONFIG_PATH" \
+        import \
+        -var "cluster_name=$CLUSTER_NAME" \
+        -var "elb_dns_name=$ELB_DNS_NAME" \
+        aws_security_group.elb \
         "$(
           aws elb describe-load-balancers \
             --region "$AWS_REGION" \
