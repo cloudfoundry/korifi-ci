@@ -9,7 +9,7 @@ export-kubeconfig
 ELB_DNS_NAME=""
 
 if ! kubectl get namespaces projectcontour; then
-  # no contour == nothing to clean up
+  echo "Exiting since there are no contour objects to clean up"
   exit 0
 fi
 
