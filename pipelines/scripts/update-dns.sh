@@ -8,6 +8,8 @@ export-kubeconfig
 
 ELB_DNS_NAME=""
 
+timeout 180s bash -c "until kubectl get svc/envoy --namespace projectcontour --output=jsonpath='{.status.loadBalancer}' | grep ingress; do sleep 1 ; done"
+
 case "$CLUSTER_TYPE" in
   "EKS")
     ELB_DNS_NAME="$(kubectl get service envoy -n projectcontour -ojsonpath='{.status.loadBalancer.ingress[0].hostname}')"
