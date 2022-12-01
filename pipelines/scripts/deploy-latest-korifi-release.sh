@@ -3,6 +3,7 @@
 set -euo pipefail
 
 source korifi-ci/pipelines/scripts/common/secrets.sh
+source korifi-ci/pipelines/scripts/common/gcloud-functions
 
 deploy() {
   cat <<EOF | kubectl apply -f -
@@ -48,7 +49,7 @@ EOF
 }
 
 main() {
-  export KUBECONFIG=$PWD/kube/kube.config
+  export-kubeconfig
   create_root_namespace
   deploy
 }

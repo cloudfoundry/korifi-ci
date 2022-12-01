@@ -2,13 +2,16 @@ platform: linux
 
 inputs:
 - name: korifi-ci
-- name: kube
 
 params:
+  AWS_ACCESS_KEY_ID: ((aws/terraform.access-key-id))
+  AWS_REGION:
+  AWS_SECRET_ACCESS_KEY: ((aws/terraform.secret-access-key))
   REGISTRY_SERVICE_ACCOUNT_JSON: ((gcp-artifact-registry-writer))
   GCP_SERVICE_ACCOUNT_JSON: ((gcp-serviceaccount))
   GCP_ZONE:
   CLUSTER_NAME:
+  CLUSTER_TYPE:
   USE_LETSENCRYPT:
   DOCKER_SERVER:
   DOCKER_USERNAME:
