@@ -8,6 +8,9 @@ ARG HELM_VERSION="v3.9.0"
 ENV PATH="$GOPATH/bin:${PATH}"
 ENV USE_GKE_GCLOUD_AUTH_PLUGIN=True
 
+RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" > /etc/apt/sources.list.d/google-cloud-sdk.list
+RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg > /usr/share/keyrings/cloud.google.gpg
+
 RUN  apt-get update \
   && apt-get install --yes \
        --no-install-recommends \
