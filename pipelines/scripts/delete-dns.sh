@@ -24,7 +24,7 @@ case "$CLUSTER_TYPE" in
     ELB_DNS_NAME="$(kubectl get service envoy -n projectcontour -ojsonpath='{.status.loadBalancer.ingress[0].hostname}')"
 
     if [[ "${CLUSTER_TYPE:-}" == "EKS" ]]; then
-      cat <<EOF >contour-elb.tf
+      cat <<EOF >"$TERRAFORM_CONFIG_PATH/contour-elb.tf"
 resource "aws_elb" "contour" {
   listener {
     instance_port     = 8000
