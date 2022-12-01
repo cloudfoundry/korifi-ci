@@ -3,6 +3,8 @@ FROM google/cloud-sdk
 ARG TERRAFORM_VERSION=1.2.2
 ARG HELM_VERSION=v3.9.0
 
+ENV USE_GKE_GCLOUD_AUTH_PLUGIN=True
+
 RUN apt-get update && \
     apt-get install --yes \
       jq \

@@ -6,6 +6,7 @@ ARG BUILDKIT_CLI_VERSION="v0.1.5"
 ARG HELM_VERSION="v3.9.0"
 
 ENV PATH="$GOPATH/bin:${PATH}"
+ENV USE_GKE_GCLOUD_AUTH_PLUGIN=True
 
 RUN  apt-get update \
   && apt-get install --yes \
@@ -27,6 +28,7 @@ RUN  apt-get update \
        conntrack \
        iptables \
        sudo \
+       google-cloud-sdk-gke-gcloud-auth-plugin \
   && rm -rf /var/lib/apt/lists/*
 
 # kubectl
