@@ -2,11 +2,8 @@
 
 set -euo pipefail
 
-export SKIP_DEPLOY=true
-KUBECONFIG="$(realpath $KUBECONFIG)"
+source korifi-ci/pipelines/scripts/common/gcloud-functions
 
-pushd korifi
-{
-  make test-e2e
-}
-popd
+export-kubeconfig
+
+SKIP_DEPLOY=true make -C korifi test-e2e
