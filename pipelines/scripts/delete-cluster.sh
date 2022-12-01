@@ -44,27 +44,6 @@ pushd cf-k8s-secrets/ci-deployment/$CLUSTER_NAME || exit 1
     fi
   fi
 
-  if [[ "${CLUSTER_TYPE:-}" == "EKS" ]]; then
-    cat <<EOF >contour-elb.tf
-resource "aws_elb" "contour" {
-  listener {
-    instance_port     = 8000
-    instance_protocol = "http"
-    lb_port           = 80
-    lb_protocol       = "http"
-  }
-  availability_zones = ["x"]
-}
-
-resource "aws_security_group" "elb" {
-}
-EOF
-
-    ELB_NAME="$(aws elb describe-load-balancers --region "$AWS_REGION" | jq -r '.LoadBalancerDescriptions[0].LoadBalancerName')"
-    terraform import aws_elb.contour "$ELB_NAME"
-    terraform import aws_security_group.elb "$(aws elb describe-load-balancers --region "$AWS_REGION" --load-balancer-name "$ELB_NAME" | jq -r '.LoadBalancerDescriptions[0].SecurityGroups[0]')"
-  fi
-
   terraform destroy \
     -var "name=$CLUSTER_NAME" \
     -var "node-count=$WORKER_COUNT" \
