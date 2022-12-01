@@ -39,6 +39,7 @@ groups:
   jobs:
   - run-tests-main
   - run-e2es-main
+  - run-e2es-eks
   - publish-dev-images
 - name: pr
   jobs:
@@ -285,6 +286,9 @@ jobs:
           ROOT_NAMESPACE: cf
           API_SERVER_ROOT: https://cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
           APP_FQDN: ((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
+          AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
+          CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
+          CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
           E2E_USER_NAME: ((.:accounts_env_vars.E2E_USER_NAME))
           E2E_USER_PEM: ((.:accounts_env_vars.E2E_USER_PEM))
           E2E_SERVICE_ACCOUNT: ((.:accounts_env_vars.E2E_SERVICE_ACCOUNT))
@@ -292,6 +296,7 @@ jobs:
           CF_ADMIN_KEY: ((.:accounts_env_vars.CF_ADMIN_KEY))
           CF_ADMIN_CERT: ((.:accounts_env_vars.CF_ADMIN_CERT))
           FULL_LOG_ON_ERR: yes-please
+          GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
           GINKGO_NODES: 8
 
   - task: undeploy-korifi
@@ -443,6 +448,64 @@ jobs:
       base_context: "Concourse "
       context: " e2e-tests (pull_request)"
       status: success
+
+  ensure:
+    do:
+    - *clean-pr-e2e-env
+
+# ===== eks =====
+- name: run-e2es-eks
+  on_failure:
+    do:
+    - put: korifi-status
+      params:
+        path: korifi
+        statuses:
+        - state: failure
+          context: "Concourse - E2E on EKS (main)"
+    - *slackHook
+    - <<: *envoyLogs
+      params:
+        AWS_ACCESS_KEY_ID: ((aws/terraform.access-key-id))
+        AWS_SECRET_ACCESS_KEY: ((aws/terraform.secret-access-key))
+        AWS_REGION: eu-west-1
+        CLUSTER_NAME: eks-e2e
+        CLUSTER_TYPE: EKS
+
+  serial: true
+  serial_groups:
+  - eks
+  plan:
+  - in_parallel:
+    - get: ci-image
+    - get: gcloud-image
+    - get: korifi-ci
+    - get: korifi
+      trigger: true
+      passed:
+        - run-tests-main
+    - get: cf-k8s-secrets
+
+  - put: korifi-status
+    params:
+      path: korifi
+      statuses:
+      - state: pending
+        context: "Concourse - E2E on EKS (main)"
+
+  - <<: *setClusterVars
+    params:
+      CLUSTER_NAME: eks-e2e
+      CLUSTER_TYPE: EKS
+
+  - do: *end-to-ends
+
+  - put: korifi-status
+    params:
+      path: korifi
+      statuses:
+      - state: success
+        context: "Concourse - E2E on EKS (main)"
 
   ensure:
     do:
