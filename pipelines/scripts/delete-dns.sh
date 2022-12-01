@@ -13,52 +13,9 @@ if ! kubectl get namespaces projectcontour; then
   exit 0
 fi
 
-TERRAFORM_CONFIG_PATH=cf-k8s-secrets/ci-deployment/$CLUSTER_NAME/dns
-
-terraform -chdir="$TERRAFORM_CONFIG_PATH" init \
-  -backend-config="prefix=terraform/state/${CLUSTER_NAME}-dns" \
-  -upgrade=true
-
 case "$CLUSTER_TYPE" in
   "EKS")
     ELB_DNS_NAME="$(kubectl get service envoy -n projectcontour -ojsonpath='{.status.loadBalancer.ingress[0].hostname}')"
-
-    if [[ "${CLUSTER_TYPE:-}" == "EKS" ]]; then
-      cat <<EOF >"$TERRAFORM_CONFIG_PATH/contour-elb.tf"
-resource "aws_elb" "contour" {
-  listener {
-    instance_port     = 8000
-    instance_protocol = "http"
-    lb_port           = 80
-    lb_protocol       = "http"
-  }
-  availability_zones = ["x"]
-}
-
-resource "aws_security_group" "elb" {
-}
-EOF
-
-      ELB_NAME="$(aws elb describe-load-balancers --region "$AWS_REGION" | jq -r '.LoadBalancerDescriptions[0].LoadBalancerName')"
-      terraform \
-        -chdir="$TERRAFORM_CONFIG_PATH" \
-        import \
-        -var "cluster_name=$CLUSTER_NAME" \
-        -var "elb_dns_name=$ELB_DNS_NAME" \
-        aws_elb.contour "$ELB_NAME"
-      terraform \
-        -chdir="$TERRAFORM_CONFIG_PATH" \
-        import \
-        -var "cluster_name=$CLUSTER_NAME" \
-        -var "elb_dns_name=$ELB_DNS_NAME" \
-        aws_security_group.elb \
-        "$(
-          aws elb describe-load-balancers \
-            --region "$AWS_REGION" \
-            --load-balancer-name "$ELB_NAME" |
-            jq -r '.LoadBalancerDescriptions[0].SecurityGroups[0]'
-        )"
-    fi
     ;;
 
   "GKE")
@@ -71,6 +28,12 @@ EOF
     exit 1
     ;;
 esac
+
+TERRAFORM_CONFIG_PATH=cf-k8s-secrets/ci-deployment/$CLUSTER_NAME/dns
+
+terraform -chdir="$TERRAFORM_CONFIG_PATH" init \
+  -backend-config="prefix=terraform/state/${CLUSTER_NAME}-dns" \
+  -upgrade=true
 
 terraform -chdir="$TERRAFORM_CONFIG_PATH" destroy \
   -var "cluster_name=$CLUSTER_NAME" \
