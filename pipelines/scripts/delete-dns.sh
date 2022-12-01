@@ -8,6 +8,11 @@ export-kubeconfig
 
 ELB_DNS_NAME=""
 
+if ! kubectl get namespaces projectcontour; then
+  # no contour == no dns to delete
+  exit 0
+fi
+
 case "$CLUSTER_TYPE" in
   "EKS")
     ELB_DNS_NAME="$(kubectl get service envoy -n projectcontour -ojsonpath='{.status.loadBalancer.ingress[0].hostname}')"
