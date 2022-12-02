@@ -4,37 +4,34 @@ set -euo pipefail
 
 source korifi-ci/pipelines/scripts/common/gcloud-functions
 
-main() {
-  export KUBECONFIG=$PWD/kube.config
-  export-kubeconfig
+export KUBECONFIG=$PWD/kube.config
+export-kubeconfig
 
-  case "$CLUSTER_NAME" in
-    "EKS")
+case "$CLUSTER_NAME" in
+  "EKS")
 
-      terraform -chdir="cf-k8s-secrets/ci-deployment/$CLUSTER_NAME" init -backend-config="prefix=terraform/state/$CLUSTER_NAME" -upgrade=true
+    terraform -chdir="cf-k8s-secrets/ci-deployment/$CLUSTER_NAME" init -backend-config="prefix=terraform/state/$CLUSTER_NAME" -upgrade=true
 
-      local CF_ADMIN_KEY_ID CF_ADMIN_SECRET CF_ADMIN_TOKEN
-      CF_ADMIN_KEY_ID="$(terraform -chdir="cf-k8s-secrets/ci-deployment/$CLUSTER_NAME" output -raw cf_admin_key_id)"
-      CF_ADMIN_SECRET="$(terraform -chdir="cf-k8s-secrets/ci-deployment/$CLUSTER_NAME" output -raw cf_admin_secret)"
-      CF_ADMIN_TOKEN="$(AWS_ACCESS_KEY_ID="$CF_ADMIN_KEY_ID" AWS_SECRET_ACCESS_KEY="$CF_ADMIN_SECRET" aws --region "$AWS_REGION" eks get-token --cluster-name "$CLUSTER_NAME")"
+    CF_ADMIN_KEY_ID="$(terraform -chdir="cf-k8s-secrets/ci-deployment/$CLUSTER_NAME" output -raw cf_admin_key_id)"
+    CF_ADMIN_SECRET="$(terraform -chdir="cf-k8s-secrets/ci-deployment/$CLUSTER_NAME" output -raw cf_admin_secret)"
+    CF_ADMIN_TOKEN="$(AWS_ACCESS_KEY_ID="$CF_ADMIN_KEY_ID" AWS_SECRET_ACCESS_KEY="$CF_ADMIN_SECRET" aws --region "$AWS_REGION" eks get-token --cluster-name "$CLUSTER_NAME")"
 
-      local CF_USER_KEY_ID CF_USER_SECRET CF_USER_TOKEN
-      CF_USER_KEY_ID="$(terraform -chdir="cf-k8s-secrets/ci-deployment/$CLUSTER_NAME" output -raw cf_admin_key_id)"
-      CF_USER_SECRET="$(terraform -chdir="cf-k8s-secrets/ci-deployment/$CLUSTER_NAME" output -raw cf_admin_secret)"
-      CF_USER_TOKEN="$(AWS_ACCESS_KEY_ID="$CF_USER_KEY_ID" AWS_SECRET_ACCESS_KEY="$CF_USER_SECRET" aws --region "$AWS_REGION" eks get-token --cluster-name "$CLUSTER_NAME")"
+    CF_USER_KEY_ID="$(terraform -chdir="cf-k8s-secrets/ci-deployment/$CLUSTER_NAME" output -raw cf_admin_key_id)"
+    CF_USER_SECRET="$(terraform -chdir="cf-k8s-secrets/ci-deployment/$CLUSTER_NAME" output -raw cf_admin_secret)"
+    CF_USER_TOKEN="$(AWS_ACCESS_KEY_ID="$CF_USER_KEY_ID" AWS_SECRET_ACCESS_KEY="$CF_USER_SECRET" aws --region "$AWS_REGION" eks get-token --cluster-name "$CLUSTER_NAME")"
 
-      # make account-creation.sh skip creating users
-      export E2E_USER_NAME=cf-user
-      export E2E_LONGCERT_USER_NAME=ignore
-      export CF_ADMIN_CERT=ignore
-      export E2E_USER_TOKEN="$CF_USER_TOKEN"
-      export CF_ADMIN_TOKEN
-      ;;
-  esac
+    # make account-creation.sh skip creating users
+    export E2E_USER_NAME=cf-user
+    export E2E_LONGCERT_USER_NAME=ignore
+    export CF_ADMIN_CERT=ignore
+    export E2E_USER_TOKEN="$CF_USER_TOKEN"
+    export CF_ADMIN_TOKEN
+    ;;
+esac
 
-  source ./korifi/scripts/account-creation.sh $PWD/korifi/scripts
+source ./korifi/scripts/account-creation.sh $PWD/korifi/scripts
 
-  cat <<EOF >accounts/env_vars.yaml
+cat <<EOF >accounts/env_vars.yaml
 E2E_USER_NAME: $E2E_USER_NAME
 E2E_USER_PEM: ${E2E_USER_PEM:-}
 E2E_USER_TOKEN: ${E2E_USER_TOKEN:-}
@@ -44,6 +41,3 @@ CF_ADMIN_KEY: ${CF_ADMIN_KEY:-}
 CF_ADMIN_CERT: ${CF_ADMIN_CERT:-}
 CF_ADMIN_TOKEN: ${CF_ADMIN_TOKEN:-}
 EOF
-}
-
-main
