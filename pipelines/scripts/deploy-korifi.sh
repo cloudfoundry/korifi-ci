@@ -16,7 +16,7 @@ docker_login() {
       ;;
     "EKS")
       local ECR_ACCESS_KEY_ID ECR_SECRET_ACCESS_KEY ECR_TOKEN
-      terraform -chdir="$TERRAFORM_CONFIG_PATH" init -backend-config="prefix=terraform/state/$CLUSTER_NAME" -upgrade=true
+      terraform -chdir="cf-k8s-secrets/ci-deployment/$CLUSTER_NAME" init -backend-config="prefix=terraform/state/$CLUSTER_NAME" -upgrade=true
       ECR_ACCESS_KEY_ID="$(terraform output -raw code_pusher_key_id)"
       ECR_SECRET_ACCESS_KEY="$(terraform output -raw code_pusher_secret)"
       ECR_TOKEN="$(AWS_ACCESS_KEY_ID="$ECR_ACCESS_KEY_ID" AWS_SECRET_ACCESS_KEY="$ECR_SECRET_ACCESS_KEY" aws ecr get-login-password --region "$AWS_REGION")"
