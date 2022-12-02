@@ -8,8 +8,27 @@ source korifi-ci/pipelines/scripts/common/secrets.sh
 # refresh the kbld kubectl builder secret before the parallel builds kick in
 docker_login() {
   kubectl delete secret buildkit &>/dev/null || true
-  kubectl create secret docker-registry buildkit --docker-server='europe-west1-docker.pkg.dev' \
-    --docker-username=_json_key --docker-password="$REGISTRY_SERVICE_ACCOUNT_JSON"
+
+  case "$CLUSTER_TYPE" in
+    "GKE")
+      kubectl create secret docker-registry buildkit --docker-server='europe-west1-docker.pkg.dev' \
+        --docker-username=_json_key --docker-password="$REGISTRY_SERVICE_ACCOUNT_JSON"
+      ;;
+    "EKS")
+      local ECR_ACCESS_KEY_ID ECR_SECRET_ACCESS_KEY
+      ECR_ACCESS_KEY_ID="$(terraform output -raw code_pusher_key_id)"
+      ECR_SECRET_ACCESS_KEY="$(terraform output -raw code_pusher_secret)"
+      token="$(AWS_ACCESS_KEY_ID="$ECR_ACCESS_KEY_ID" AWS_SECRET_ACCESS_KEY="$ECR_SECRET_ACCESS_KEY" aws ecr get-login-password --region "$AWS_REGION")"
+      kubectl create secret docker-registry buildkit --docker-server='007801690126.dkr.ecr.eu-west-1.amazonaws.com' \
+        --docker-username=AWS --docker-password="$token"
+      ;;
+
+    *)
+      echo "Invalid CLUSTER_TYPE: $CLUSTER_TYPE"
+      echo "Valid values are: EKS, GKE"
+      exit 1
+      ;;
+  esac
 }
 
 deploy() {
