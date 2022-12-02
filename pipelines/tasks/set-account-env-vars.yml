@@ -13,6 +13,7 @@ params:
   AWS_REGION:
   AWS_SECRET_ACCESS_KEY: ((aws/terraform.secret-access-key))
   GCP_SERVICE_ACCOUNT_JSON: ((gcp-pr-e2e-k8s-admin))
+  TERRAFORM_SERVICE_ACCOUNT_JSON: ((gcp-serviceaccount))
   GCP_ZONE:
   CLUSTER_NAME:
   CLUSTER_TYPE:

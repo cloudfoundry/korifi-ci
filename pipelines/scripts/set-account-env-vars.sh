@@ -10,6 +10,10 @@ export-kubeconfig
 case "$CLUSTER_TYPE" in
   "EKS")
 
+    echo "$TERRAFORM_SERVICE_ACCOUNT_JSON" >"/tmp/terraform-sa.json"
+    OLD_GOOGLE_APPLICATION_CREDENTIALS="$GOOGLE_APPLICATION_CREDENTIALS"
+    GOOGLE_APPLICATION_CREDENTIALS="/tmp/terraform-sa.json"
+
     terraform -chdir="cf-k8s-secrets/ci-deployment/$CLUSTER_NAME" init -backend-config="prefix=terraform/state/$CLUSTER_NAME" -upgrade=true
 
     CF_ADMIN_KEY_ID="$(terraform -chdir="cf-k8s-secrets/ci-deployment/$CLUSTER_NAME" output -raw cf_admin_key_id)"
@@ -26,6 +30,8 @@ case "$CLUSTER_TYPE" in
     export CF_ADMIN_CERT=ignore
     export E2E_USER_TOKEN="$CF_USER_TOKEN"
     export CF_ADMIN_TOKEN
+
+    GOOGLE_APPLICATION_CREDENTIALS="$OLD_GOOGLE_APPLICATION_CREDENTIALS"
     ;;
 esac
 
