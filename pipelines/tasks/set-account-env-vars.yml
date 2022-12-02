@@ -1,6 +1,7 @@
 platform: linux
 
 inputs:
+- name: cf-k8s-secrets
 - name: korifi-ci
 - name: korifi
 
