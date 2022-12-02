@@ -7,7 +7,7 @@ source korifi-ci/pipelines/scripts/common/gcloud-functions
 export KUBECONFIG=$PWD/kube.config
 export-kubeconfig
 
-case "$CLUSTER_NAME" in
+case "$CLUSTER_TYPE" in
   "EKS")
 
     terraform -chdir="cf-k8s-secrets/ci-deployment/$CLUSTER_NAME" init -backend-config="prefix=terraform/state/$CLUSTER_NAME" -upgrade=true
