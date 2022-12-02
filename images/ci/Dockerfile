@@ -1,9 +1,10 @@
 FROM golang:latest
 
-ARG GCLOUD_VERSION="410.0.0"
-ARG YQ_VERSION="v4.30.5"
 ARG BUILDKIT_CLI_VERSION="v0.1.6"
+ARG GCLOUD_VERSION="410.0.0"
 ARG HELM_VERSION="v3.10.2"
+ARG TERRAFORM_VERSION="1.3.6"
+ARG YQ_VERSION="v4.30.5"
 
 ENV PATH="$GOPATH/bin:${PATH}"
 ENV USE_GKE_GCLOUD_AUTH_PLUGIN=True
@@ -86,3 +87,9 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
   && unzip awscliv2.zip \
   && ./aws/install \
   && rm -rf awscliv2.zip aws
+
+# terraform
+RUN wget https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip \
+      && unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip \
+      && mv terraform /usr/local/bin/ \
+      && rm terraform_${TERRAFORM_VERSION}_linux_amd64.zip
