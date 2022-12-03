@@ -4,6 +4,17 @@ set -euo pipefail
 
 source korifi-ci/pipelines/scripts/common/gcloud-functions
 
+TERRAFORM_CONFIG_PATH=cf-k8s-secrets/ci-deployment/$CLUSTER_NAME/dns
+
+terraform -chdir="$TERRAFORM_CONFIG_PATH" init \
+  -backend-config="prefix=terraform/state/${CLUSTER_NAME}-dns" \
+  -upgrade=true
+
+if ! terraform -chdir="$TERRAFORM_CONFIG_PATH" state list | grep -q aws_eks_cluster; then
+  echo "Exiting since there is no cluster"
+  exit 0
+fi
+
 export-kubeconfig
 
 ELB_DNS_NAME=""
@@ -28,12 +39,6 @@ case "$CLUSTER_TYPE" in
     exit 1
     ;;
 esac
-
-TERRAFORM_CONFIG_PATH=cf-k8s-secrets/ci-deployment/$CLUSTER_NAME/dns
-
-terraform -chdir="$TERRAFORM_CONFIG_PATH" init \
-  -backend-config="prefix=terraform/state/${CLUSTER_NAME}-dns" \
-  -upgrade=true
 
 terraform -chdir="$TERRAFORM_CONFIG_PATH" destroy \
   -var "cluster_name=$CLUSTER_NAME" \
