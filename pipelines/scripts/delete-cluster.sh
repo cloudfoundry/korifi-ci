@@ -8,9 +8,6 @@ export GOOGLE_APPLICATION_CREDENTIALS="$PWD/service-account.json"
 # shellcheck disable=SC1091
 source korifi-ci/pipelines/scripts/common/gcloud-functions
 
-export-kubeconfig
-kubectl get service --all-namespaces | awk '/LoadBalancer/ { print "kubectl delete service -n " $1 " " $2 }' | xargs -IN sh -c "N"
-
 pushd cf-k8s-secrets/ci-deployment/$CLUSTER_NAME || exit 1
 {
   terraform init \
@@ -21,6 +18,9 @@ pushd cf-k8s-secrets/ci-deployment/$CLUSTER_NAME || exit 1
     echo "Cluster $CLUSTER_NAME does not exist"
     exit 0
   fi
+
+  export-kubeconfig
+  kubectl get service --all-namespaces | awk '/LoadBalancer/ { print "kubectl delete service -n " $1 " " $2 }' | xargs -IN sh -c "N"
 
   case "${CLUSTER_TYPE:-}" in
     "GKE")
