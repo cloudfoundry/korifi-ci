@@ -4,10 +4,10 @@ set -euo pipefail
 
 source korifi-ci/pipelines/scripts/common/gcloud-functions
 
-TERRAFORM_CONFIG_PATH=cf-k8s-secrets/ci-deployment/$CLUSTER_NAME/dns
+TERRAFORM_CONFIG_PATH=cf-k8s-secrets/ci-deployment/$CLUSTER_NAME
 
 terraform -chdir="$TERRAFORM_CONFIG_PATH" init \
-  -backend-config="prefix=terraform/state/${CLUSTER_NAME}-dns" \
+  -backend-config="prefix=terraform/state/${CLUSTER_NAME}" \
   -upgrade=true
 
 if ! terraform -chdir="$TERRAFORM_CONFIG_PATH" state list | grep -q aws_eks_cluster; then
@@ -39,6 +39,12 @@ case "$CLUSTER_TYPE" in
     exit 1
     ;;
 esac
+
+TERRAFORM_CONFIG_PATH=cf-k8s-secrets/ci-deployment/$CLUSTER_NAME/dns
+
+terraform -chdir="$TERRAFORM_CONFIG_PATH" init \
+  -backend-config="prefix=terraform/state/${CLUSTER_NAME}-dns" \
+  -upgrade=true
 
 terraform -chdir="$TERRAFORM_CONFIG_PATH" destroy \
   -var "cluster_name=$CLUSTER_NAME" \
