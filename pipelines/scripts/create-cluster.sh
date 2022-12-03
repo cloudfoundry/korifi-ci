@@ -21,3 +21,14 @@ terraform -chdir="$TERRAFORM_CONFIG_PATH" apply \
   "${RELEASE_CHANNEL_VAR[@]}" \
   -var "node-machine-type=$NODE_MACHINE_TYPE" \
   -auto-approve
+
+if [[ "$CLUSTER_TYPE" == "EKS" ]]; then
+  TERRAFORM_CONFIG_PATH="$TERRAFORM_CONFIG_PATH/k8s"
+  terraform -chdir="$TERRAFORM_CONFIG_PATH" init \
+    -backend-config="prefix=terraform/state/$CLUSTER_NAME-k8s" \
+    -upgrade=true
+  terraform -chdir="$TERRAFORM_CONFIG_PATH" apply \
+    -var "name=$CLUSTER_NAME" \
+    -auto-approve
+
+fi
