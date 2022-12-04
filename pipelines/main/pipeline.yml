@@ -767,6 +767,7 @@ jobs:
       image: gcloud-image
       params:
         CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
+        CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
         NODE_MACHINE_TYPE: ((.:cluster-env-vars.NODE_MACHINE_TYPE))
   on_failure: *slackHook
 
