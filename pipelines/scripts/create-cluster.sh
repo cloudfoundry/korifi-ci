@@ -20,6 +20,7 @@ terraform -chdir="$TERRAFORM_CONFIG_PATH" apply \
   -var "node-count=$WORKER_COUNT" \
   "${RELEASE_CHANNEL_VAR[@]}" \
   -var "node-machine-type=$NODE_MACHINE_TYPE" \
+  -var "korifiContainerRegistryServiceAccount=$CLUSTER_NAME-ecr" \
   -auto-approve
 
 if [[ "$CLUSTER_TYPE" == "EKS" ]]; then
@@ -29,6 +30,7 @@ if [[ "$CLUSTER_TYPE" == "EKS" ]]; then
     -upgrade=true
   terraform -chdir="$TERRAFORM_CONFIG_PATH" apply \
     -var "name=$CLUSTER_NAME" \
+    -var "korifiContainerRegistryServiceAccount=$CLUSTER_NAME-ecr" \
     -auto-approve
 
 fi
