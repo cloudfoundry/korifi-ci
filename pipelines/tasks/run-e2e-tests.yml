@@ -7,21 +7,25 @@ caches:
 inputs:
 - name: korifi-ci
 - name: korifi
-- name: kube
 
 params:
+  API_SERVER_ROOT:
+  APP_FQDN:
   AWS_ACCESS_KEY_ID: ((aws/terraform.access-key-id))
   AWS_REGION:
   AWS_SECRET_ACCESS_KEY: ((aws/terraform.secret-access-key))
-  API_SERVER_ROOT:
-  APP_FQDN:
-  CLUSTER_TYPE:
+  CF_ADMIN_TOKEN:
+  CF_USER_TOKEN:
   CLUSTER_NAME:
+  CLUSTER_TYPE:
+  E2E_SERVICE_ACCOUNT:
+  E2E_SERVICE_ACCOUNT_TOKEN:
+  E2E_USER_NAME:
   FULL_LOG_ON_ERR:
   GCP_SERVICE_ACCOUNT_JSON: ((gcp-serviceaccount))
   GCP_ZONE:
   GINKGO_NODES:
+  GOOGLE_APPLICATION_CREDENTIALS:
   ROOT_NAMESPACE:
-
 run:
   path: korifi-ci/pipelines/scripts/run-e2e-tests.sh
