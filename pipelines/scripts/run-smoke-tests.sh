@@ -13,7 +13,7 @@ case "$CLUSTER_TYPE" in
     ;;
   "EKS")
     kubectl config set-credentials "$SMOKE_TEST_USER" \
-      --token="$(base64 -d <<<"$CF_ADMIN_TOKEN")"
+      --token="$CF_ADMIN_TOKEN"
     ;;
 
   *)
