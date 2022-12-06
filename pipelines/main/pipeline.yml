@@ -273,6 +273,7 @@ jobs:
           params:
             CF_ADMIN_KEY: ((.:accounts_env_vars.CF_ADMIN_KEY))
             CF_ADMIN_CERT: ((.:accounts_env_vars.CF_ADMIN_CERT))
+            CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
             SMOKE_TEST_USER: cf-admin
             SMOKE_TEST_APPS_DOMAIN: ((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
             SMOKE_TEST_APP_ROUTE_PROTOCOL: https
@@ -293,6 +294,8 @@ jobs:
           E2E_USER_PEM: ((.:accounts_env_vars.E2E_USER_PEM))
           E2E_SERVICE_ACCOUNT: ((.:accounts_env_vars.E2E_SERVICE_ACCOUNT))
           E2E_SERVICE_ACCOUNT_TOKEN: ((.:accounts_env_vars.E2E_SERVICE_ACCOUNT_TOKEN))
+          E2E_LONGCERT_USER_NAME: ((.:accounts_env_vars.E2E_LONGCERT_USER_NAME))
+          E2E_LONGCERT_USER_PEM: ((.:accounts_env_vars.E2E_LONGCERT_USER_PEM))
           CF_ADMIN_KEY: ((.:accounts_env_vars.CF_ADMIN_KEY))
           CF_ADMIN_CERT: ((.:accounts_env_vars.CF_ADMIN_CERT))
           CF_ADMIN_PEM: ((.:accounts_env_vars.CF_ADMIN_PEM))
