@@ -24,6 +24,11 @@ if ! kubectl get namespaces projectcontour; then
   exit 0
 fi
 
+if ! kubectl get -n projectcontour services envoy; then
+  echo "Exiting since there is no contour envoy service"
+  exit 0
+fi
+
 case "$CLUSTER_TYPE" in
   "EKS")
     ELB_DNS_NAME="$(kubectl get service envoy -n projectcontour -ojsonpath='{.status.loadBalancer.ingress[0].hostname}')"
