@@ -46,6 +46,8 @@ esac
 source ./korifi/scripts/account-creation.sh $PWD/korifi/scripts
 
 cat <<EOF >accounts/env_vars.yaml
+CF_ADMIN_CERT: ${CF_ADMIN_CERT:-}
+CF_ADMIN_KEY: ${CF_ADMIN_KEY:-}
 CF_ADMIN_PEM: ${CF_ADMIN_PEM:-}
 CF_ADMIN_TOKEN: ${CF_ADMIN_TOKEN:-}
 CLUSTER_VERSION_MAJOR: $CLUSTER_VERSION_MAJOR

@@ -12,6 +12,8 @@ params:
   AWS_ACCESS_KEY_ID: ((aws/terraform.access-key-id))
   AWS_REGION:
   AWS_SECRET_ACCESS_KEY: ((aws/terraform.secret-access-key))
+  CF_ADMIN_CERT:
+  CF_ADMIN_KEY:
   CF_ADMIN_PEM:
   CF_ADMIN_TOKEN:
   CLUSTER_NAME:
