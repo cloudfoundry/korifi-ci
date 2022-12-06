@@ -56,7 +56,6 @@ pushd cf-k8s-secrets/ci-deployment/$CLUSTER_NAME || exit 1
 
         terraform destroy \
           -var "name=$CLUSTER_NAME" \
-          -var "korifiContainerRegistryServiceAccount=$CLUSTER_NAME-ecr" \
           -auto-approve
       }
       popd || exit 1
@@ -69,7 +68,6 @@ pushd cf-k8s-secrets/ci-deployment/$CLUSTER_NAME || exit 1
   terraform destroy \
     -var "name=$CLUSTER_NAME" \
     -var "node-count=$WORKER_COUNT" \
-    -var "korifiContainerRegistryServiceAccount=$CLUSTER_NAME-ecr" \
     -auto-approve
 }
 popd || exit 1
