@@ -14,11 +14,16 @@ docker_login() {
       kubectl create secret docker-registry buildkit --docker-server='europe-west1-docker.pkg.dev' \
         --docker-username=_json_key --docker-password="$REGISTRY_SERVICE_ACCOUNT_JSON"
       ;;
+
     "EKS")
       local ECR_ACCESS_KEY_ID ECR_SECRET_ACCESS_KEY ECR_TOKEN
-      terraform -chdir="cf-k8s-secrets/ci-deployment/$CLUSTER_NAME" init -backend-config="prefix=terraform/state/$CLUSTER_NAME" -upgrade=true
-      ECR_ACCESS_KEY_ID="$(terraform -chdir="cf-k8s-secrets/ci-deployment/$CLUSTER_NAME" output -raw code_pusher_key_id)"
-      ECR_SECRET_ACCESS_KEY="$(terraform -chdir="cf-k8s-secrets/ci-deployment/$CLUSTER_NAME" output -raw code_pusher_secret)"
+      pushd "cf-k8s-secrets/ci-deployment/$CLUSTER_NAME"
+      {
+        terraform init -backend-config="prefix=terraform/state/$CLUSTER_NAME" -upgrade=true
+        ECR_ACCESS_KEY_ID="$(terraform output -raw code_pusher_key_id)"
+        ECR_SECRET_ACCESS_KEY="$(terraform output -raw code_pusher_secret)"
+      }
+      popd
       ECR_TOKEN="$(AWS_ACCESS_KEY_ID="$ECR_ACCESS_KEY_ID" AWS_SECRET_ACCESS_KEY="$ECR_SECRET_ACCESS_KEY" aws ecr get-login-password --region "$AWS_REGION")"
       kubectl create secret docker-registry buildkit --docker-server='007801690126.dkr.ecr.eu-west-1.amazonaws.com' \
         --docker-username=AWS --docker-password="$ECR_TOKEN"
@@ -32,6 +37,22 @@ docker_login() {
   esac
 }
 
+create_root_namespace() {
+  pushd "cf-k8s-secrets/ci-deployment/$CLUSTER_NAME/k8s"
+  {
+    terraform init \
+      -backend-config="prefix=terraform/state/$CLUSTER_NAME-k8s" \
+      -upgrade=true
+    terraform apply \
+      -var "name=$CLUSTER_NAME" \
+      -var "registry-server=${DOCKER_SERVER}" \
+      -var "registry-username=${DOCKER_USERNAME}" \
+      -var "registry-password=${DOCKER_PASSWORD}" \
+      -auto-approve
+  }
+  popd
+}
+
 deploy() {
   pushd korifi
   {
@@ -41,15 +62,6 @@ deploy() {
       --images-annotation=false >"/tmp/values.yaml"
 
     helm dependency update helm/korifi
-
-    cat <<EOF | kubectl apply -f -
-apiVersion: v1
-kind: Namespace
-metadata:
-  labels:
-    pod-security.kubernetes.io/enforce: restricted
-  name: korifi
-EOF
 
     helm upgrade --install korifi helm/korifi \
       --namespace korifi \
@@ -63,24 +75,6 @@ EOF
     fi
   }
   popd
-}
-
-create_root_namespace() {
-  cat <<EOF | kubectl apply -f -
-apiVersion: v1
-kind: Namespace
-metadata:
-  labels:
-    pod-security.kubernetes.io/audit: restricted
-    pod-security.kubernetes.io/enforce: restricted
-  name: cf
-EOF
-
-  kubectl delete secret -n cf image-registry-credentials --ignore-not-found
-  kubectl create secret -n cf docker-registry image-registry-credentials \
-    --docker-server="${DOCKER_SERVER}" \
-    --docker-username="${DOCKER_USERNAME}" \
-    --docker-password="${DOCKER_PASSWORD}"
 }
 
 main() {

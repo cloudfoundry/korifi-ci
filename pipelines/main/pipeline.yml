@@ -744,6 +744,15 @@ jobs:
       - get: cf-k8s-secrets
     - load_var: cluster-env-vars
       file: clusters/env_vars.yaml
+    - task: undeploy-korifi
+      file: korifi-ci/pipelines/tasks/undeploy-korifi.yml
+      image: ci-image
+      attempts: 10
+      params:
+        AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
+        CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
+        CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
+        GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
     - task: delete-dns
       file: korifi-ci/pipelines/tasks/delete-dns.yml
       image: gcloud-image
