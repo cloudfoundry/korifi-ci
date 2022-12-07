@@ -22,9 +22,6 @@ cleanup_root_namespace() {
 }
 
 undeploy_cf() {
-  kubectl delete secret --ignore-not-found=true -n korifi korifi-workloads-ingress-cert
-  kubectl delete secret --ignore-not-found=true -n korifi korifi-api-ingress-cert
-
   if helm status --namespace korifi korifi; then
     helm delete --namespace korifi korifi --wait
   fi
@@ -48,7 +45,10 @@ cleanup_korifi_namespace() {
 
 main() {
   export KUBECONFIG=$PWD/kube.config
-  export-kubeconfig
+  if ! export-kubeconfig; then
+    echo "cannot export kubeconfig. Assuming no cluster (check error above). Exiting 0"
+    exit 0
+  fi
   cleanup_root_namespace
   undeploy_cf
   cleanup_korifi_namespace
