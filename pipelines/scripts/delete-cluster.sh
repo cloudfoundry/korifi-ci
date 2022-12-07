@@ -20,7 +20,9 @@ pushd cf-k8s-secrets/ci-deployment/$CLUSTER_NAME || exit 1
   fi
 
   export-kubeconfig
-  kubectl get service --all-namespaces | awk '/LoadBalancer/ { print "kubectl delete service -n " $1 " " $2 }' | xargs -IN sh -c "N"
+  kubectl get service --all-namespaces |
+    awk '/LoadBalancer/ { printf "kubectl delete service -n %s %s", $1, $2 }' |
+    xargs -IN sh -c "N"
 
   if [[ "${CLUSTER_TYPE:-}" == "GKE" ]]; then
     cluster_network="$(terraform show -json | jq -r '.values.root_module.resources[] | select(.name == "network") | .values.name')"
