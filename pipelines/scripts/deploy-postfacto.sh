@@ -41,9 +41,12 @@ EOF
 
 sed -i "s/ruby '2.7.3'/ruby '2.7.7'/" postfacto/package/assets/Gemfile
 sed -i "/uglifier/d" postfacto/package/assets/Gemfile
+sed -i "/sassc-rails/d" postfacto/package/assets/Gemfile
 cat <<EOF >>postfacto/package/assets/Gemfile
 group :asset do
+  gem 'duktape'
   gem 'uglifier'
+  gem 'sassc-rails', '~> 2.0.0'
 end
 EOF
 

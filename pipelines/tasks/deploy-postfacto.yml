@@ -9,6 +9,9 @@ params:
   CF_ADMIN_KEY:
   CF_ADMIN_CERT:
   CF_API_URL:
+  CLUSTER_TYPE:
+  CLUSTER_NAME:
+  GCP_ZONE:
   POSTGRES_ADDRESS: ((acceptance/postfacto.postgresAddr))
   POSTGRES_USER: ((acceptance/postfacto.postgresUser))
   POSTGRES_PASSWORD: ((acceptance/postfacto.postgresPassword))
