@@ -12,10 +12,10 @@ api:
   packageRepositoryPrefix: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/source-package
 
 controllers:
-  taskTTL: 5s
+  taskTTL: 15s
 
 job-task-runner:
-  jobTTL: 5s
+  jobTTL: 15s
 
 kpack-image-builder:
   dropletRepository: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/droplets
