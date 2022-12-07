@@ -65,6 +65,9 @@ spec:
     name: letsencrypt
 EOF
 
-    kubectl -n "$CERT_MANAGER_NAMESPACE" wait --for=condition=Ready=True "certificate/$WILDCARD_CERT_NAME"
+    kubectl -n "$CERT_MANAGER_NAMESPACE" wait \
+      --for=condition=Ready=True \
+      --timeout=5m \
+      "certificate/$WILDCARD_CERT_NAME"
   fi
 }
