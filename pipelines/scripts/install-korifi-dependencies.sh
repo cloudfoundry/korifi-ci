@@ -22,4 +22,5 @@ if [[ "$CLUSTER_TYPE" == "EKS" ]]; then
   terraform -chdir="cf-k8s-secrets/ci-deployment/$CLUSTER_NAME" init -backend-config="prefix=terraform/state/$CLUSTER_NAME" -upgrade=true
   ROLE_ARN="$(terraform -chdir="cf-k8s-secrets/ci-deployment/$CLUSTER_NAME" output -raw ecr_access_role_arn)"
   kubectl annotate serviceaccount -n kpack --overwrite=true controller "eks.amazonaws.com/role-arn=$ROLE_ARN"
+  kubectl -n kpack rollout restart deployment kpack-controller
 fi
