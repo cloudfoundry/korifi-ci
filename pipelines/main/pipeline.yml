@@ -333,13 +333,14 @@ jobs:
         CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
         GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
     - task: deploy-latest-release
-      file: korifi-ci/pipelines/tasks/deploy-latest-korifi-release.yml
+      file: korifi-ci/pipelines/tasks/deploy-korifi.yml
       image: ci-image
       timeout: 30m
       params:
         AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
         CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
         CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
+        DEPLOY_LATEST_RELEASE: please
         GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
         USE_LETSENCRYPT: ((.:cluster-env-vars.USE_LETSENCRYPT))
         DOCKER_SERVER: europe-west1-docker.pkg.dev

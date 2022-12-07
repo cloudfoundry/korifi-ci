@@ -37,7 +37,7 @@ docker_login() {
   esac
 }
 
-create_root_namespace() {
+setup_root_namespace() {
   pushd "cf-k8s-secrets/ci-deployment/$CLUSTER_NAME/k8s"
   {
     terraform init \
@@ -51,6 +51,30 @@ create_root_namespace() {
       -auto-approve
   }
   popd
+}
+deploy_latest_release() {
+  cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    pod-security.kubernetes.io/enforce: restricted
+  name: korifi
+EOF
+
+  location=$(curl -i https://github.com/cloudfoundry/korifi/releases/latest | grep "location: " | tr -d '\r')
+  version="${location##*tag/v}"
+
+  helm upgrade --install korifi \
+    "https://github.com/cloudfoundry/korifi/releases/download/v${version}/korifi-${version}.tgz" \
+    --namespace korifi \
+    --values "korifi-ci/build/values/$CLUSTER_NAME/values.yaml" \
+    --wait
+
+  if [[ -n "$USE_LETSENCRYPT" ]]; then
+    clone_letsencrypt_cert "korifi-api-ingress-cert" "korifi"
+    clone_letsencrypt_cert "korifi-workloads-ingress-cert" "korifi"
+  fi
 }
 
 deploy() {
@@ -81,8 +105,12 @@ main() {
   export KUBECONFIG=$PWD/kube/kube.config
   export-kubeconfig
   docker_login
-  create_root_namespace
-  deploy
+  setup_root_namespace
+  if [[ -n "$DEPLOY_LATEST_RELEASE" ]]; then
+    deploy_latest_release
+  else
+    deploy
+  fi
 }
 
 main
