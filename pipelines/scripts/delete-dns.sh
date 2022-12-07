@@ -10,12 +10,10 @@ terraform -chdir="$TERRAFORM_CONFIG_PATH" init \
   -backend-config="prefix=terraform/state/${CLUSTER_NAME}" \
   -upgrade=true
 
-if ! terraform -chdir="$TERRAFORM_CONFIG_PATH" state list | grep -q aws_eks_cluster; then
-  echo "Exiting since there is no cluster"
+if ! export-kubeconfig; then
+  echo "Exiting since there is (probably) no cluster. Check error message above!"
   exit 0
 fi
-
-export-kubeconfig
 
 ELB_DNS_NAME=""
 
