@@ -557,6 +557,9 @@ jobs:
   - in_parallel:
     - get: ci-image
     - get: korifi
+      trigger: true
+      passed:
+      - run-deploy-korifi-acceptance
     - get: korifi-ci
     - get: cf-k8s-secrets
     - get: pairup
@@ -593,6 +596,9 @@ jobs:
     - get: ci-image
     - get: cf-k8s-secrets
     - get: korifi
+      trigger: true
+      passed:
+      - run-deploy-korifi-acceptance
     - get: korifi-ci
     - get: postfacto
       trigger: true
