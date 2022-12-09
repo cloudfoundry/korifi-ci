@@ -847,12 +847,12 @@ resource_types:
     tag: latest
 
 - name: pull-request
-  type: docker-image
+  type: registry-image
   source:
     repository: teliaoss/github-pr-resource
 
 - name: github-status
-  type: docker-image
+  type: registry-image
   source:
     repository: resource/github-status
 

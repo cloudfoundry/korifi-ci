@@ -82,7 +82,7 @@ resources:
     branch: main
 
 - name: ci-image
-  type: docker-image
+  type: registry-image
   icon: docker
   source:
     repository: europe-west1-docker.pkg.dev/cf-on-k8s-wg/ci/ci
@@ -100,7 +100,7 @@ resources:
     uri: https://github.com/cloudfoundry/korifi-ci
 
 - name: go-image
-  type: docker-image
+  type: registry-image
   icon: docker
   source:
     username: ((docker.user))
@@ -109,7 +109,7 @@ resources:
     tag: latest
 
 - name: gcloud-image
-  type: docker-image
+  type: registry-image
   icon: docker
   source:
     repository: europe-west1-docker.pkg.dev/cf-on-k8s-wg/ci/gcloud
@@ -127,7 +127,7 @@ resources:
     uri: https://github.com/cloudfoundry/korifi-ci
 
 - name: google-cloud-sdk-image
-  type: docker-image
+  type: registry-image
   icon: docker
   source:
     username: ((docker.user))
