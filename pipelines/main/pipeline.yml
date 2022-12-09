@@ -559,7 +559,7 @@ jobs:
     - get: korifi
       trigger: true
       passed:
-      - run-deploy-korifi-acceptance
+      - deploy-korifi-acceptance
     - get: korifi-ci
     - get: cf-k8s-secrets
     - get: pairup
@@ -598,7 +598,7 @@ jobs:
     - get: korifi
       trigger: true
       passed:
-      - run-deploy-korifi-acceptance
+      - deploy-korifi-acceptance
     - get: korifi-ci
     - get: postfacto
       trigger: true
