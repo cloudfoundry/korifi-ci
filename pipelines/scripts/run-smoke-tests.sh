@@ -22,5 +22,8 @@ case "$CLUSTER_TYPE" in
     ;;
 esac
 
+echo "waiting for ClusterBuilder to be ready..."
+kubectl wait --for=condition=ready clusterbuilder --all=true --timeout=15m
+
 cd korifi
 ginkgo ./tests/smoke
