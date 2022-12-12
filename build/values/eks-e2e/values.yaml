@@ -4,7 +4,6 @@ global:
   defaultAppDomainName: eks-e2e.korifi.cf-app.com
   generateIngressCertificates: true
   containerRegistrySecret: ""
-  containerRegistryServiceAccount: ecr-enabled
 
 api:
   apiServer:

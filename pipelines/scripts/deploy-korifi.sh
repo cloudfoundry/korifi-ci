@@ -5,6 +5,7 @@ set -euo pipefail
 source korifi-ci/pipelines/scripts/common/gcloud-functions
 source korifi-ci/pipelines/scripts/common/secrets.sh
 
+ECR_ACCESS_ROLE_ARN=
 # refresh the kbld kubectl builder secret before the parallel builds kick in
 docker_login() {
   kubectl delete secret buildkit &>/dev/null || true
@@ -22,6 +23,7 @@ docker_login() {
         terraform init -backend-config="prefix=terraform/state/$CLUSTER_NAME" -upgrade=true
         ECR_ACCESS_KEY_ID="$(terraform output -raw code_pusher_key_id)"
         ECR_SECRET_ACCESS_KEY="$(terraform output -raw code_pusher_secret)"
+        ECR_ACCESS_ROLE_ARN="$(terraform output -raw ecr_access_role_arn)"
       }
       popd
       ECR_TOKEN="$(AWS_ACCESS_KEY_ID="$ECR_ACCESS_KEY_ID" AWS_SECRET_ACCESS_KEY="$ECR_SECRET_ACCESS_KEY" aws ecr get-login-password --region "$AWS_REGION")"
@@ -87,10 +89,16 @@ deploy() {
 
     helm dependency update helm/korifi
 
+    roleARNValue=()
+    if [[ -n "$ECR_ACCESS_ROLE_ARN" ]]; then
+      roleARNValue=("--set" "global.eksContainerRegistryRoleARN=$ECR_ACCESS_ROLE_ARN")
+    fi
+
     helm upgrade --install korifi helm/korifi \
       --namespace korifi \
       --values "/tmp/values.yaml" \
       --values "../korifi-ci/build/values/$CLUSTER_NAME/values.yaml" \
+      "${roleARNValue[@]}" \
       --wait
 
     if [[ -n "$USE_LETSENCRYPT" ]]; then
