@@ -65,6 +65,7 @@ groups:
   jobs:
   - recreate-cluster-acceptance
   - recreate-cluster-eks
+  - recreate-cluster-eks-test
   - recreate-cluster-pr-e2e
 
 jobs:
@@ -903,6 +904,22 @@ jobs:
         DOCKER_SERVER: europe-west1-docker.pkg.dev
         DOCKER_USERNAME: _json_key
         DOCKER_PASSWORD: ((gcp-artifact-registry-writer))
+  on_failure: *slackHook
+
+- name: recreate-cluster-eks-test
+  serial: true
+  serial_groups:
+  - eks-test
+  plan:
+  - in_parallel:
+    - get: korifi-ci
+    - get: ci-image
+  - <<: *setClusterVars
+    params:
+      CLUSTER_NAME: eks-test
+      CLUSTER_TYPE: EKS
+      NODE_MACHINE_TYPE: m5.xlarge
+  - do: *recreateCluster
   on_failure: *slackHook
 
 # ===== clusters:pr-e2e =====
