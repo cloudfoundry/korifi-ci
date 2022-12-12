@@ -29,13 +29,32 @@ groups:
 jobs:
 - name: update-ci-image
   plan:
-  - get: go-image
-    trigger: true
-  - get: ci-image-source
-    trigger: true
+  - in_parallel:
+    - get: go-image
+      trigger: true
+    - get: image-source
+      resource: ci-image-source
+      trigger: true
+    - get: oci-build-task-image
+  - task: build-ci-image
+    image: oci-build-task-image
+    privileged: true
+    config:
+      platform: linux
+      inputs:
+      - name: image-source
+        path: .
+      outputs:
+      - name: image
+      caches:
+      - path: cache
+      params:
+        CONTEXT: images/ci
+      run:
+        path: build
   - put: ci-image
     params:
-      build: ci-image-source/images/ci
+      image: image/image.tar
   - get: korifi-ci
   - task: clean-old-ci-images
     file: korifi-ci/pipelines/tasks/clean-old-ci-images.yml
@@ -46,15 +65,32 @@ jobs:
 
 - name: update-gcloud-image
   plan:
-  - get: google-cloud-sdk-image
-    trigger: true
-  - get: gcloud-image-source
-    trigger: true
+  - in_parallel:
+    - get: google-cloud-sdk-image
+      trigger: true
+    - get: image-source
+      resource: gcloud-image-source
+      trigger: true
+    - get: oci-build-task-image
+  - task: build-ci-image
+    image: oci-build-task-image
+    privileged: true
+    config:
+      platform: linux
+      inputs:
+      - name: image-source
+        path: .
+      outputs:
+      - name: image
+      caches:
+      - path: cache
+      params:
+        CONTEXT: images/gcloud
+      run:
+        path: build
   - put: gcloud-image
-    get_params:
-      skip_download: true
     params:
-      build: gcloud-image-source/images/gcloud
+      image: image/image.tar
   - get: ci-image
   - get: korifi-ci
   - task: clean-old-ci-images
@@ -107,6 +143,14 @@ resources:
     password: ((docker.pass))
     repository: golang
     tag: latest
+
+- name: oci-build-task-image
+  type: registry-image
+  icon: docker
+  source:
+    username: ((docker.user))
+    password: ((docker.pass))
+    repository: concourse/oci-build-task
 
 - name: gcloud-image
   type: registry-image
