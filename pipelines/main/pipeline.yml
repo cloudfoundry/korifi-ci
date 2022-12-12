@@ -45,6 +45,7 @@ groups:
   jobs:
   - allow-e2es
   - run-e2es-pr
+  - run-e2es-eks-pr
 - name: periodics
   jobs:
   - run-tests-periodic
@@ -321,7 +322,7 @@ jobs:
       statuses:
         - state: success
           context: "Concourse - E2E (main)"
-  ensure: &clean-pr-e2e-env
+  ensure: &clean-env
     do:
     - task: undeploy-korifi
       file: korifi-ci/pipelines/tasks/undeploy-korifi.yml
@@ -459,9 +460,65 @@ jobs:
 
   ensure:
     do:
-    - *clean-pr-e2e-env
+    - *clean-env
 
 # ===== eks =====
+- name: run-e2es-eks-pr
+  on_failure:
+    do:
+    - put: korifi-pr
+      params:
+        path: korifi-pr
+        base_context: "Concourse "
+        context: " e2e-eks-tests (pull_request)"
+        status: failure
+    - *slackHook
+    - <<: *envoyLogs
+      params:
+        AWS_ACCESS_KEY_ID: ((aws/terraform.access-key-id))
+        AWS_SECRET_ACCESS_KEY: ((aws/terraform.secret-access-key))
+        AWS_REGION: eu-west-1
+        CLUSTER_NAME: eks-e2e
+        CLUSTER_TYPE: EKS
+  serial: true
+  serial_groups:
+  - eks
+  plan:
+  - in_parallel:
+    - get: ci-image
+    - get: gcloud-image
+    - get: korifi-ci
+    - get: korifi
+      resource: korifi-pr
+      trigger: true
+      version: every
+    - get: cf-k8s-secrets
+
+  - put: korifi-pr
+    params:
+      path: korifi
+      base_context: "Concourse "
+      context: " e2e-eks-tests (pull_request)"
+      status: pending
+
+  - <<: *setClusterVars
+    params:
+      CLUSTER_NAME: eks-e2e
+      CLUSTER_TYPE: EKS
+
+  - do: *end-to-ends
+
+  - put: korifi-pr
+    params:
+      path: korifi
+      base_context: "Concourse "
+      context: " e2e-eks-tests (pull_request)"
+      status: success
+
+  ensure:
+    do:
+    - *clean-env
+
 - name: run-e2es-eks
   on_failure:
     do:
@@ -517,7 +574,7 @@ jobs:
 
   ensure:
     do:
-    - *clean-pr-e2e-env
+    - *clean-env
 
 # ===== acceptance =====
 - name: deploy-korifi-acceptance
@@ -662,7 +719,7 @@ jobs:
       CLUSTER_NAME: pr-e2e
       CLUSTER_TYPE: GKE
   - do: *end-to-ends
-  ensure: *clean-pr-e2e-env
+  ensure: *clean-env
 
 - name: bump-tests-vendor
   on_failure:
@@ -812,6 +869,40 @@ jobs:
       CLUSTER_TYPE: EKS
       NODE_MACHINE_TYPE: m5.xlarge
   - do: *recreateCluster
+  - do: &deployLatestKorifi
+    - task: install-korifi-dependencies
+      file: korifi-ci/pipelines/tasks/install-korifi-dependencies.yml
+      image: ci-image
+      timeout: 30m
+      params:
+        AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
+        CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
+        CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
+        GCP_PROJECT_ID: ((.:cluster-env-vars.GCP_PROJECT_ID))
+        GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
+        USE_LETSENCRYPT: ((.:cluster-env-vars.USE_LETSENCRYPT))
+    - task: update-dns
+      file: korifi-ci/pipelines/tasks/update-dns.yml
+      image: gcloud-image
+      params:
+        AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
+        CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
+        CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
+        GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
+    - task: deploy-latest-release
+      file: korifi-ci/pipelines/tasks/deploy-korifi.yml
+      image: ci-image
+      timeout: 30m
+      params:
+        AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
+        CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
+        CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
+        DEPLOY_LATEST_RELEASE: please
+        GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
+        USE_LETSENCRYPT: ((.:cluster-env-vars.USE_LETSENCRYPT))
+        DOCKER_SERVER: europe-west1-docker.pkg.dev
+        DOCKER_USERNAME: _json_key
+        DOCKER_PASSWORD: ((gcp-artifact-registry-writer))
   on_failure: *slackHook
 
 # ===== clusters:pr-e2e =====
@@ -831,6 +922,7 @@ jobs:
       CLUSTER_TYPE: GKE
       NODE_MACHINE_TYPE: e2-custom-4-6144
   - do: *recreateCluster
+  - do: *deployLatestKorifi
   - task: clean-gcp-artifact-registry
     file: korifi-ci/pipelines/tasks/clean-gcp-artifact-registry.yml
     attempts: 10
