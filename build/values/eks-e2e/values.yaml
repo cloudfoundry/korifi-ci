@@ -4,7 +4,8 @@ global:
   defaultAppDomainName: eks-e2e.korifi.cf-app.com
   generateIngressCertificates: true
   containerRegistrySecret: ""
-  containerRepositoryPrefix: 007801690126.dkr.ecr.eu-west-1.amazonaws.com/eks-e2e/
+  containerRegistryBase: 007801690126.dkr.ecr.eu-west-1.amazonaws.com
+  containerRepositoryPrefix: eks-e2e/
 
 api:
   apiServer:

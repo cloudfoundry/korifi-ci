@@ -3,7 +3,8 @@ adminUserName: cf-admin
 global:
   defaultAppDomainName: acceptance.korifi.cf-app.com
   generateIngressCertificates: false
-  containerRepositoryPrefix: europe-west1-docker.pkg.dev/cf-on-k8s-wg/acceptance-images/
+  containerRegistryBase: europe-west1-docker.pkg.dev/cf-on-k8s-wg
+  containerRepositoryPrefix: acceptance-images/
 
 api:
   apiServer:
