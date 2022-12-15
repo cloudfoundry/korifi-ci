@@ -3,20 +3,23 @@ adminUserName: cf-admin
 global:
   defaultAppDomainName: acceptance.korifi.cf-app.com
   generateIngressCertificates: false
+  containerRepositoryPrefix: europe-west1-docker.pkg.dev/cf-on-k8s-wg/acceptance-images/
 
 api:
   apiServer:
     url: cf.acceptance.korifi.cf-app.com
+  # remove packageRepository once it has gone from latest release
   packageRepository: europe-west1-docker.pkg.dev/cf-on-k8s-wg/acceptance-images/packages
-  # remove packageRepositoryPrefix once commit removing it has reached main
+  # remove packageRepositoryPrefix once it has gone from latest release
   packageRepositoryPrefix: europe-west1-docker.pkg.dev/cf-on-k8s-wg/acceptance-images/source-package
 
 job-task-runner:
   jobTTL: 24h
 
 kpack-image-builder:
+  # remove dropletRepository once it has gone from latest release
   dropletRepository: europe-west1-docker.pkg.dev/cf-on-k8s-wg/acceptance-images/droplet
-  # remove dropletRepositoryPrefix once commit removing it has reached main
+  # remove dropletRepositoryPrefix once it has gone from latest release
   dropletRepositoryPrefix: europe-west1-docker.pkg.dev/cf-on-k8s-wg/acceptance-images/droplet
   builderRepository: europe-west1-docker.pkg.dev/cf-on-k8s-wg/acceptance-images/kpack-builder
 
