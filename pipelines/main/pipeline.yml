@@ -769,6 +769,21 @@ jobs:
         - run-e2es-main
       - get: korifi-release-version
       - get: ci-image
+  - task: check-release-version
+    image: ci-image
+    config:
+      platform: linux
+      inputs:
+        - name: korifi-release-version
+      run:
+        path: /bin/bash
+        args:
+        - -c
+        - |
+          if curl -f "https://api.github.com/repos/cloudfoundry/korifi/releases/tags/v$(cat korifi-release-version/version)" ; then
+            echo "Release $(cat korifi-release-version/version) already exists!"
+            exit 1
+          fi
   - task: create-release
     file: korifi-ci/pipelines/tasks/create-release.yml
     image: ci-image
@@ -862,6 +877,7 @@ jobs:
   - in_parallel:
     - get: pr-e2e-delete-timer
       trigger: true
+    - get: korifi
     - get: korifi-ci
     - get: ci-image
   - <<: *setClusterVars
@@ -952,6 +968,7 @@ jobs:
   - in_parallel:
     - get: pr-e2e-delete-timer
       trigger: true
+    - get: korifi
     - get: korifi-ci
     - get: ci-image
   - <<: *setClusterVars
