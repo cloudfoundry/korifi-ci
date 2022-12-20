@@ -366,6 +366,7 @@ jobs:
       trigger: true
       passed:
         - run-e2es-main
+        - run-e2es-eks
     - get: korifi-ci
     - get: korifi-release-version
 
@@ -742,6 +743,8 @@ jobs:
   - get: korifi-release-version
     params:
       bump: major
+    passed:
+    - publish-release
   - put: korifi-release-version
     params:
       file: korifi-release-version/version
@@ -767,6 +770,7 @@ jobs:
       - get: korifi
         passed:
         - run-e2es-main
+        - run-e2es-eks
       - get: korifi-release-version
       - get: ci-image
   - task: check-release-version
