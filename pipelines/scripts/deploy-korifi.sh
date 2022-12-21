@@ -82,7 +82,7 @@ deploy_local() {
   popd
 
   helm dependency update korifi/helm/korifi
-  deploy "korifi/helm/korifi" "/tmp/values.yml"
+  deploy "korifi/helm/korifi" "/tmp/values.yaml"
 }
 
 deploy() {
