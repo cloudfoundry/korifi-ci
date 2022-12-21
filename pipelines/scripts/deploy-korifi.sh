@@ -72,13 +72,16 @@ EOF
 }
 
 deploy_local() {
-  kbld \
-    -f "korifi-ci/build/kbld/$CLUSTER_NAME/korifi-kbld.yml" \
-    -f "korifi-ci/build/values/image-values.yaml" \
-    --images-annotation=false >"/tmp/values.yaml"
+  pushd korifi
+  {
+    kbld \
+      -f "../korifi-ci/build/kbld/$CLUSTER_NAME/korifi-kbld.yml" \
+      -f "../korifi-ci/build/values/image-values.yaml" \
+      --images-annotation=false >"/tmp/values.yaml"
+  }
+  popd
 
   helm dependency update korifi/helm/korifi
-
   deploy "korifi/helm/korifi" "/tmp/values.yml"
 }
 
