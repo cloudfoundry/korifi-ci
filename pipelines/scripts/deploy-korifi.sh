@@ -64,49 +64,46 @@ metadata:
   name: korifi
 EOF
 
+  local location
   location=$(curl -i https://github.com/cloudfoundry/korifi/releases/latest | grep "location: " | tr -d '\r')
-  version="${location##*tag/v}"
+  local version="${location##*tag/v}"
 
-  helm upgrade --install korifi \
-    "https://github.com/cloudfoundry/korifi/releases/download/v${version}/korifi-${version}.tgz" \
+  deploy "https://github.com/cloudfoundry/korifi/releases/download/v${version}/korifi-${version}.tgz"
+}
+
+deploy_local() {
+  kbld \
+    -f "korifi-ci/build/kbld/$CLUSTER_NAME/korifi-kbld.yml" \
+    -f "korifi-ci/build/values/image-values.yaml" \
+    --images-annotation=false >"/tmp/values.yaml"
+
+  helm dependency update korifi/helm/korifi
+
+  deploy "korifi/helm/korifi" "/tmp/values.yml"
+}
+
+deploy() {
+  local chart="$1"
+  local extra_values_file="${2:-}"
+
+  local extra_helm_flags=()
+  if [[ -n "$extra_values_file" ]]; then
+    extra_helm_flags+=("--values" "$extra_values_file")
+  fi
+  if [[ -n "$ECR_ACCESS_ROLE_ARN" ]]; then
+    extra_helm_flags+=("--set" "global.eksContainerRegistryRoleARN=$ECR_ACCESS_ROLE_ARN")
+  fi
+
+  helm upgrade --install korifi "$chart" \
     --namespace korifi \
     --values "korifi-ci/build/values/$CLUSTER_NAME/values.yaml" \
+    "${extra_helm_flags[@]}" \
     --wait
 
   if [[ -n "$USE_LETSENCRYPT" ]]; then
     clone_letsencrypt_cert "korifi-api-ingress-cert" "korifi"
     clone_letsencrypt_cert "korifi-workloads-ingress-cert" "korifi"
   fi
-}
-
-deploy() {
-  pushd korifi
-  {
-    kbld \
-      -f "../korifi-ci/build/kbld/$CLUSTER_NAME/korifi-kbld.yml" \
-      -f "../korifi-ci/build/values/image-values.yaml" \
-      --images-annotation=false >"/tmp/values.yaml"
-
-    helm dependency update helm/korifi
-
-    roleARNValue=()
-    if [[ -n "$ECR_ACCESS_ROLE_ARN" ]]; then
-      roleARNValue=("--set" "global.eksContainerRegistryRoleARN=$ECR_ACCESS_ROLE_ARN")
-    fi
-
-    helm upgrade --install korifi helm/korifi \
-      --namespace korifi \
-      --values "/tmp/values.yaml" \
-      --values "../korifi-ci/build/values/$CLUSTER_NAME/values.yaml" \
-      "${roleARNValue[@]}" \
-      --wait
-
-    if [[ -n "$USE_LETSENCRYPT" ]]; then
-      clone_letsencrypt_cert "korifi-api-ingress-cert" "korifi"
-      clone_letsencrypt_cert "korifi-workloads-ingress-cert" "korifi"
-    fi
-  }
-  popd
 }
 
 main() {
@@ -117,7 +114,7 @@ main() {
   if [[ -n "$DEPLOY_LATEST_RELEASE" ]]; then
     deploy_latest_release
   else
-    deploy
+    deploy_local
   fi
 }
 
