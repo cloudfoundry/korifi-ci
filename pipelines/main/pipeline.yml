@@ -824,6 +824,10 @@ jobs:
       CLUSTER_NAME: acceptance
       CLUSTER_TYPE: GKE
       NODE_MACHINE_TYPE: e2-custom-4-6144
+      CI_REPO_LOCATION: europe-west1
+      CI_REPO_NAME: acceptance
+      KPACK_REPO_LOCATION: europe-west1
+      KPACK_REPO_NAME: acceptance-images
   - do: &recreateCluster
     - in_parallel:
       - get: gcloud-image
@@ -864,6 +868,16 @@ jobs:
         CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
         CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
         GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
+    - task: clean-artifact-registry
+      file: korifi-ci/pipelines/tasks/clean-artifact-registry.yml
+      attempts: 2
+      image: ci-image
+      params:
+        CI_REPO_LOCATION: ((.:cluster-env-vars.CI_REPO_LOCATION))
+        CI_REPO_NAME: ((.:cluster-env-vars.CI_REPO_NAME))
+        CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
+        KPACK_REPO_LOCATION: ((.:cluster-env-vars.KPACK_REPO_LOCATION))
+        KPACK_REPO_NAME: ((.:cluster-env-vars.KPACK_REPO_NAME))
     - task: create-kubernetes-cluster
       file: korifi-ci/pipelines/tasks/create-cluster.yml
       image: gcloud-image
@@ -889,6 +903,8 @@ jobs:
       CLUSTER_NAME: eks-e2e
       CLUSTER_TYPE: EKS
       NODE_MACHINE_TYPE: m5.xlarge
+      KPACK_REPO_LOCATION: eu-west-1
+      KPACK_REPO_NAME: eks-e2e/
   - do: *recreateCluster
   - do: &deployLatestKorifi
     - task: install-korifi-dependencies
@@ -980,12 +996,12 @@ jobs:
       CLUSTER_NAME: pr-e2e
       CLUSTER_TYPE: GKE
       NODE_MACHINE_TYPE: e2-custom-4-6144
+      CI_REPO_LOCATION: europe-west1
+      CI_REPO_NAME: ci
+      KPACK_REPO_LOCATION: europe-west1
+      KPACK_REPO_NAME: pr-e2e-images
   - do: *recreateCluster
   - do: *deployLatestKorifi
-  - task: clean-gcp-artifact-registry
-    file: korifi-ci/pipelines/tasks/clean-gcp-artifact-registry.yml
-    attempts: 10
-    image: ci-image
   on_failure: *slackHook
 
 resource_types:
