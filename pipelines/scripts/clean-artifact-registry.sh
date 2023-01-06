@@ -16,9 +16,15 @@ main() {
       export -f gcloudx
 
       # delete all images produced by kpack during the tests
-      gcloudx artifacts repositories delete "$KPACK_REPO_NAME" \
+      if gcloudx artifacts repositories list \
         --location "$KPACK_REPO_LOCATION" \
-        --quiet
+        --filter REPOSITORY:"$KPACK_REPO_NAME" |
+        grep -q "$KPACK_REPO_NAME"; then
+
+        gcloudx artifacts repositories delete "$KPACK_REPO_NAME" \
+          --location "$KPACK_REPO_LOCATION" \
+          --quiet
+      fi
       gcloudx artifacts repositories create \
         "$KPACK_REPO_NAME" \
         --location "$KPACK_REPO_LOCATION" \
@@ -26,9 +32,14 @@ main() {
         --quiet
 
       # delete all korifi images
-      gcloudx artifacts repositories delete "$CI_REPO_NAME" \
+      if gcloudx artifacts repositories list \
         --location "$CI_REPO_LOCATION" \
-        --quiet
+        --filter REPOSITORY:"$CI_REPO_NAME" |
+        grep -q "$CI_REPO_NAME"; then
+        gcloudx artifacts repositories delete "$CI_REPO_NAME" \
+          --location "$CI_REPO_LOCATION" \
+          --quiet
+      fi
       gcloudx artifacts repositories create \
         "$CI_REPO_NAME" \
         --location "$CI_REPO_LOCATION" \

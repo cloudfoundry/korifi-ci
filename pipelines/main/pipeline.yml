@@ -870,7 +870,7 @@ jobs:
         GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
     - task: clean-artifact-registry
       file: korifi-ci/pipelines/tasks/clean-artifact-registry.yml
-      attempts: 2
+      attempts: 3
       image: ci-image
       params:
         CI_REPO_LOCATION: ((.:cluster-env-vars.CI_REPO_LOCATION))
