@@ -8,10 +8,14 @@ outputs:
 
 params:
   AWS_REGION: eu-west-1
+  CI_REPO_LOCATION:
+  CI_REPO_NAME:
   CLUSTER_NAME:
   CLUSTER_TYPE:
   GCP_PROJECT_ID: cf-on-k8s-wg
   GCP_ZONE: europe-west1-b
+  KPACK_REPO_LOCATION:
+  KPACK_REPO_NAME:
   NODE_MACHINE_TYPE:
 
 run:
