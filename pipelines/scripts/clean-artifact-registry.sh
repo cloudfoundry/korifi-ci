@@ -50,8 +50,7 @@ main() {
     "EKS")
       aws ecr describe-repositories \
         --region "$KPACK_REPO_LOCATION" |
-        jq -r '.repositories[].repositoryName' |
-        grep "^$KPACK_REPO_NAME" |
+        jq -r ".repositories[].repositoryName|select(.|startswith(\"$KPACK_REPO_NAME\"))" |
         xargs -I{} aws ecr delete-repository \
           --repository-name {} \
           --force \
