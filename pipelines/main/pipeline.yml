@@ -904,7 +904,7 @@ jobs:
       CLUSTER_TYPE: EKS
       NODE_MACHINE_TYPE: m5.xlarge
       KPACK_REPO_LOCATION: eu-west-1
-      KPACK_REPO_NAME: eks-e2e/
+      KPACK_REPO_NAME: eks-e2e
   - do: *recreateCluster
   - do: &deployLatestKorifi
     - task: install-korifi-dependencies

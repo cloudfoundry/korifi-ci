@@ -34,12 +34,12 @@ sources:
 
 destinations:
 - image: cloudfoundry/korifi-api:latest
-  newImage: europe-west1-docker.pkg.dev/cf-on-k8s-wg/ci/korifi-api
+  newImage: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/korifi-api
 - image: cloudfoundry/korifi-controllers:latest
-  newImage: europe-west1-docker.pkg.dev/cf-on-k8s-wg/ci/korifi-controllers
+  newImage: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/korifi-controllers
 - image: cloudfoundry/korifi-job-task-runner:latest
-  newImage: europe-west1-docker.pkg.dev/cf-on-k8s-wg/ci/korifi-job-task-runner
+  newImage: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/korifi-job-task-runner
 - image: cloudfoundry/korifi-kpack-image-builder:latest
-  newImage: europe-west1-docker.pkg.dev/cf-on-k8s-wg/ci/korifi-kpack-image-builder
+  newImage: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/korifi-kpack-image-builder
 - image: cloudfoundry/korifi-statefulset-runner:latest
-  newImage: europe-west1-docker.pkg.dev/cf-on-k8s-wg/ci/korifi-statefulset-runner
+  newImage: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/korifi-statefulset-runner

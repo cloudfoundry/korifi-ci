@@ -30,21 +30,6 @@ main() {
         --location "$KPACK_REPO_LOCATION" \
         --repository-format=docker \
         --quiet
-
-      # delete all korifi images
-      if gcloudx artifacts repositories list \
-        --location "$CI_REPO_LOCATION" \
-        --filter REPOSITORY:"$CI_REPO_NAME" |
-        grep -q "$CI_REPO_NAME"; then
-        gcloudx artifacts repositories delete "$CI_REPO_NAME" \
-          --location "$CI_REPO_LOCATION" \
-          --quiet
-      fi
-      gcloudx artifacts repositories create \
-        "$CI_REPO_NAME" \
-        --location "$CI_REPO_LOCATION" \
-        --repository-format=docker \
-        --quiet
       ;;
 
     "EKS")
