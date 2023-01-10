@@ -14,21 +14,21 @@ RUN  apt-get update \
        --no-install-recommends \
        apt-transport-https \
        ca-certificates \
+       conntrack \
        curl \
        git \
-       wget \
+       gnupg2 \
+       iptables \
        jq \
+       lsb-release \
+       parallel \
        shellcheck \
        software-properties-common \
-       lsb-release \
+       sshfs \
+       sudo \
        unzip \
        vim \
-       apt-transport-https \
-       gnupg2 \
-       sshfs \
-       conntrack \
-       iptables \
-       sudo \
+       wget \
   && rm -rf /var/lib/apt/lists/*
 
 # kubectl
