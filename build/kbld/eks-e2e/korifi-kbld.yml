@@ -14,32 +14,8 @@ sources:
     build:
       file: controllers/Dockerfile
 
-- image: cloudfoundry/korifi-job-task-runner:latest
-  path: .
-  kubectlBuildkit:
-    build:
-      file: job-task-runner/Dockerfile
-
-- image: cloudfoundry/korifi-kpack-image-builder:latest
-  path: .
-  kubectlBuildkit:
-    build:
-      file: kpack-image-builder/Dockerfile
-
-- image: cloudfoundry/korifi-statefulset-runner:latest
-  path: .
-  kubectlBuildkit:
-    build:
-      file: statefulset-runner/Dockerfile
-
 destinations:
 - image: cloudfoundry/korifi-api:latest
   newImage: 007801690126.dkr.ecr.eu-west-1.amazonaws.com/eks-e2e-korifi-api
 - image: cloudfoundry/korifi-controllers:latest
   newImage: 007801690126.dkr.ecr.eu-west-1.amazonaws.com/eks-e2e-korifi-controllers
-- image: cloudfoundry/korifi-job-task-runner:latest
-  newImage: 007801690126.dkr.ecr.eu-west-1.amazonaws.com/eks-e2e-korifi-job-task-runner
-- image: cloudfoundry/korifi-kpack-image-builder:latest
-  newImage: 007801690126.dkr.ecr.eu-west-1.amazonaws.com/eks-e2e-korifi-kpack-image-builder
-- image: cloudfoundry/korifi-statefulset-runner:latest
-  newImage: 007801690126.dkr.ecr.eu-west-1.amazonaws.com/eks-e2e-korifi-statefulset-runner
