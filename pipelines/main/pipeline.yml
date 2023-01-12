@@ -65,7 +65,6 @@ groups:
   jobs:
   - recreate-cluster-acceptance
   - recreate-cluster-eks
-  - recreate-cluster-eks-test
   - recreate-cluster-pr-e2e
 
 jobs:
@@ -940,43 +939,6 @@ jobs:
         DOCKER_SERVER: europe-west1-docker.pkg.dev
         DOCKER_USERNAME: _json_key
         DOCKER_PASSWORD: ((gcp-artifact-registry-writer))
-  on_failure: *slackHook
-
-- name: recreate-cluster-eks-test
-  serial: true
-  serial_groups:
-  - eks-test
-  plan:
-  - in_parallel:
-    - get: korifi-ci
-    - get: ci-image
-    - get: korifi
-  - <<: *setClusterVars
-    params:
-      CLUSTER_NAME: eks-test
-      CLUSTER_TYPE: EKS
-      NODE_MACHINE_TYPE: m5.xlarge
-  - do: *recreateCluster
-  - do:
-    - task: install-korifi-dependencies
-      file: korifi-ci/pipelines/tasks/install-korifi-dependencies.yml
-      image: ci-image
-      timeout: 30m
-      params:
-        AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
-        CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
-        CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
-        GCP_PROJECT_ID: ((.:cluster-env-vars.GCP_PROJECT_ID))
-        GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
-        USE_LETSENCRYPT: ((.:cluster-env-vars.USE_LETSENCRYPT))
-    - task: update-dns
-      file: korifi-ci/pipelines/tasks/update-dns.yml
-      image: gcloud-image
-      params:
-        AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
-        CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
-        CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
-        GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
   on_failure: *slackHook
 
 # ===== clusters:pr-e2e =====
