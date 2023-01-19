@@ -15,11 +15,11 @@ api:
   packageRepositoryPrefix: 007801690126.dkr.ecr.eu-west-1.amazonaws.com/eks-e2e-packages
 
 controllers:
-  taskTTL: 5s
+  taskTTL: 15s
 
 # TODO: Delete when we release 0.6.0, see https://github.com/cloudfoundry/korifi/issues/2051
 job-task-runner:
-  jobTTL: 5s
+  jobTTL: 15s
 
 jobTaskRunner:
   jobTTL: 5s
