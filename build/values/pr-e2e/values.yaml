@@ -8,36 +8,14 @@ global:
 api:
   apiServer:
     url: cf.pr-e2e.korifi.cf-app.com
-  # remove packageRepository once it has gone from latest release
-  packageRepository: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/packages
-  # remove packageRepositoryPrefix once it has gone from latest release
-  packageRepositoryPrefix: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/source-package
 
 controllers:
   taskTTL: 15s
 
-# TODO: Delete when we release 0.6.0, see https://github.com/cloudfoundry/korifi/issues/2051
-job-task-runner:
-  jobTTL: 15s
-
 jobTaskRunner:
   jobTTL: 15s
 
-# TODO: Delete when we release 0.6.0, see https://github.com/cloudfoundry/korifi/issues/2051
-kpack-image-builder:
-  # remove dropletRepository once it has gone from latest release
-  dropletRepository: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/droplets
-  # remove dropletRepositoryPrefix once it has gone from latest release
-  dropletRepositoryPrefix: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/droplet
-  builderRepository: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/kpack-builder
-  clusterStackBuildImage: paketobuildpacks/build:base-cnb
-  clusterStackRunImage: paketobuildpacks/run:base-cnb
-
 kpackImageBuilder:
-  # remove dropletRepository once it has gone from latest release
-  dropletRepository: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/droplets
-  # remove dropletRepositoryPrefix once it has gone from latest release
-  dropletRepositoryPrefix: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/droplet
   builderRepository: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/kpack-builder
   clusterStackBuildImage: paketobuildpacks/build:base-cnb
   clusterStackRunImage: paketobuildpacks/run:base-cnb
