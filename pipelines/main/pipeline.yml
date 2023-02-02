@@ -590,6 +590,7 @@ jobs:
       trigger: true
       passed:
       - run-e2es-main
+      - run-e2es-eks
     - get: korifi-ci
     - get: ci-image
     - get: cf-k8s-secrets
