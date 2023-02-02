@@ -12,6 +12,8 @@ params:
   AWS_ACCESS_KEY_ID: ((aws/terraform.access-key-id))
   AWS_REGION:
   AWS_SECRET_ACCESS_KEY: ((aws/terraform.secret-access-key))
+  BUILD_CLUSTER_NAME:
+  BUILD_CLUSTER_TYPE:
   CLUSTER_NAME:
   CLUSTER_TYPE:
   DEPLOY_LATEST_RELEASE:

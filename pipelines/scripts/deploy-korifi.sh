@@ -5,6 +5,7 @@ set -euo pipefail
 source korifi-ci/pipelines/scripts/common/gcloud-functions
 source korifi-ci/pipelines/scripts/common/secrets.sh
 
+BUILD_KUBECONFIG=$PWD/kube/build.config
 ECR_ACCESS_ROLE_ARN=
 # refresh the kbld kubectl builder secret before the parallel builds kick in
 docker_login() {
@@ -74,7 +75,7 @@ EOF
 deploy_local() {
   pushd korifi
   {
-    kbld \
+    KUBECONFIG="$BUILD_KUBECONFIG" kbld \
       -f "../korifi-ci/build/kbld/$CLUSTER_NAME/korifi-kbld.yml" \
       -f "../korifi-ci/build/values/image-values.yaml" \
       --images-annotation=false >"/tmp/values.yaml"
@@ -110,6 +111,7 @@ deploy() {
 }
 
 main() {
+  KUBECONFIG="$BUILD_KUBECONFIG" CLUSTER_NAME="$BUILD_CLUSTER_NAME" CLUSTER_TYPE="$BUILD_CLUSTER_TYPE" export-kubeconfig
   export KUBECONFIG=$PWD/kube/kube.config
   export-kubeconfig
   docker_login
