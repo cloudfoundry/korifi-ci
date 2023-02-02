@@ -8,8 +8,6 @@ outputs:
 
 params:
   AWS_REGION: eu-west-1
-  CI_REPO_LOCATION:
-  CI_REPO_NAME:
   CLUSTER_NAME:
   CLUSTER_TYPE:
   GCP_PROJECT_ID: cf-on-k8s-wg

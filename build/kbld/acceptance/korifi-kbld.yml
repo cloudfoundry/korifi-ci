@@ -16,6 +16,6 @@ sources:
 
 destinations:
 - image: cloudfoundry/korifi-api:latest
-  newImage: europe-docker.pkg.dev/cf-on-k8s-wg/acceptance/korifi-api
+  newImage: europe-docker.pkg.dev/cf-on-k8s-wg/acceptance-images/korifi-api
 - image: cloudfoundry/korifi-controllers:latest
-  newImage: europe-docker.pkg.dev/cf-on-k8s-wg/acceptance/korifi-controllers
+  newImage: europe-docker.pkg.dev/cf-on-k8s-wg/acceptance-images/korifi-controllers

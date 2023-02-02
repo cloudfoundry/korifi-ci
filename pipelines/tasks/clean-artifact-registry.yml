@@ -6,8 +6,6 @@ inputs:
 params:
   AWS_ACCESS_KEY_ID: ((aws/terraform.access-key-id))
   AWS_SECRET_ACCESS_KEY: ((aws/terraform.secret-access-key))
-  CI_REPO_LOCATION: europe
-  CI_REPO_NAME: ci
   CLUSTER_TYPE:
   GCP_SERVICE_ACCOUNT_JSON: ((gcp-artifact-registry-writer))
   KPACK_REPO_LOCATION: europe
