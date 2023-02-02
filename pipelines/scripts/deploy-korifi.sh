@@ -112,9 +112,9 @@ deploy() {
 
 main() {
   KUBECONFIG="$BUILD_KUBECONFIG" CLUSTER_NAME="$BUILD_CLUSTER_NAME" CLUSTER_TYPE="$BUILD_CLUSTER_TYPE" export-kubeconfig
+  KUBECONFIG="$BUILD_KUBECONFIG" docker_login
   export KUBECONFIG=$PWD/kube/kube.config
   export-kubeconfig
-  docker_login
   setup_root_namespace
   if [[ -n "$DEPLOY_LATEST_RELEASE" ]]; then
     deploy_latest_release
