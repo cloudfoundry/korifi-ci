@@ -6,7 +6,7 @@ inputs:
 params:
   GCP_SERVICE_ACCOUNT_JSON: ((gcp-artifact-registry-writer))
   CI_REPO_NAME: ci
-  CI_REPO_LOCATION: europe-west1
+  CI_REPO_LOCATION: europe
   PACKAGE:
   PROJECT: cf-on-k8s-wg
 

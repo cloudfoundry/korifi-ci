@@ -824,9 +824,9 @@ jobs:
       CLUSTER_NAME: acceptance
       CLUSTER_TYPE: GKE
       NODE_MACHINE_TYPE: e2-custom-4-6144
-      CI_REPO_LOCATION: europe-west1
+      CI_REPO_LOCATION: europe
       CI_REPO_NAME: acceptance
-      KPACK_REPO_LOCATION: europe-west1
+      KPACK_REPO_LOCATION: europe
       KPACK_REPO_NAME: acceptance-images
   - do: &recreateCluster
     - in_parallel:
@@ -959,9 +959,9 @@ jobs:
       CLUSTER_NAME: pr-e2e
       CLUSTER_TYPE: GKE
       NODE_MACHINE_TYPE: e2-custom-4-6144
-      CI_REPO_LOCATION: europe-west1
+      CI_REPO_LOCATION: europe
       CI_REPO_NAME: ci
-      KPACK_REPO_LOCATION: europe-west1
+      KPACK_REPO_LOCATION: europe
       KPACK_REPO_NAME: pr-e2e-images
   - do: *recreateCluster
   - do: *deployLatestKorifi
