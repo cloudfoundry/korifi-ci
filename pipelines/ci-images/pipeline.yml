@@ -121,7 +121,7 @@ resources:
   type: registry-image
   icon: docker
   source:
-    repository: europe-west1-docker.pkg.dev/cf-on-k8s-wg/ci/ci
+    repository: europe-docker.pkg.dev/cf-on-k8s-wg/ci/ci
     tag: latest
     username: _json_key
     password: ((gcp-artifact-registry-writer))
@@ -156,7 +156,7 @@ resources:
   type: registry-image
   icon: docker
   source:
-    repository: europe-west1-docker.pkg.dev/cf-on-k8s-wg/ci/gcloud
+    repository: europe-docker.pkg.dev/cf-on-k8s-wg/ci/gcloud
     tag: latest
     username: _json_key
     password: ((gcp-artifact-registry-writer))

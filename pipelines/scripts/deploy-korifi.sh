@@ -12,7 +12,7 @@ docker_login() {
 
   case "$CLUSTER_TYPE" in
     "GKE")
-      kubectl create secret docker-registry buildkit --docker-server='europe-west1-docker.pkg.dev' \
+      kubectl create secret docker-registry buildkit --docker-server='europe-docker.pkg.dev' \
         --docker-username=_json_key --docker-password="$REGISTRY_SERVICE_ACCOUNT_JSON"
       ;;
 

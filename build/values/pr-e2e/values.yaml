@@ -3,7 +3,7 @@ adminUserName: cf-admin
 global:
   defaultAppDomainName: pr-e2e.korifi.cf-app.com
   generateIngressCertificates: true
-  containerRepositoryPrefix: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/
+  containerRepositoryPrefix: europe-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/
 
 api:
   apiServer:
@@ -16,6 +16,6 @@ jobTaskRunner:
   jobTTL: 15s
 
 kpackImageBuilder:
-  builderRepository: europe-west1-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/kpack-builder
+  builderRepository: europe-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/kpack-builder
   clusterStackBuildImage: paketobuildpacks/build:base-cnb
   clusterStackRunImage: paketobuildpacks/run:base-cnb

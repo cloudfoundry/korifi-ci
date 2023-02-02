@@ -247,7 +247,7 @@ jobs:
           CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
           GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
           USE_LETSENCRYPT: ((.:cluster-env-vars.USE_LETSENCRYPT))
-          DOCKER_SERVER: europe-west1-docker.pkg.dev
+          DOCKER_SERVER: europe-docker.pkg.dev
           DOCKER_USERNAME: _json_key
           DOCKER_PASSWORD: ((gcp-artifact-registry-writer))
 
@@ -344,7 +344,7 @@ jobs:
         DEPLOY_LATEST_RELEASE: please
         GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
         USE_LETSENCRYPT: ((.:cluster-env-vars.USE_LETSENCRYPT))
-        DOCKER_SERVER: europe-west1-docker.pkg.dev
+        DOCKER_SERVER: europe-docker.pkg.dev
         DOCKER_USERNAME: _json_key
         DOCKER_PASSWORD: ((gcp-artifact-registry-writer))
 
@@ -936,7 +936,7 @@ jobs:
         DEPLOY_LATEST_RELEASE: please
         GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
         USE_LETSENCRYPT: ((.:cluster-env-vars.USE_LETSENCRYPT))
-        DOCKER_SERVER: europe-west1-docker.pkg.dev
+        DOCKER_SERVER: europe-docker.pkg.dev
         DOCKER_USERNAME: _json_key
         DOCKER_PASSWORD: ((gcp-artifact-registry-writer))
   on_failure: *slackHook
@@ -1031,7 +1031,7 @@ resources:
 - name: ci-image
   type: registry-image
   source:
-    repository: europe-west1-docker.pkg.dev/cf-on-k8s-wg/ci/ci
+    repository: europe-docker.pkg.dev/cf-on-k8s-wg/ci/ci
     tag: latest
     username: _json_key
     password: ((gcp-artifact-registry-writer))
@@ -1039,7 +1039,7 @@ resources:
 - name: gcloud-image
   type: registry-image
   source:
-    repository: europe-west1-docker.pkg.dev/cf-on-k8s-wg/ci/gcloud
+    repository: europe-docker.pkg.dev/cf-on-k8s-wg/ci/gcloud
     tag: latest
     username: _json_key
     password: ((gcp-artifact-registry-writer))

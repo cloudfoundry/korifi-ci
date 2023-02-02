@@ -3,7 +3,7 @@ adminUserName: cf-admin
 global:
   defaultAppDomainName: acceptance.korifi.cf-app.com
   generateIngressCertificates: false
-  containerRepositoryPrefix: europe-west1-docker.pkg.dev/cf-on-k8s-wg/acceptance-images/
+  containerRepositoryPrefix: europe-docker.pkg.dev/cf-on-k8s-wg/acceptance-images/
 
 api:
   apiServer:
@@ -13,5 +13,5 @@ jobTaskRunner:
   jobTTL: 24h
 
 kpackImageBuilder:
-  builderRepository: europe-west1-docker.pkg.dev/cf-on-k8s-wg/acceptance-images/kpack-builder
+  builderRepository: europe-docker.pkg.dev/cf-on-k8s-wg/acceptance-images/kpack-builder
 
