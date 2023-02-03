@@ -25,6 +25,7 @@ groups:
   jobs:
   - update-ci-image
   - update-gcloud-image
+  - update-github-pr-resource-image
 
 jobs:
 - name: update-ci-image
@@ -100,6 +101,34 @@ jobs:
       PACKAGE: gcloud
   on_failure: *slackHook
 
+- name: update-github-pr-resource-image
+  plan:
+  - in_parallel:
+    - get: image-source
+      resource: github-pr-resource-image-source
+      trigger: true
+    - get: oci-build-task-image
+  - task: build-ci-image
+    image: oci-build-task-image
+    privileged: true
+    config:
+      platform: linux
+      inputs:
+      - name: image-source
+        path: .
+      outputs:
+      - name: image
+      caches:
+      - path: cache
+      # params:
+      #   CONTEXT: .
+      run:
+        path: build
+  - put: github-pr-resource-image
+    params:
+      image: image/image.tar
+  on_failure: *slackHook
+
 resource_types:
 - name: slack-notification
   type: registry-image
@@ -134,6 +163,22 @@ resources:
     paths:
     - images/ci/*
     uri: https://github.com/cloudfoundry/korifi-ci
+
+- name: github-pr-resource-image
+  type: registry-image
+  icon: docker
+  source:
+    repository: europe-docker.pkg.dev/cf-on-k8s-wg/ci/github-pr-resource
+    tag: latest
+    username: _json_key
+    password: ((gcp-artifact-registry-writer))
+
+- name: github-pr-resource-image-source
+  type: git
+  icon: git
+  source:
+    branch: master
+    uri: https://github.com/eirini-forks/github-pr-resource
 
 - name: go-image
   type: registry-image

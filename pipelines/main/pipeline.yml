@@ -977,7 +977,9 @@ resource_types:
 - name: pull-request
   type: registry-image
   source:
-    repository: teliaoss/github-pr-resource
+    repository: europe-docker.pkg.dev/cf-on-k8s-wg/ci/github-pr-resource
+    username: _json_key
+    password: ((gcp-artifact-registry-writer))
 
 - name: github-status
   type: registry-image
