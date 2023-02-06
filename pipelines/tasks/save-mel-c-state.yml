@@ -5,4 +5,6 @@ inputs:
 outputs:
 - name: cf-k8s-secrets
 run:
-  path: korifi-ci/pipelines/scripts/destroy-mel-c.sh
+  path: korifi-ci/pipelines/scripts/save-mel-c-state.sh
+params:
+  MESSAGE:
