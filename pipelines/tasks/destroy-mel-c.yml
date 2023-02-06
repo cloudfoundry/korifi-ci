@@ -6,3 +6,5 @@ outputs:
 - name: cf-k8s-secrets
 run:
   path: korifi-ci/pipelines/scripts/destroy-mel-c.sh
+params:
+  GCP_SERVICE_ACCOUNT_JSON: ((gcp-serviceaccount))
