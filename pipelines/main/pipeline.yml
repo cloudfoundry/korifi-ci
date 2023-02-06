@@ -407,6 +407,7 @@ jobs:
     - get: korifi-ci
     - get: pr-label
       trigger: true
+      version: every
 
   - task: allow-e2e
     file: korifi-ci/pipelines/tasks/allow-e2e.yml
