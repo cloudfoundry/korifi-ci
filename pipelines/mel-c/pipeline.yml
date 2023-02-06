@@ -42,6 +42,8 @@ jobs:
     image: ci-image
     file: korifi-ci/pipelines/tasks/create-mel-c.yml
   - put: cf-k8s-secrets
+    params:
+      repository: cf-k8s-secrets
   on_failure: *slackHook
 
 - name: destroy
@@ -61,6 +63,8 @@ jobs:
     image: ci-image
     file: korifi-ci/pipelines/tasks/destroy-mel-c.yml
   - put: cf-k8s-secrets
+    params:
+      repository: cf-k8s-secrets
   on_failure: *slackHook
 
 
