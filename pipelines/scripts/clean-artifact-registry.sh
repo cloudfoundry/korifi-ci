@@ -5,7 +5,7 @@ set -euo pipefail
 source korifi-ci/pipelines/scripts/common/gcloud-functions
 
 gcloudx() {
-  gcloud --project=${PROJECT} "$@"
+  gcloud --project="${PROJECT}" "$@"
 }
 
 main() {
@@ -25,11 +25,20 @@ main() {
           --location "$KPACK_REPO_LOCATION" \
           --quiet
       fi
-      gcloudx artifacts repositories create \
-        "$KPACK_REPO_NAME" \
-        --location "$KPACK_REPO_LOCATION" \
-        --repository-format=docker \
-        --quiet
+
+      echo -n "recreating docker repository"
+      for _ in {1..10}; do
+        if gcloudx artifacts repositories create \
+          "$KPACK_REPO_NAME" \
+          --location "$KPACK_REPO_LOCATION" \
+          --repository-format=docker \
+          --quiet; then
+          break
+        fi
+        echo -n .
+        sleep 2
+      done
+      echo
       ;;
 
     "EKS")
