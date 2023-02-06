@@ -23,6 +23,7 @@ RUN  apt-get update \
        jq \
        lsb-release \
        parallel \
+       ruby-dev \
        shellcheck \
        software-properties-common \
        sshfs \
