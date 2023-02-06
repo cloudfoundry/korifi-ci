@@ -1,0 +1,6 @@
+platform: linux
+inputs:
+- name: korifi-ci
+- name: cf-k8s-secrets
+run:
+  path: korifi-ci/pipelines/scripts/destroy-mel-c.sh

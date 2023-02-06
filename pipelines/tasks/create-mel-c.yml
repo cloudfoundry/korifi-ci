@@ -1,0 +1,8 @@
+platform: linux
+inputs:
+- name: korifi-ci
+- name: cf-k8s-secrets
+outputs:
+- name: cf-k8s-secrets
+run:
+  path: korifi-ci/pipelines/scripts/create-mel-c.sh
