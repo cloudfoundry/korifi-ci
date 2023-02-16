@@ -31,6 +31,7 @@ RUN  apt-get update \
        unzip \
        vim \
        wget \
+       zip \
   && rm -rf /var/lib/apt/lists/*
 
 # kubectl
