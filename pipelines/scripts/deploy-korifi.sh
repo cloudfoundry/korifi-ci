@@ -7,19 +7,20 @@ source korifi-ci/pipelines/scripts/common/secrets.sh
 
 BUILD_KUBECONFIG=$PWD/kube/build.config
 # refresh the kbld kubectl builder secret before the parallel builds kick in
-docker_login() {
-  kubectl delete secret buildkit &>/dev/null || true
+registry_login() {
 
   case "$CLUSTER_TYPE" in
     "GKE")
-      kubectl create secret docker-registry buildkit --docker-server='europe-docker.pkg.dev' \
+      kubectl delete secret gar-buildkit &>/dev/null || true
+      kubectl create secret docker-registry gar-buildkit --docker-server='europe-docker.pkg.dev' \
         --docker-username=_json_key --docker-password="$REGISTRY_SERVICE_ACCOUNT_JSON"
       ;;
 
     "EKS")
+      kubectl delete secret ecr-buildkit &>/dev/null || true
       local ECR_TOKEN
       ECR_TOKEN="$(AWS_ACCESS_KEY_ID="$ECR_ACCESS_KEY_ID" AWS_SECRET_ACCESS_KEY="$ECR_SECRET_ACCESS_KEY" aws ecr get-login-password --region "$AWS_REGION")"
-      kubectl create secret docker-registry buildkit --docker-server='007801690126.dkr.ecr.eu-west-1.amazonaws.com' \
+      kubectl create secret docker-registry ecr-buildkit --docker-server='007801690126.dkr.ecr.eu-west-1.amazonaws.com' \
         --docker-username=AWS --docker-password="$ECR_TOKEN"
       ;;
 
@@ -127,7 +128,7 @@ main() {
     deploy_latest_release
   else
     KUBECONFIG="$BUILD_KUBECONFIG" CLUSTER_NAME="$BUILD_CLUSTER_NAME" CLUSTER_TYPE="$BUILD_CLUSTER_TYPE" export-kubeconfig
-    KUBECONFIG="$BUILD_KUBECONFIG" docker_login
+    KUBECONFIG="$BUILD_KUBECONFIG" registry_login
     deploy_local
   fi
 }
