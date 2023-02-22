@@ -871,8 +871,8 @@ jobs:
         GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
     - task: clean-artifact-registry
       file: korifi-ci/pipelines/tasks/clean-artifact-registry.yml
-      attempts: 3
       image: ci-image
+      timeout: 30m
       params:
         CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
         KPACK_REPO_LOCATION: ((.:cluster-env-vars.KPACK_REPO_LOCATION))
