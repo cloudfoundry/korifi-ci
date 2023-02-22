@@ -27,17 +27,22 @@ main() {
       fi
 
       echo -n "recreating docker repository"
-      for _ in {1..10}; do
+      success=n
+      for _ in {1..30}; do
         if gcloudx artifacts repositories create \
           "$KPACK_REPO_NAME" \
           --location "$KPACK_REPO_LOCATION" \
           --repository-format=docker \
           --quiet; then
+          success=y
           break
         fi
         echo -n .
         sleep 2
       done
+      if [[ "$success" == "n" ]]; then
+        exit 1
+      fi
       echo
       ;;
 
