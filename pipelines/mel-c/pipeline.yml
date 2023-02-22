@@ -41,15 +41,17 @@ jobs:
   - task: create-mel-c
     image: ci-image
     file: korifi-ci/pipelines/tasks/create-mel-c.yml
-  - task: save-mel-c-state
-    image: ci-image
-    file: korifi-ci/pipelines/tasks/save-mel-c-state.yml
-    params:
-      MESSAGE: "Created mel-c CF on Bosh Lite"
-  - put: cf-k8s-secrets
-    params:
-      repository: cf-k8s-secrets
   on_failure: *slackHook
+  ensure:
+    do:
+    - task: save-mel-c-state
+      image: ci-image
+      file: korifi-ci/pipelines/tasks/save-mel-c-state.yml
+      params:
+        MESSAGE: "Created mel-c CF on Bosh Lite"
+    - put: cf-k8s-secrets
+      params:
+        repository: cf-k8s-secrets
 
 - name: destroy
   on_failure:
@@ -67,15 +69,17 @@ jobs:
   - task: destroy-mel-c
     image: ci-image
     file: korifi-ci/pipelines/tasks/destroy-mel-c.yml
-  - task: save-mel-c-state
-    image: ci-image
-    file: korifi-ci/pipelines/tasks/save-mel-c-state.yml
-    params:
-      MESSAGE: "Destroyed mel-c CF on Bosh Lite"
-  - put: cf-k8s-secrets
-    params:
-      repository: cf-k8s-secrets
   on_failure: *slackHook
+  ensure:
+    do:
+    - task: save-mel-c-state
+      image: ci-image
+      file: korifi-ci/pipelines/tasks/save-mel-c-state.yml
+      params:
+        MESSAGE: "Destroyed mel-c CF on Bosh Lite"
+    - put: cf-k8s-secrets
+      params:
+        repository: cf-k8s-secrets
 
 
 resource_types:
