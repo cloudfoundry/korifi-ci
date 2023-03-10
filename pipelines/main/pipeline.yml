@@ -309,6 +309,11 @@ jobs:
           GINKGO_NODES: 8
           ROOT_NAMESPACE: cf
 
+      - task: run-crds-tests
+        file: korifi-ci/pipelines/tasks/run-crds-tests.yml
+        image: ci-image
+        timeout: 30m
+
   - task: undeploy-korifi
     file: korifi-ci/pipelines/tasks/undeploy-korifi.yml
     image: ci-image
