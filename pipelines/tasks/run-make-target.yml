@@ -15,6 +15,11 @@ params:
   DIR: .
   TARGET:
   GINKGO_NODES: 8
+  AWS_ACCESS_KEY_ID: ((aws/terraform.access-key-id))
+  AWS_SECRET_ACCESS_KEY: ((aws/terraform.secret-access-key))
+  GCP_ARTIFACT_WRITER_KEY: ((gcp-artifact-registry-writer))
+  ACR_USER: ((azure/acr.username))
+  ACR_PASSWORD: ((azure/acr.password))
 
 run:
   path: korifi-ci/pipelines/scripts/run-make-target.sh
