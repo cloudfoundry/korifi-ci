@@ -8,5 +8,8 @@ inputs:
 - name: korifi-ci
 - name: root
 
+params:
+  DIR: .
+
 run:
   path: korifi-ci/pipelines/scripts/run-lint.sh
