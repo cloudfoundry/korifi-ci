@@ -97,12 +97,10 @@ jobs:
   - in_parallel:
       steps:
       - task: linter
-        file: korifi-ci/pipelines/tasks/run-make-target.yml
+        file: korifi-ci/pipelines/tasks/run-lint.yml
         image: golangci-lint-image
         input_mapping:
           root: korifi
-        params:
-          TARGET: lint
 
       - in_parallel: &unit-integration
         - task: api-tests

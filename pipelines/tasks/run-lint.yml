@@ -1,0 +1,12 @@
+platform: linux
+
+caches:
+  - path: /root/.cache/go-build
+  - path: /go/pkg/mod
+
+inputs:
+- name: korifi-ci
+- name: root
+
+run:
+  path: korifi-ci/pipelines/scripts/run-lint.sh
