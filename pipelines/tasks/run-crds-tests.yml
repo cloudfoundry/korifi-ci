@@ -5,13 +5,18 @@ caches:
   - path: /go/pkg/mod
 
 inputs:
-  - name: korifi-ci
-  - name: korifi
-  - name: kube
+- name: korifi-ci
+- name: korifi
 
 params:
+  AWS_ACCESS_KEY_ID: ((aws/terraform.access-key-id))
+  AWS_REGION:
+  AWS_SECRET_ACCESS_KEY: ((aws/terraform.secret-access-key))
+  CLUSTER_NAME:
+  CLUSTER_TYPE:
+  CLUSTER_VERSION_MAJOR:
+  CLUSTER_VERSION_MINOR:
   ROOT_NAMESPACE: cf
-  KUBECONFIG: kube/kube.config
 
 run:
   path: korifi-ci/pipelines/scripts/run-crds-tests.sh

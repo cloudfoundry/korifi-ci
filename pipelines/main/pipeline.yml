@@ -306,11 +306,14 @@ jobs:
           GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
           GINKGO_NODES: 8
           ROOT_NAMESPACE: cf
-
       - task: run-crds-tests
         file: korifi-ci/pipelines/tasks/run-crds-tests.yml
         image: ci-image
         timeout: 30m
+        params:
+          AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
+          CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
+          CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
 
   - task: undeploy-korifi
     file: korifi-ci/pipelines/tasks/undeploy-korifi.yml
