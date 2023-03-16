@@ -34,6 +34,7 @@ if [[ "$CLUSTER_TYPE" == "EKS" ]]; then
   export CF_ADMIN_CERT=ignore
   export E2E_USER_TOKEN="$CF_USER_TOKEN"
   export CF_ADMIN_TOKEN
+  export CRDS_TEST_CLI_USER=cf-user
 
   GOOGLE_APPLICATION_CREDENTIALS="$OLD_GOOGLE_APPLICATION_CREDENTIALS"
 
@@ -42,6 +43,9 @@ if [[ "$CLUSTER_TYPE" == "EKS" ]]; then
     configmaps/aws-auth \
     --type merge \
     -p '{"data":{"mapUsers":"- userarn: '"$CF_USER_ARN"'\n  username: cf-user\n- userarn: '"$CF_ADMIN_ARN"'\n  username: cf-admin"}}'
+else
+  export CRDS_TEST_CLI_USER=crds-test-cli-user
+  ./korifi/scripts/create-new-user.sh "$CRDS_TEST_CLI_USER"
 fi
 
 source ./korifi/scripts/account-creation.sh $PWD/korifi/scripts
@@ -60,4 +64,5 @@ E2E_SERVICE_ACCOUNT_TOKEN: $E2E_SERVICE_ACCOUNT_TOKEN
 E2E_USER_NAME: $E2E_USER_NAME
 E2E_USER_PEM: ${E2E_USER_PEM:-}
 E2E_USER_TOKEN: ${E2E_USER_TOKEN:-}
+CRDS_TEST_CLI_USER: ${CRDS_TEST_CLI_USER}
 EOF

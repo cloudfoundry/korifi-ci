@@ -281,6 +281,7 @@ jobs:
             SMOKE_TEST_APP_ROUTE_PROTOCOL: https
             SMOKE_TEST_API_ENDPOINT: https://cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
             SMOKE_TEST_SKIP_SSL: true
+
       - task: run-e2e-tests
         file: korifi-ci/pipelines/tasks/run-e2e-tests.yml
         image: ci-image
@@ -306,6 +307,7 @@ jobs:
           GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
           GINKGO_NODES: 8
           ROOT_NAMESPACE: cf
+
       - task: run-crds-tests
         file: korifi-ci/pipelines/tasks/run-crds-tests.yml
         image: ci-image
@@ -315,6 +317,8 @@ jobs:
           CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
           CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
           GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
+          CRDS_TEST_CLI_USER: ((.:cluster-env-vars.CRDS_TEST_CLI_USER))
+          CRDS_TEST_API_ENDPOINT: https://cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
 
   - task: undeploy-korifi
     file: korifi-ci/pipelines/tasks/undeploy-korifi.yml
