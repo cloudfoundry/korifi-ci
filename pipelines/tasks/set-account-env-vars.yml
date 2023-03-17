@@ -4,9 +4,11 @@ inputs:
 - name: cf-k8s-secrets
 - name: korifi-ci
 - name: korifi
+- name: kube
 
 outputs:
-  - name: accounts
+- name: accounts
+- name: kube
 
 params:
   AWS_ACCESS_KEY_ID: ((aws/terraform.access-key-id))
