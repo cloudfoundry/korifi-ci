@@ -317,8 +317,9 @@ jobs:
           CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
           CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
           GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
-          CRDS_TEST_CLI_USER: ((.:cluster-env-vars.CRDS_TEST_CLI_USER))
           CRDS_TEST_API_ENDPOINT: https://cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
+          CRDS_TEST_CLI_USER: ((.:accounts_env_vars.CRDS_TEST_CLI_USER))
+          CRDS_TEST_SKIP_SSL: true
 
   - task: undeploy-korifi
     file: korifi-ci/pipelines/tasks/undeploy-korifi.yml
