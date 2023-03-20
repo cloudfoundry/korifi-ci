@@ -314,6 +314,7 @@ jobs:
         timeout: 30m
         params:
           AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
+          CF_USER_TOKEN: ((.:accounts_env_vars.CF_USER_TOKEN))
           CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
           CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
           CRDS_TEST_API_ENDPOINT: https://cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
