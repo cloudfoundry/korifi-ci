@@ -34,7 +34,7 @@ if [[ "$CLUSTER_TYPE" == "EKS" ]]; then
   export CF_ADMIN_CERT=ignore
   export E2E_USER_TOKEN="$CF_USER_TOKEN"
   export CF_ADMIN_TOKEN
-  export CRDS_TEST_CLI_USER=cf-admin
+  export CRDS_TEST_CLI_USER=cf-user
 
   GOOGLE_APPLICATION_CREDENTIALS="$OLD_GOOGLE_APPLICATION_CREDENTIALS"
 
@@ -43,13 +43,6 @@ if [[ "$CLUSTER_TYPE" == "EKS" ]]; then
     configmaps/aws-auth \
     --type merge \
     -p '{"data":{"mapUsers":"- userarn: '"$CF_USER_ARN"'\n  username: cf-user\n- userarn: '"$CF_ADMIN_ARN"'\n  username: cf-admin"}}'
-else
-  # create the user for the crds tests and add them to the kube resource for later steps
-  ORIG_KUBECONFIG=$KUBECONFIG
-  KUBECONFIG=$PWD/kube/kube.config
-  export CRDS_TEST_CLI_USER=crds-test-cli-user
-  ./korifi/scripts/create-new-user.sh "$CRDS_TEST_CLI_USER"
-  KUBECONFIG=$ORIG_KUBECONFIG
 fi
 
 source ./korifi/scripts/account-creation.sh $PWD/korifi/scripts
@@ -61,6 +54,9 @@ CF_ADMIN_PEM: ${CF_ADMIN_PEM:-}
 CF_ADMIN_TOKEN: ${CF_ADMIN_TOKEN:-}
 CLUSTER_VERSION_MAJOR: $CLUSTER_VERSION_MAJOR
 CLUSTER_VERSION_MINOR: $CLUSTER_VERSION_MINOR
+CRDS_TEST_CLI_CERT: ${CRDS_TEST_CLI_CERT:-}
+CRDS_TEST_CLI_KEY: ${CRDS_TEST_CLI_KEY:-}
+CRDS_TEST_CLI_USER: ${CRDS_TEST_CLI_USER}
 E2E_LONGCERT_USER_NAME: $E2E_LONGCERT_USER_NAME
 E2E_LONGCERT_USER_PEM: ${E2E_LONGCERT_USER_PEM:-}
 E2E_SERVICE_ACCOUNT: $E2E_SERVICE_ACCOUNT
@@ -68,5 +64,4 @@ E2E_SERVICE_ACCOUNT_TOKEN: $E2E_SERVICE_ACCOUNT_TOKEN
 E2E_USER_NAME: $E2E_USER_NAME
 E2E_USER_PEM: ${E2E_USER_PEM:-}
 E2E_USER_TOKEN: ${E2E_USER_TOKEN:-}
-CRDS_TEST_CLI_USER: ${CRDS_TEST_CLI_USER}
 EOF
