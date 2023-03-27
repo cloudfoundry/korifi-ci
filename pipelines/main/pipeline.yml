@@ -79,6 +79,7 @@ jobs:
         - state: failure
           context: "Concourse - tests (main)"
     - *slackHook
+  serial: true
   plan:
   - in_parallel:
     - get: ci-image
