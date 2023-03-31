@@ -751,7 +751,7 @@ jobs:
     - *envoyLogs
   serial: true
   serial_groups:
-  - eks-e2e
+  - eks
   plan:
   - in_parallel:
     - get: ci-image
