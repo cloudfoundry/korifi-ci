@@ -1167,7 +1167,7 @@ resources:
   source:
     interval: 20m
     start: 03:00 AM
-    stop: 08:00 AM
+    stop: 07:00 AM
     location: Europe/London
     initial_version: true
 
@@ -1194,5 +1194,5 @@ resources:
   type: time
   icon: bomb
   source:
-    start: 8:00 AM
-    stop: 9:00 AM
+    start: 7:00 AM
+    stop: 8:00 AM
