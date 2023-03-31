@@ -50,6 +50,7 @@ groups:
   jobs:
   - run-tests-periodic
   - run-e2es-periodic
+  - run-e2es-eks-periodic
   - bump-tests-vendor
 - name: acceptance
   jobs:
@@ -740,6 +741,32 @@ jobs:
     params:
       CLUSTER_NAME: pr-e2e
       CLUSTER_TYPE: GKE
+  - do: *end-to-ends
+  ensure: *clean-env
+
+- name: run-e2es-eks-periodic
+  on_failure:
+    do:
+    - *slackHook
+    - *envoyLogs
+  serial: true
+  serial_groups:
+  - eks-e2e
+  plan:
+  - in_parallel:
+    - get: ci-image
+    - get: gcloud-image
+    - get: korifi-ci
+    - get: korifi
+    - get: cf-k8s-secrets
+    - get: workdays-periodic-timer
+      trigger: true
+    - get: weekend-periodic-timer
+      trigger: true
+  - <<: *setClusterVars
+    params:
+      CLUSTER_NAME: eks-e2e
+      CLUSTER_TYPE: EKS
   - do: *end-to-ends
   ensure: *clean-env
 
