@@ -60,6 +60,7 @@ groups:
   jobs:
   - bump-major-version
   - bump-minor-version
+  - bump-patch-version
   - publish-release
 - name: clusters
   jobs:
@@ -774,6 +775,18 @@ jobs:
   - get: korifi-release-version
     params:
       bump: minor
+    passed:
+    - publish-release
+  - put: korifi-release-version
+    params:
+      file: korifi-release-version/version
+  on_failure: *slackHook
+
+- name: bump-patch-version
+  plan:
+  - get: korifi-release-version
+    params:
+      bump: patch
     passed:
     - publish-release
   - put: korifi-release-version
