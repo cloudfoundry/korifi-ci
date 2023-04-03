@@ -49,7 +49,6 @@ if [[ "$CLUSTER_TYPE" == "EKS" ]]; then
     --type merge \
     -p '{"data":{"mapUsers":"- userarn: '"$CF_USER_ARN"'\n  username: cf-user\n- userarn: '"$CF_ADMIN_ARN"'\n  username: cf-admin\n- userarn: '"$CF_CRDS_USER_ARN"'\n  username: '"$CRDS_TEST_CLI_USER"'"}}'
 
-  kubectl config set-credentials "$CRDS_TEST_CLI_USER" --token="$CF_CRDS_USER_TOKEN"
 fi
 
 source ./korifi/scripts/account-creation.sh $PWD/korifi/scripts
@@ -65,6 +64,7 @@ CLUSTER_VERSION_MINOR: $CLUSTER_VERSION_MINOR
 CRDS_TEST_CLI_CERT: ${CRDS_TEST_CLI_CERT:-}
 CRDS_TEST_CLI_KEY: ${CRDS_TEST_CLI_KEY:-}
 CRDS_TEST_CLI_USER: ${CRDS_TEST_CLI_USER}
+CRDS_TEST_CLI_USER_TOKEN: ${CRDS_TEST_USER_TOKEN:-}
 E2E_LONGCERT_USER_NAME: $E2E_LONGCERT_USER_NAME
 E2E_LONGCERT_USER_PEM: ${E2E_LONGCERT_USER_PEM:-}
 E2E_SERVICE_ACCOUNT: $E2E_SERVICE_ACCOUNT

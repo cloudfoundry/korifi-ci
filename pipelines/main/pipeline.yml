@@ -324,6 +324,7 @@ jobs:
           CRDS_TEST_CLI_CERT: ((.:accounts_env_vars.CRDS_TEST_CLI_CERT))
           CRDS_TEST_CLI_KEY: ((.:accounts_env_vars.CRDS_TEST_CLI_KEY))
           CRDS_TEST_CLI_USER: ((.:accounts_env_vars.CRDS_TEST_CLI_USER))
+          CRDS_TEST_CLI_USER_TOKEN: ((.:accounts_env_vars.CRDS_TEST_CLI_USER_TOKEN))
           CRDS_TEST_SKIP_SSL: true
           GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
 

@@ -16,7 +16,7 @@ case "$CLUSTER_TYPE" in
     ;;
   "EKS")
     kubectl config set-credentials "$CRDS_TEST_CLI_USER" \
-      --token="$CF_USER_TOKEN"
+      --token="$CF_TEST_CLI_USER_TOKEN"
     ;;
 
   *)
