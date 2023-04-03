@@ -27,7 +27,7 @@ if [[ "$CLUSTER_TYPE" == "EKS" ]]; then
     CF_USER_TOKEN="$(AWS_ACCESS_KEY_ID="$CF_USER_KEY_ID" AWS_SECRET_ACCESS_KEY="$CF_USER_SECRET" aws --region "$AWS_REGION" eks get-token --cluster-name "$CLUSTER_NAME" | jq -r '.status.token')"
 
     CF_CRDS_USER_KEY_ID="$(terraform output -raw cf_crds_user_key_id)"
-    CF_CRDS_USER_SECRET="$(terraform output -raw cf_crds_users_secret)"
+    CF_CRDS_USER_SECRET="$(terraform output -raw cf_crds_user_secret)"
     CF_CRDS_USER_ARN="$(terraform output -raw cf_crds_user_arn)"
     CF_CRDS_USER_TOKEN="$(AWS_ACCESS_KEY_ID="$CF_CRDS_USER_KEY_ID" AWS_SECRET_ACCESS_KEY="$CF_CRDS_USER_SECRET" aws --region "$AWS_REGION" eks get-token --cluster-name "$CLUSTER_NAME" | jq -r '.status.token')"
   }
