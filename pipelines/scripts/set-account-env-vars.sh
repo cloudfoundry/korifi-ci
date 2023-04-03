@@ -47,7 +47,7 @@ if [[ "$CLUSTER_TYPE" == "EKS" ]]; then
     -n kube-system \
     configmaps/aws-auth \
     --type merge \
-    -p '{"data":{"mapUsers":"- userarn: '"$CF_USER_ARN"'\n  username: cf-user\n- userarn: '"$CF_ADMIN_ARN"'\n  username: cf-admin"\n- userarn: '"$CF_CRDS_USER_ARN"'\n  username: cf-crds-user"}}'
+    -p '{"data":{"mapUsers":"- userarn: '"$CF_USER_ARN"'\n  username: cf-user\n- userarn: '"$CF_ADMIN_ARN"'\n  username: cf-admin\n- userarn: '"$CF_CRDS_USER_ARN"'\n  username: '"$CRDS_TEST_CLI_USER"'"}}'
 
   kubectl config set-credentials "$CRDS_TEST_CLI_USER" --token="$CF_CRDS_USER_TOKEN"
 fi
