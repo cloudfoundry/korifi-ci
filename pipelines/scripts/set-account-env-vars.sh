@@ -25,6 +25,11 @@ if [[ "$CLUSTER_TYPE" == "EKS" ]]; then
     CF_USER_SECRET="$(terraform output -raw cf_user_secret)"
     CF_USER_ARN="$(terraform output -raw cf_user_arn)"
     CF_USER_TOKEN="$(AWS_ACCESS_KEY_ID="$CF_USER_KEY_ID" AWS_SECRET_ACCESS_KEY="$CF_USER_SECRET" aws --region "$AWS_REGION" eks get-token --cluster-name "$CLUSTER_NAME" | jq -r '.status.token')"
+
+    CF_CRDS_USER_KEY_ID="$(terraform output -raw cf_crds_user_key_id)"
+    CF_CRDS_USER_SECRET="$(terraform output -raw cf_crds_users_secret)"
+    CF_CRDS_USER_ARN="$(terraform output -raw cf_crds_user_arn)"
+    CF_CRDS_USER_TOKEN="$(AWS_ACCESS_KEY_ID="$CF_CRDS_USER_KEY_ID" AWS_SECRET_ACCESS_KEY="$CF_CRDS_USER_SECRET" aws --region "$AWS_REGION" eks get-token --cluster-name "$CLUSTER_NAME" | jq -r '.status.token')"
   }
   popd
 
@@ -34,7 +39,8 @@ if [[ "$CLUSTER_TYPE" == "EKS" ]]; then
   export CF_ADMIN_CERT=ignore
   export E2E_USER_TOKEN="$CF_USER_TOKEN"
   export CF_ADMIN_TOKEN
-  export CRDS_TEST_CLI_USER=cf-user
+  export CRDS_TEST_CLI_USER=cf-crds-user
+  export CRDS_TEST_CLI_USER_TOKEN="$CF_CRDS_USER_TOKEN"
 
   GOOGLE_APPLICATION_CREDENTIALS="$OLD_GOOGLE_APPLICATION_CREDENTIALS"
 
@@ -42,7 +48,7 @@ if [[ "$CLUSTER_TYPE" == "EKS" ]]; then
     -n kube-system \
     configmaps/aws-auth \
     --type merge \
-    -p '{"data":{"mapUsers":"- userarn: '"$CF_USER_ARN"'\n  username: cf-user\n- userarn: '"$CF_ADMIN_ARN"'\n  username: cf-admin"}}'
+    -p '{"data":{"mapUsers":"- userarn: '"$CF_USER_ARN"'\n  username: cf-user\n- userarn: '"$CF_ADMIN_ARN"'\n  username: cf-admin"\n- userarn: '"$CF_CRDS_USER_ARN"'\n  username: cf-crds-user"}}'
 fi
 
 source ./korifi/scripts/account-creation.sh $PWD/korifi/scripts
@@ -58,6 +64,7 @@ CLUSTER_VERSION_MINOR: $CLUSTER_VERSION_MINOR
 CRDS_TEST_CLI_CERT: ${CRDS_TEST_CLI_CERT:-}
 CRDS_TEST_CLI_KEY: ${CRDS_TEST_CLI_KEY:-}
 CRDS_TEST_CLI_USER: ${CRDS_TEST_CLI_USER}
+CRDS_TEST_CLI_USER_TOKEN: ${CRDS_TEST_CLI_USER_TOKEN}
 E2E_LONGCERT_USER_NAME: $E2E_LONGCERT_USER_NAME
 E2E_LONGCERT_USER_PEM: ${E2E_LONGCERT_USER_PEM:-}
 E2E_SERVICE_ACCOUNT: $E2E_SERVICE_ACCOUNT
