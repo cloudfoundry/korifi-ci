@@ -1118,15 +1118,13 @@ resources:
     branch: master
 
 - name: postfacto
-  type: github-release
+  type: github
   icon: egg-easter
   check_every: 12h0m0s
   source:
     access_token: ((github/korifi-bot-token))
-    owner: pivotal
-    globs: package.zip
-    repository: postfacto
-
+    owner: eirini-forks
+    repository: postfacto-release
 
 - name: korifi-status
   type: github-status
