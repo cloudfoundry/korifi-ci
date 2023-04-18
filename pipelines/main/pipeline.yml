@@ -682,6 +682,7 @@ jobs:
       - deploy-korifi-acceptance
     - get: korifi-ci
     - get: postfacto
+      resource: postfacto-fork
       trigger: true
 
   - <<: *setClusterVars
@@ -1117,14 +1118,12 @@ resources:
     uri: https://github.com/eirini-forks/pairup.git
     branch: master
 
-- name: postfacto
-  type: github
-  icon: egg-easter
-  check_every: 12h0m0s
+- name: postfacto-fork
+  type: git
+  icon: git
   source:
-    access_token: ((github/korifi-bot-token))
-    owner: eirini-forks
-    repository: postfacto-release
+    uri: https://github.com/eirini-forks/postfacto-release.git
+    branch: main
 
 - name: korifi-status
   type: github-status
