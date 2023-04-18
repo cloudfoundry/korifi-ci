@@ -39,7 +39,7 @@ applications:
     memory: 1G
 EOF
 
-sed -i "s/ruby '2.7.3'/ruby '2.7.7'/" postfacto/package/assets/Gemfile
+sed -i "s/ruby '2.7.3'/ruby '3.2.2'/" postfacto/package/assets/Gemfile
 sed -i "/uglifier/d" postfacto/package/assets/Gemfile
 sed -i "/sassc-rails/d" postfacto/package/assets/Gemfile
 cat <<EOF >>postfacto/package/assets/Gemfile
