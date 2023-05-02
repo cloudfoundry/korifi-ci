@@ -34,6 +34,7 @@ cleanup_korifi_namespace() {
       -backend-config="prefix=terraform/state/$CLUSTER_NAME-k8s" \
       -upgrade=true
     terraform destroy \
+      -target kubernetes_namespace.korifi \
       -var "name=$CLUSTER_NAME" \
       -var "registry-server=whatever" \
       -var "registry-username=whatever" \
