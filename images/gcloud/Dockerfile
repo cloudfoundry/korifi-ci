@@ -1,26 +1,29 @@
 FROM google/cloud-sdk
 
-ARG TERRAFORM_VERSION=1.3.6
-ARG HELM_VERSION=v3.10.2
-
 ENV USE_GKE_GCLOUD_AUTH_PLUGIN=True
 
-RUN apt-get update && \
-    apt-get install --yes \
+# add APT custom repos
+# helm
+RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" >/etc/apt/sources.list.d/helm-stable-debian.list \
+  && curl -fsSL https://baltocdn.com/helm/signing.asc | gpg --dearmor >/usr/share/keyrings/helm.gpg
+
+# terraform
+RUN release="$(awk -F= '/VERSION_CODENAME/ { print $2 }' /etc/os-release)" \
+  && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $release main" >/etc/apt/sources.list.d/hashicorp.list \
+  && curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --dearmor >/usr/share/keyrings/hashicorp-archive-keyring.gpg
+
+RUN apt-get update \
+  && apt-get install --yes \
+      helm \
       jq \
+      terraform \
       unzip \
       wget \
       vim \
   && rm -rf /var/lib/apt/lists/*
 
-RUN curl -L https://carvel.dev/install.sh | bash
-
-RUN wget --quiet https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz && tar xfz helm-${HELM_VERSION}-linux-amd64.tar.gz && mv linux-amd64/helm /usr/bin/ && chmod +x /usr/bin/helm
-
-RUN wget https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip \
-      && unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip \
-      && mv terraform /usr/local/bin/ \
-      && rm terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+RUN curl -L https://carvel.dev/install.sh \
+  | bash
 
 # aws cli
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
@@ -29,4 +32,5 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
   && rm -rf awscliv2.zip aws
 
 # eks cli
-RUN curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /usr/local/bin
+RUN curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" \
+  | tar xz -C /usr/local/bin
