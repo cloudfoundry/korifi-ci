@@ -121,6 +121,7 @@ deploy() {
 
 main() {
   export KUBECONFIG=$PWD/kube/kube.config
+  export KUBE_CONFIG_PATH="$KUBECONFIG"
   export-kubeconfig
   setup_root_namespace
   get_eks_terraform_vars
