@@ -49,6 +49,12 @@ get_eks_terraform_vars() {
   fi
 }
 
+undefault_existing_storage_class() {
+  if [[ "$CLUSTER_TYPE" == "EKS" ]]; then
+    kubectl annotate storageclasses gp2 --overwrite "storageclass.kubernetes.io/is-default-class"="false"
+  fi
+}
+
 setup_root_namespace() {
   pushd "cf-k8s-secrets/ci-deployment/$CLUSTER_NAME/k8s"
   {
@@ -123,6 +129,7 @@ main() {
   export KUBECONFIG=$PWD/kube/kube.config
   export KUBE_CONFIG_PATH="$KUBECONFIG"
   export-kubeconfig
+  undefault_existing_storage_class
   setup_root_namespace
   get_eks_terraform_vars
   if [[ -n "$DEPLOY_LATEST_RELEASE" ]]; then
