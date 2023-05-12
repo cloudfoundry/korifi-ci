@@ -51,7 +51,7 @@ get_eks_terraform_vars() {
 
 undefault_existing_storage_class() {
   if [[ "$CLUSTER_TYPE" == "EKS" ]]; then
-    kubectl annotate storageclasses gp2 --overwrite "storageclass.kubernetes.io/is-default-class"="false"
+    kubectl annotate storageclasses gp2 --overwrite "storageclass.kubernetes.io/is-default-class"="false" || true
   fi
 }
 
