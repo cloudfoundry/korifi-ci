@@ -46,6 +46,7 @@ cleanup_korifi_namespace() {
 
 main() {
   export KUBECONFIG=$PWD/kube.config
+  export KUBE_CONFIG_PATH="$KUBECONFIG"
   if ! export-kubeconfig; then
     echo "cannot export kubeconfig. Assuming no cluster (check error above). Exiting 0"
     exit 0
