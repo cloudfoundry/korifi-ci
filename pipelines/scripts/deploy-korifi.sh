@@ -90,8 +90,15 @@ EOF
 deploy_local() {
   pushd korifi
   {
+    KBLD_CONFIG_DIR="../korifi-ci/build/kbld/$CLUSTER_NAME"
+    BUMPED_VERSION_CORE="$(awk -F. '/[0-9]+\./{$NF++;print}' OFS=. korifi-release-version/version)"
+    TIMESTAMP="$(date +%Y%m%d%H%M%S.%N)"
+    VERSION="v$BUMPED_VERSION_CORE-dev.$TIMESTAMP"
+
+    yq -i "with(.sources[]; .kubectlBuildkit.build.rawOptions += [\"--build-arg\", \"version=$VERSION\"])" "$KBLD_CONFIG_DIR/korifi-kbld.yml"
+
     KUBECONFIG="$BUILD_KUBECONFIG" kbld \
-      -f "../korifi-ci/build/kbld/$CLUSTER_NAME/korifi-kbld.yml" \
+      -f "$KBLD_CONFIG_DIR/korifi-kbld.yml" \
       -f "../korifi-ci/build/values/image-values.yaml" \
       --images-annotation=false >"/tmp/values.yaml"
   }

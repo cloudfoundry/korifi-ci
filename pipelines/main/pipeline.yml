@@ -199,6 +199,7 @@ jobs:
     - get: korifi-ci
     - get: gcloud-image
     - get: cf-k8s-secrets
+    - get: korifi-release-version
 
   - put: korifi-status
     params:
@@ -461,6 +462,7 @@ jobs:
       trigger: true
       version: every
     - get: cf-k8s-secrets
+    - get: korifi-release-version
 
   - put: korifi-pr
     params:
@@ -518,6 +520,7 @@ jobs:
       trigger: true
       version: every
     - get: cf-k8s-secrets
+    - get: korifi-release-version
 
   - put: korifi-pr
     params:
@@ -575,6 +578,7 @@ jobs:
       passed:
         - run-tests-main
     - get: cf-k8s-secrets
+    - get: korifi-release-version
 
   - put: korifi-status
     params:
@@ -741,6 +745,7 @@ jobs:
       trigger: true
     - get: weekend-periodic-timer
       trigger: true
+    - get: korifi-release-version
   - <<: *setClusterVars
     params:
       CLUSTER_NAME: pr-e2e
@@ -767,6 +772,7 @@ jobs:
       trigger: true
     - get: weekend-periodic-timer
       trigger: true
+    - get: korifi-release-version
   - <<: *setClusterVars
     params:
       CLUSTER_NAME: eks-e2e

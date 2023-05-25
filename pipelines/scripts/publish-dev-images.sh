@@ -3,7 +3,6 @@
 set -euo pipefail
 
 KBLD_CONFIG_DIR="$PWD/korifi-ci/build/kbld/release"
-VALUES_BASE="$PWD/korifi-ci/build/values/acceptance"
 COMMIT_SHA=$(cat korifi/.git/ref)
 BUMPED_VERSION_CORE="$(awk -F. '/[0-9]+\./{$NF++;print}' OFS=. korifi-release-version/version)"
 TIMESTAMP="$(date +%Y%m%d%H%M%S.%N)"
