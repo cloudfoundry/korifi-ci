@@ -14,6 +14,7 @@ source korifi-ci/pipelines/scripts/common/kbld-korifi
 
 update_config_with_version() {
   yq -i "with(.destinations[]; .tags=[\"latest\", \"$VERSION\"])" "$KBLD_CONFIG_DIR/korifi-kbld.yml"
+  yq -i "with(.sources[]; .kubectlBuildkit.build.rawOptions += [\"--build-arg\", \"version=v$VERSION\"])" "$KBLD_CONFIG_DIR/korifi-kbld.yml"
 }
 
 create_release() {
