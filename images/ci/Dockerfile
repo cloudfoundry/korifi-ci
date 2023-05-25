@@ -29,6 +29,7 @@ RUN apt-get update \
        apt-transport-https \
        ca-certificates \
        conntrack \
+       gawk \
        gh \
        git \
        google-cloud-sdk \
