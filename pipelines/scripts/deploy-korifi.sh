@@ -88,17 +88,22 @@ EOF
 }
 
 deploy_local() {
-  KBLD_CONFIG_DIR="korifi-ci/build/kbld/$CLUSTER_NAME"
+  KBLD_CONFIG_FILE="$PWD/korifi-ci/build/kbld/$CLUSTER_NAME/korifi-kbld.yml"
   BUMPED_VERSION_CORE="$(awk -F. '/[0-9]+\./{$NF++;print}' OFS=. korifi-release-version/version)"
   TIMESTAMP="$(date +%Y%m%d%H%M%S.%N)"
   VERSION="v$BUMPED_VERSION_CORE-dev.$TIMESTAMP"
+  VALUES_FILE="$PWD/korifi-ci/build/values/image-values.yaml"
 
-  yq -i "with(.sources[]; .kubectlBuildkit.build.rawOptions += [\"--build-arg\", \"version=$VERSION\"])" "$KBLD_CONFIG_DIR/korifi-kbld.yml"
+  yq -i "with(.sources[]; .kubectlBuildkit.build.rawOptions += [\"--build-arg\", \"version=$VERSION\"])" "$KBLD_CONFIG_FILE"
 
-  KUBECONFIG="$BUILD_KUBECONFIG" kbld \
-    -f "$KBLD_CONFIG_DIR/korifi-kbld.yml" \
-    -f "korifi-ci/build/values/image-values.yaml" \
-    --images-annotation=false >"/tmp/values.yaml"
+  pushd korifi
+  {
+    KUBECONFIG="$BUILD_KUBECONFIG" kbld \
+      -f "$KBLD_CONFIG_FILE" \
+      -f "$VALUES_FILE" \
+      --images-annotation=false >"/tmp/values.yaml"
+  }
+  popd
 
   helm dependency update korifi/helm/korifi
   deploy "korifi/helm/korifi" "/tmp/values.yaml"
