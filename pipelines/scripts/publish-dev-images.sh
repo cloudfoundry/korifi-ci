@@ -4,17 +4,23 @@ set -euo pipefail
 
 KBLD_CONFIG_DIR="$PWD/korifi-ci/build/kbld/release"
 COMMIT_SHA=$(cat korifi/.git/ref)
-BUMPED_VERSION_CORE="$(awk -F. '/[0-9]+\./{$NF++;print}' OFS=. korifi-release-version/version)"
-TIMESTAMP="$(date +%Y%m%d%H%M%S.%N)"
-VERSION="v$BUMPED_VERSION_CORE-dev.$TIMESTAMP"
-TAG="dev-$VERSION-$COMMIT_SHA"
 
 source korifi-ci/pipelines/scripts/common/gcloud-functions
 source korifi-ci/pipelines/scripts/common/kbld-korifi
 
+compute-version() {
+  pushd korifi
+  {
+    VERSION=$(git describe --tags | awk -F'[.-]' '{$3++; print $1 "." $2 "." $3 "-" $4 "-" $5}')
+  }
+  popd
+
+  TAG="dev-$VERSION-$COMMIT_SHA"
+}
+
 update_config_with_version() {
-  yq -i "with(.destinations[]; .tags=[\"$TAG\"])" "$KBLD_CONFIG_DIR/korifi-kbld.yml"
   yq -i "with(.sources[]; .kubectlBuildkit.build.rawOptions += [\"--build-arg\", \"version=$VERSION\"])" "$KBLD_CONFIG_DIR/korifi-kbld.yml"
+  yq -i "with(.destinations[]; .tags=[\"$TAG\"])" "$KBLD_CONFIG_DIR/korifi-kbld.yml"
 }
 
 publish_images() {
@@ -35,6 +41,7 @@ publish_images() {
 main() {
   export-kubeconfig
   docker_login
+  compute-version
   update_config_with_version
   publish_images
 }

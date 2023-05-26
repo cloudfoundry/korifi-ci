@@ -4,7 +4,6 @@ inputs:
 - name: cf-k8s-secrets
 - name: korifi-ci
 - name: korifi
-- name: korifi-release-version
 
 outputs:
 - name: kube

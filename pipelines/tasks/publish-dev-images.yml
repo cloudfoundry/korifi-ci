@@ -1,7 +1,6 @@
 platform: linux
 
 inputs:
-- name: korifi-release-version
 - name: korifi-ci
 - name: korifi
 

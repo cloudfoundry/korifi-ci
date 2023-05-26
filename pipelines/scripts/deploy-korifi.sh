@@ -88,16 +88,10 @@ EOF
 }
 
 deploy_local() {
-  KBLD_CONFIG_FILE="$PWD/korifi-ci/build/kbld/$CLUSTER_NAME/korifi-kbld.yml"
-  BUMPED_VERSION_CORE="$(awk -F. '/[0-9]+\./{$NF++;print}' OFS=. korifi-release-version/version)"
-  TIMESTAMP="$(date +%Y%m%d%H%M%S.%N)"
-  VERSION="v$BUMPED_VERSION_CORE-dev.$TIMESTAMP"
-  VALUES_FILE="$PWD/korifi-ci/build/values/image-values.yaml"
-
-  yq -i "with(.sources[]; .kubectlBuildkit.build.rawOptions += [\"--build-arg\", \"version=$VERSION\"])" "$KBLD_CONFIG_FILE"
-
   pushd korifi
   {
+    VERSION=$(git describe --tags | awk -F'[.-]' '{$3++; print $1 "." $2 "." $3 "-" $4 "-" $5}')
+    yq -i "with(.sources[]; .kubectlBuildkit.build.rawOptions += [\"--build-arg\", \"version=$VERSION\"])" "$KBLD_CONFIG_FILE"
     KUBECONFIG="$BUILD_KUBECONFIG" kbld \
       -f "$KBLD_CONFIG_FILE" \
       -f "$VALUES_FILE" \
