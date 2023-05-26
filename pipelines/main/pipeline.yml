@@ -459,6 +459,8 @@ jobs:
       resource: korifi-pr
       trigger: true
       version: every
+      params:
+        fetch_tags: true
     - get: cf-k8s-secrets
 
   - put: korifi-pr
@@ -516,6 +518,8 @@ jobs:
       resource: korifi-pr
       trigger: true
       version: every
+      params:
+        fetch_tags: true
     - get: cf-k8s-secrets
 
   - put: korifi-pr
