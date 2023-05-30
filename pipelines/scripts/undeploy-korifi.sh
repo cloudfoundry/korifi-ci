@@ -10,13 +10,19 @@ cleanup_root_namespace() {
     terraform init \
       -backend-config="prefix=terraform/state/$CLUSTER_NAME-k8s" \
       -upgrade=true
-    terraform destroy \
+    if ! terraform destroy \
       -target kubernetes_namespace.cf \
       -var "name=$CLUSTER_NAME" \
       -var "registry-server=whatever" \
       -var "registry-username=whatever" \
       -var "registry-password=whatever" \
-      -auto-approve
+      -auto-approve; then
+
+      # delete namespace has 5m timeout, so show last 5m of logs
+      echo "deleting root namespace timed out"
+      kubectl logs -n korifi deployments/korifi-controllers-controller-manager --since=5m
+      exit 1
+    fi
   }
   popd
 }
