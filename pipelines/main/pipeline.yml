@@ -43,7 +43,6 @@ groups:
   - publish-dev-images
 - name: pr
   jobs:
-  - allow-e2es
   - run-e2es-pr
   - run-e2es-eks-pr
 - name: periodics
@@ -420,22 +419,6 @@ jobs:
 
 
 # ===== PR =====
-- name: allow-e2es
-  plan:
-  - in_parallel:
-    - get: ci-image
-    - get: korifi-ci
-    - get: pr-label
-      trigger: true
-      version: every
-
-  - task: allow-e2e
-    file: korifi-ci/pipelines/tasks/allow-e2e.yml
-    image: ci-image
-    params:
-      KORIFI_BOT_TOKEN: ((github/korifi-bot-token))
-      KORIFI_BOT_NAME: korifi-bot
-
 - name: run-e2es-pr
   on_failure:
     do:
@@ -1059,18 +1042,9 @@ resources:
     access_token: ((github/korifi-bot-token))
     base_branch: main
     ignore_drafts: true
-    labels: ["e2e-allowed"]
-    required_review_approvals: 0
-
-- name: pr-label
-  type: pull-request
-  check_every: 1m
-  source:
-    repository: cloudfoundry/korifi
-    access_token: ((github/korifi-bot-token))
-    base_branch: main
-    ignore_drafts: true
-    required_review_approvals: 0
+    required_review_approvals: 1
+    trusted_teams: ["wg-cf-on-k8s-korifi-approvers", "wg-cf-on-k8s-bots"]
+    trusted_users: ["dependabot[bot]"]
 
 - name: korifi-ci
   type: git
