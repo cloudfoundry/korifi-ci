@@ -1044,7 +1044,7 @@ resources:
     ignore_drafts: true
     required_review_approvals: 1
     trusted_teams: ["wg-cf-on-k8s-korifi-approvers", "wg-cf-on-k8s-bots"]
-    trusted_users: ["dependabot[bot]"]
+    trusted_users: ["dependabot[bot]", "dependabot"]
 
 - name: korifi-ci
   type: git
