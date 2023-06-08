@@ -23,4 +23,4 @@ case "$CLUSTER_TYPE" in
 esac
 
 cd korifi
-ginkgo ./tests/smoke
+go run github.com/onsi/ginkgo/v2/ginkgo ./tests/smoke
