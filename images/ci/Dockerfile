@@ -62,9 +62,6 @@ RUN curl -fsSL "https://packages.cloudfoundry.org/stable?release=linux64-binary&
   && mv cf8 /usr/bin/cf \
   && chmod +x /usr/bin/cf
 
-# ginkgo
-RUN go install github.com/onsi/ginkgo/v2/ginkgo@latest
-
 # shfmt
 RUN go install mvdan.cc/sh/cmd/shfmt@latest
 
