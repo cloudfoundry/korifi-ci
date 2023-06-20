@@ -18,5 +18,5 @@ jobTaskRunner:
 
 kpackImageBuilder:
   builderRepository: 007801690126.dkr.ecr.eu-west-1.amazonaws.com/eks-e2e-kpack-builder
-  clusterStackBuildImage: paketobuildpacks/build:base-cnb
-  clusterStackRunImage: paketobuildpacks/run:base-cnb
+  clusterStackBuildImage: paketobuildpacks/build-jammy-base
+  clusterStackRunImage: paketobuildpacks/run-jammy-base
