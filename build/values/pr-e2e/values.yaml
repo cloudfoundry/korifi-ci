@@ -17,5 +17,6 @@ jobTaskRunner:
 
 kpackImageBuilder:
   builderRepository: europe-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/kpack-builder
+  clusterStackID: io.buildpacks.stacks.jammy
   clusterStackBuildImage: paketobuildpacks/build-jammy-base
   clusterStackRunImage: paketobuildpacks/run-jammy-base
