@@ -268,6 +268,27 @@ jobs:
         file: accounts/env_vars.yaml
 
     - in_parallel:
+      - task: pre-push-dorifi
+        file: korifi-ci/pipelines/tasks/push-app.yml
+        image: ci-image
+        params:
+          API_SERVER_ROOT: https://cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
+          APP_PATH: korifi/tests/e2e/assets/dorifi
+          CF_ADMIN_CERT: ((.:accounts_env_vars.CF_ADMIN_CERT))
+          CF_ADMIN_KEY: ((.:accounts_env_vars.CF_ADMIN_KEY))
+          CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
+
+      - task: pre-push-multi-process
+        file: korifi-ci/pipelines/tasks/push-app.yml
+        image: ci-image
+        params:
+          API_SERVER_ROOT: https://cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
+          APP_PATH: korifi/tests/e2e/assets/multi-process
+          CF_ADMIN_CERT: ((.:accounts_env_vars.CF_ADMIN_CERT))
+          CF_ADMIN_KEY: ((.:accounts_env_vars.CF_ADMIN_KEY))
+          CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
+
+    - in_parallel:
       - do: &smoke-tests
         - task: run-smoke-tests
           file: korifi-ci/pipelines/tasks/run-smoke-tests.yml
