@@ -28,8 +28,10 @@ fi
 
 cf api "$API_SERVER_ROOT" --skip-ssl-validation
 cf auth gareth
-cf create-org gareth
-cf create-space -o gareth gareth
-cf target -o gareth -s gareth
+
+orgName="$(basename "$APP_PATH")"
+cf create-org "$orgName"
+cf create-space -o "$orgName" gareth
+cf target -o "$orgName" -s gareth
 
 cf push "$(cat /proc/sys/kernel/random/uuid)" -p "$APP_PATH"
