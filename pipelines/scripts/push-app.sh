@@ -18,14 +18,6 @@ case "$CLUSTER_TYPE" in
     ;;
 esac
 
-if [[ "$APP_PATH" == *dorifi ]]; then
-  pushd korifi
-  {
-    make build-dorifi
-  }
-  popd
-fi
-
 cf api "$API_SERVER_ROOT" --skip-ssl-validation
 cf auth gareth
 
