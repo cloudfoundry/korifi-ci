@@ -1,0 +1,7 @@
+platform: linux
+inputs:
+- name: korifi
+outputs:
+- name: dorifi
+run:
+  path: korifi-ci/pipelines/scripts/build-dorifi.sh
