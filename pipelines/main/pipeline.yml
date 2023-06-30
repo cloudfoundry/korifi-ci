@@ -267,13 +267,17 @@ jobs:
       - load_var: accounts_env_vars
         file: accounts/env_vars.yaml
 
+    - task: build-dorifi
+      file: korifi-ci/pipelines/tasks/build-dorifi.yml
+      image: ci-image
+
     - in_parallel:
       - task: pre-push-dorifi
         file: korifi-ci/pipelines/tasks/push-app.yml
         image: ci-image
         params:
           API_SERVER_ROOT: https://cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
-          APP_PATH: korifi/tests/e2e/assets/dorifi
+          APP_PATH: dorifi
           CF_ADMIN_CERT: ((.:accounts_env_vars.CF_ADMIN_CERT))
           CF_ADMIN_KEY: ((.:accounts_env_vars.CF_ADMIN_KEY))
           CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
@@ -332,6 +336,7 @@ jobs:
           GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
           GINKGO_NODES: 8
           ROOT_NAMESPACE: cf
+          DEFAULT_APP_BITS_PATH: dorifi
 
       - task: run-crds-tests
         file: korifi-ci/pipelines/tasks/run-crds-tests.yml
