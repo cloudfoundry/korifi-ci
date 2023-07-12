@@ -11,7 +11,7 @@ api:
 
   lifecycle:
     stagingRequirements:
-      memoryMB: 2048
+      memoryMB: 1536
 
 jobTaskRunner:
   jobTTL: 24h
