@@ -9,6 +9,10 @@ api:
   apiServer:
     url: cf.acceptance.korifi.cf-app.com
 
+  lifecycle:
+    stagingRequirements:
+      memoryMB: 4096
+
 jobTaskRunner:
   jobTTL: 24h
 
