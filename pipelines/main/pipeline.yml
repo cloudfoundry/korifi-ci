@@ -334,7 +334,7 @@ jobs:
           E2E_USER_TOKEN: ((.:accounts_env_vars.E2E_USER_TOKEN))
           FULL_LOG_ON_ERR: yes-please
           GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
-          GINKGO_NODES: 4
+          GINKGO_NODES: 8
           ROOT_NAMESPACE: cf
           DEFAULT_APP_BITS_PATH: dorifi
 
