@@ -127,13 +127,24 @@ jobs:
             DIR: controllers
             TARGET: test
 
+        - task: job-task-runner-tests
+          file: korifi-ci/pipelines/tasks/run-make-target.yml
+          image: ci-image
+          input_mapping:
+            root: korifi
+          output_mapping:
+            coverage: coverage-job-task-runner
+          params:
+            DIR: job-task-runner
+            TARGET: test
+
         - task: kpack-image-builder-tests
           file: korifi-ci/pipelines/tasks/run-make-target.yml
           image: ci-image
           input_mapping:
             root: korifi
           output_mapping:
-            coverage: coverage-kib
+            coverage: coverage-kpack-image-builder
           params:
             DIR: kpack-image-builder
             TARGET: test
@@ -144,20 +155,20 @@ jobs:
           input_mapping:
             root: korifi
           output_mapping:
-            coverage: coverage-stset-runner
+            coverage: coverage-statefulset-runner
           params:
             DIR: statefulset-runner
             TARGET: test
 
-        - task: job-task-runner-tests
+        - task: tools-tests
           file: korifi-ci/pipelines/tasks/run-make-target.yml
           image: ci-image
           input_mapping:
             root: korifi
           output_mapping:
-            coverage: coverage-job-task-runner
+            coverage: coverage-tools
           params:
-            DIR: job-task-runner
+            DIR: tools
             TARGET: test
 
   - task: publish-code-coverage

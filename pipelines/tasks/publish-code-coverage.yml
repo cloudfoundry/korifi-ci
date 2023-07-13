@@ -3,9 +3,10 @@ platform: linux
 inputs:
 - name: coverage-api
 - name: coverage-controllers
-- name: coverage-kib
-- name: coverage-stset-runner
 - name: coverage-job-task-runner
+- name: coverage-kpack-image-builder
+- name: coverage-statefulset-runner
+- name: coverage-tools
 - name: korifi
 - name: korifi-ci
 
