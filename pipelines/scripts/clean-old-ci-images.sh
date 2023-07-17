@@ -14,7 +14,7 @@ main() {
   export -f gcloudx
 
   # retain latest and those created within the hour
-  ts=$(date -d "1 hour ago" -Iseconds -u)
+  ts=$(date -d "12 hours ago" -Iseconds -u)
   latest=$(gcloudx artifacts docker images list ${CI_REPO_LOCATION}-docker.pkg.dev/${PROJECT}/${CI_REPO_NAME}/${PACKAGE} --sort-by='~create_time' --format=json --limit=1 |
     jq -r '.[] | .version')
 
