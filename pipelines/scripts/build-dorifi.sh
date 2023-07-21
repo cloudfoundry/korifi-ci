@@ -8,4 +8,4 @@ pushd korifi
 }
 popd
 
-cp korifi/tests/e2e/assets/dorifi/* dorifi
+cp korifi/tests/assets/dorifi/* dorifi

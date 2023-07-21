@@ -25,5 +25,4 @@ case "$CLUSTER_TYPE" in
     ;;
 esac
 
-cd korifi
-go run github.com/onsi/ginkgo/v2/ginkgo ./tests/crds
+make -C korifi test-crds
