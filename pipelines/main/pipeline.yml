@@ -651,6 +651,13 @@ jobs:
 
   - do: *deploy-korifi
   - do: *set-account-env-vars
+  - task: add-chmod-buildpack-for-rails
+    file: korifi-ci/pipelines/tasks/add-chmod-rails-buildpack.yml
+    image: ci-image
+    params:
+      CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
+      CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
+      GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
   - do: *smoke-tests
 
 - name: deploy-pairup

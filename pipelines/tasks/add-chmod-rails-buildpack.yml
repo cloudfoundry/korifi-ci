@@ -1,0 +1,13 @@
+platform: linux
+
+inputs:
+- name: korifi-ci
+
+params:
+  GCP_SERVICE_ACCOUNT_JSON: ((gcp-serviceaccount))
+  CLUSTER_NAME:
+  CLUSTER_TYPE:
+  GCP_ZONE:
+
+run:
+  path: korifi-ci/pipelines/scripts/add-chmod-rails-buildpack.sh
