@@ -298,7 +298,7 @@ jobs:
         image: ci-image
         params:
           API_SERVER_ROOT: https://cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
-          APP_PATH: korifi/tests/e2e/assets/multi-process
+          APP_PATH: korifi/tests/assets/multi-process
           CF_ADMIN_CERT: ((.:accounts_env_vars.CF_ADMIN_CERT))
           CF_ADMIN_KEY: ((.:accounts_env_vars.CF_ADMIN_KEY))
           CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
