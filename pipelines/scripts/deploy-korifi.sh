@@ -118,9 +118,14 @@ deploy() {
     extra_helm_flags+=("--set" "eksContainerRegistryRoleARN=$ECR_ACCESS_ROLE_ARN")
   fi
 
+  values_file="values.yaml"
+  if [[ -n "$DEPLOY_LATEST_RELEASE" ]]; then
+    values_file="release-values.yaml"
+  fi
+
   helm upgrade --install korifi "$chart" \
     --namespace korifi \
-    --values "korifi-ci/build/values/$CLUSTER_NAME/values.yaml" \
+    --values "korifi-ci/build/values/$CLUSTER_NAME/$values_file" \
     "${extra_helm_flags[@]}" \
     --wait
 

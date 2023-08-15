@@ -1,0 +1,23 @@
+# This is a temporary file because of a breaking change in the helm values file. Remove this file and adjust the scripts after next release.
+adminUserName: cf-admin
+
+global:
+  defaultAppDomainName: pr-e2e.korifi.cf-app.com
+  generateIngressCertificates: true
+  containerRepositoryPrefix: europe-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/
+
+api:
+  apiServer:
+    url: cf.pr-e2e.korifi.cf-app.com
+
+controllers:
+  taskTTL: 15s
+
+jobTaskRunner:
+  jobTTL: 15s
+
+kpackImageBuilder:
+  builderRepository: europe-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/kpack-builder
+  clusterStackID: io.buildpacks.stacks.jammy
+  clusterStackBuildImage: paketobuildpacks/build-jammy-base
+  clusterStackRunImage: paketobuildpacks/run-jammy-base

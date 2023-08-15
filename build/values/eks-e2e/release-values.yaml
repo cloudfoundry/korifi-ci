@@ -1,0 +1,24 @@
+# This is a temporary file because of a breaking change in the helm values file. Remove this file and adjust the scripts after next release.
+adminUserName: cf-admin
+
+global:
+  defaultAppDomainName: eks-e2e.korifi.cf-app.com
+  generateIngressCertificates: true
+  containerRegistrySecret: ""
+  containerRepositoryPrefix: 007801690126.dkr.ecr.eu-west-1.amazonaws.com/eks-e2e/
+
+api:
+  apiServer:
+    url: cf.eks-e2e.korifi.cf-app.com
+
+controllers:
+  taskTTL: 15s
+
+jobTaskRunner:
+  jobTTL: 5s
+
+kpackImageBuilder:
+  builderRepository: 007801690126.dkr.ecr.eu-west-1.amazonaws.com/eks-e2e-kpack-builder
+  clusterStackID: io.buildpacks.stacks.jammy
+  clusterStackBuildImage: paketobuildpacks/build-jammy-base
+  clusterStackRunImage: paketobuildpacks/run-jammy-base

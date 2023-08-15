@@ -1,0 +1,22 @@
+# This is a temporary file because of a breaking change in the helm values file. Remove this file and adjust the scripts after next release.
+adminUserName: cf-admin
+
+global:
+  defaultAppDomainName: acceptance.korifi.cf-app.com
+  generateIngressCertificates: false
+  containerRepositoryPrefix: europe-docker.pkg.dev/cf-on-k8s-wg/acceptance-images/
+
+api:
+  apiServer:
+    url: cf.acceptance.korifi.cf-app.com
+
+  lifecycle:
+    stagingRequirements:
+      memoryMB: 1536
+
+jobTaskRunner:
+  jobTTL: 24h
+
+kpackImageBuilder:
+  builderRepository: europe-docker.pkg.dev/cf-on-k8s-wg/acceptance-images/kpack-builder
+
