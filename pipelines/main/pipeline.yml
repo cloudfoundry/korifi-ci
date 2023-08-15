@@ -264,20 +264,6 @@ jobs:
           DOCKER_USERNAME: _json_key
           DOCKER_PASSWORD: ((gcp-artifact-registry-writer))
 
-    - do: &set-account-env-vars
-      - task: set-account-env-vars
-        file: korifi-ci/pipelines/tasks/set-account-env-vars.yml
-        image: ci-image
-        params:
-          AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
-          CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
-          CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
-          GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
-          ROOT_NAMESPACE: cf
-
-      - load_var: accounts_env_vars
-        file: accounts/env_vars.yaml
-
     - task: build-dorifi
       file: korifi-ci/pipelines/tasks/build-dorifi.yml
       image: ci-image
@@ -287,20 +273,16 @@ jobs:
         file: korifi-ci/pipelines/tasks/push-app.yml
         image: ci-image
         params:
-          API_SERVER_ROOT: https://cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
+          CF_API_URL: https://cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
           APP_PATH: dorifi
-          CF_ADMIN_CERT: ((.:accounts_env_vars.CF_ADMIN_CERT))
-          CF_ADMIN_KEY: ((.:accounts_env_vars.CF_ADMIN_KEY))
           CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
 
       - task: pre-push-multi-process
         file: korifi-ci/pipelines/tasks/push-app.yml
         image: ci-image
         params:
-          API_SERVER_ROOT: https://cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
+          CF_API_URL: https://cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
           APP_PATH: korifi/tests/assets/multi-process
-          CF_ADMIN_CERT: ((.:accounts_env_vars.CF_ADMIN_CERT))
-          CF_ADMIN_KEY: ((.:accounts_env_vars.CF_ADMIN_KEY))
           CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
 
     - in_parallel:
@@ -650,7 +632,6 @@ jobs:
       USE_LETSENCRYPT: true
 
   - do: *deploy-korifi
-  - do: *set-account-env-vars
   - task: add-chmod-buildpack-for-rails
     file: korifi-ci/pipelines/tasks/add-chmod-rails-buildpack.yml
     image: ci-image
@@ -684,14 +665,11 @@ jobs:
       CLUSTER_TYPE: GKE
   - load_var: cluster-env-vars
     file: clusters/env_vars.yaml
-  - do: *set-account-env-vars
 
   - task: deploy-pairup
     file: korifi-ci/pipelines/tasks/deploy-pairup.yml
     image: ci-image
     params:
-      CF_ADMIN_KEY: ((.:accounts_env_vars.CF_ADMIN_KEY))
-      CF_ADMIN_CERT: ((.:accounts_env_vars.CF_ADMIN_CERT))
       CF_API_URL: cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
       FIREBASE_CONF: ((acceptance/pairup.config))
       CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
@@ -723,14 +701,11 @@ jobs:
       CLUSTER_TYPE: GKE
   - load_var: cluster-env-vars
     file: clusters/env_vars.yaml
-  - do: *set-account-env-vars
 
   - task: deploy-postfacto
     file: korifi-ci/pipelines/tasks/deploy-postfacto.yml
     image: ci-image
     params:
-      CF_ADMIN_KEY: ((.:accounts_env_vars.CF_ADMIN_KEY))
-      CF_ADMIN_CERT: ((.:accounts_env_vars.CF_ADMIN_CERT))
       CF_API_URL: cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
       CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
       CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))

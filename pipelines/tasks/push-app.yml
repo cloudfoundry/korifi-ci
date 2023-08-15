@@ -11,10 +11,8 @@ inputs:
 - name: kube
 
 params:
-  API_SERVER_ROOT:
+  CF_API_URL:
   APP_PATH:
-  CF_ADMIN_KEY:
-  CF_ADMIN_CERT:
   KUBECONFIG: kube/kube.config
 
 run:

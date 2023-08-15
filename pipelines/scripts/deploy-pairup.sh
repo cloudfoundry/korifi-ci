@@ -2,17 +2,7 @@
 
 set -euo pipefail
 
-source korifi-ci/pipelines/scripts/common/gcloud-functions
-
-export-kubeconfig
-
-kubectl config set-credentials cf-admin \
-  --client-certificate=<(base64 -d <<<"$CF_ADMIN_CERT") \
-  --client-key=<(base64 -d <<<"$CF_ADMIN_KEY") \
-  --embed-certs
-
-cf api "$CF_API_URL"
-echo cf-admin | cf login
+source korifi-ci/pipelines/scripts/common/target.sh
 
 cf create-org pairup || true
 cf create-space -o pairup pairup || true

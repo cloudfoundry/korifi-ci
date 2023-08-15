@@ -2,24 +2,12 @@
 
 set -euo pipefail
 
-KUBECONFIG="$(realpath "$KUBECONFIG")"
+if [[ "$CLUSTER_TYPE" != "GKE" ]]; then
+  echo "Skipping - prepushing test apps is only needed on GKE to avoid the BLOB_UNKNOWN issue"
+  exit 0
+fi
 
-case "$CLUSTER_TYPE" in
-  "GKE")
-    kubectl config set-credentials "gareth" \
-      --client-certificate=<(base64 -d <<<"$CF_ADMIN_CERT") \
-      --client-key=<(base64 -d <<<"$CF_ADMIN_KEY") \
-      --embed-certs
-    ;;
-
-  *)
-    echo "Skipping - only valid on GKE"
-    exit 0
-    ;;
-esac
-
-cf api "$API_SERVER_ROOT" --skip-ssl-validation
-cf auth gareth
+source korifi-ci/pipelines/scripts/common/target.sh
 
 orgName="$(basename "$APP_PATH")"
 cf create-org "$orgName"
