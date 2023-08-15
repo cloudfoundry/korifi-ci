@@ -8,6 +8,7 @@ inputs:
 - name: korifi-ci
 - name: korifi
 - name: kube
+- name: cf-k8s-secrets
 
 params:
   TERRAFORM_SERVICE_ACCOUNT_JSON: ((gcp-serviceaccount))
