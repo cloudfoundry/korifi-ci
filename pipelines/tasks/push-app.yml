@@ -11,6 +11,7 @@ inputs:
 - name: kube
 
 params:
+  GCP_SERVICE_ACCOUNT_JSON: ((gcp-serviceaccount))
   API_SERVER_ROOT:
   APP_PATH:
   KUBECONFIG: kube/kube.config

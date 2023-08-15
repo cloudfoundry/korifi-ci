@@ -10,6 +10,7 @@ inputs:
 - name: kube
 
 params:
+  GCP_SERVICE_ACCOUNT_JSON: ((gcp-serviceaccount))
   API_SERVER_ROOT:
   SMOKE_TEST_USER:
   SMOKE_TEST_APPS_DOMAIN:
