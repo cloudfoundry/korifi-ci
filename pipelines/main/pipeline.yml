@@ -276,6 +276,9 @@ jobs:
           API_SERVER_ROOT: https://cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
           APP_PATH: dorifi
           CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
+          CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
+          GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
+          AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
 
       - task: pre-push-multi-process
         file: korifi-ci/pipelines/tasks/push-app.yml
@@ -284,6 +287,9 @@ jobs:
           API_SERVER_ROOT: https://cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
           APP_PATH: korifi/tests/assets/multi-process
           CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
+          CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
+          GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
+          AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
 
     - in_parallel:
       - do: &smoke-tests
@@ -327,6 +333,7 @@ jobs:
           CRDS_TEST_API_ENDPOINT: https://cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
           CRDS_TEST_SKIP_SSL: true
           GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
+          API_SERVER_ROOT: https://cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
 
   - task: undeploy-korifi
     file: korifi-ci/pipelines/tasks/undeploy-korifi.yml

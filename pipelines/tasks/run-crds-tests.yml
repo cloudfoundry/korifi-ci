@@ -18,6 +18,7 @@ params:
   CLUSTER_VERSION_MINOR:
   GCP_SERVICE_ACCOUNT_JSON: ((gcp-serviceaccount))
   GCP_ZONE:
+  API_SERVER_ROOT:
   ROOT_NAMESPACE: cf
 
 run:
