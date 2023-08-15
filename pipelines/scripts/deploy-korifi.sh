@@ -115,7 +115,7 @@ deploy() {
     extra_helm_flags+=("--values" "$extra_values_file")
   fi
   if [[ -n "$ECR_ACCESS_ROLE_ARN" ]]; then
-    extra_helm_flags+=("--set" "global.eksContainerRegistryRoleARN=$ECR_ACCESS_ROLE_ARN")
+    extra_helm_flags+=("--set" "eksContainerRegistryRoleARN=$ECR_ACCESS_ROLE_ARN")
   fi
 
   helm upgrade --install korifi "$chart" \

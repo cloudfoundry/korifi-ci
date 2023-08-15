@@ -1,17 +1,14 @@
 adminUserName: cf-admin
 
-global:
-  defaultAppDomainName: acceptance.korifi.cf-app.com
-  generateIngressCertificates: false
-  containerRepositoryPrefix: europe-docker.pkg.dev/cf-on-k8s-wg/acceptance-images/
+defaultAppDomainName: acceptance.korifi.cf-app.com
+generateIngressCertificates: false
+containerRepositoryPrefix: europe-docker.pkg.dev/cf-on-k8s-wg/acceptance-images/
+stagingRequirements:
+  memoryMB: 1536
 
 api:
   apiServer:
     url: cf.acceptance.korifi.cf-app.com
-
-  lifecycle:
-    stagingRequirements:
-      memoryMB: 1536
 
 jobTaskRunner:
   jobTTL: 24h
