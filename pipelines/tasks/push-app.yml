@@ -11,7 +11,7 @@ inputs:
 - name: kube
 
 params:
-  CF_API_URL:
+  API_SERVER_ROOT:
   APP_PATH:
   KUBECONFIG: kube/kube.config
 

@@ -7,7 +7,7 @@ source korifi-ci/pipelines/scripts/common/gcloud-functions
 export KUBECONFIG=$PWD/kube.config
 export-kubeconfig
 
-cf api "$CF_API_URL" --skip-ssl-validation
+cf api "$API_SERVER_ROOT" --skip-ssl-validation
 
 if [[ "$CLUSTER_TYPE" == "EKS" ]]; then
   echo "$TERRAFORM_SERVICE_ACCOUNT_JSON" >"/tmp/terraform-sa.json"
@@ -33,8 +33,9 @@ if [[ "$CLUSTER_TYPE" == "EKS" ]]; then
     --type merge \
     -p '{"data":{"mapUsers":"- userarn: '"$CF_ADMIN_ARN"'\n  username: cf-admin"}}'
 
-  CF_PASSWORD=$CF_ADMIN_TOKEN cf auth cf-admin
+  kubectl config set-credentials "cf-admin" --token="$CF_ADMIN_TOKEN"
 else
   korifi/scripts/create-new-user.sh cf-admin
-  echo cf-admin | cf login
 fi
+
+echo cf-admin | cf login

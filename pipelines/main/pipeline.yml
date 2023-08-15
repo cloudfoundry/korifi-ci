@@ -273,7 +273,7 @@ jobs:
         file: korifi-ci/pipelines/tasks/push-app.yml
         image: ci-image
         params:
-          CF_API_URL: https://cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
+          API_SERVER_ROOT: https://cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
           APP_PATH: dorifi
           CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
 
@@ -281,7 +281,7 @@ jobs:
         file: korifi-ci/pipelines/tasks/push-app.yml
         image: ci-image
         params:
-          CF_API_URL: https://cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
+          API_SERVER_ROOT: https://cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
           APP_PATH: korifi/tests/assets/multi-process
           CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
 
@@ -292,9 +292,7 @@ jobs:
           image: ci-image
           timeout: 30m
           params:
-            CF_ADMIN_KEY: ((.:accounts_env_vars.CF_ADMIN_KEY))
-            CF_ADMIN_CERT: ((.:accounts_env_vars.CF_ADMIN_CERT))
-            CF_ADMIN_TOKEN: ((.:accounts_env_vars.CF_ADMIN_TOKEN))
+            API_SERVER_ROOT: https://cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
             CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
             SMOKE_TEST_USER: cf-admin
             SMOKE_TEST_APPS_DOMAIN: ((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
@@ -310,21 +308,8 @@ jobs:
           API_SERVER_ROOT: https://cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
           APP_FQDN: ((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
           AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
-          CF_ADMIN_CERT: ((.:accounts_env_vars.CF_ADMIN_CERT))
-          CF_ADMIN_KEY: ((.:accounts_env_vars.CF_ADMIN_KEY))
-          CF_ADMIN_PEM: ((.:accounts_env_vars.CF_ADMIN_PEM))
-          CF_ADMIN_TOKEN: ((.:accounts_env_vars.CF_ADMIN_TOKEN))
           CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
           CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
-          E2E_LONGCERT_USER_NAME: ((.:accounts_env_vars.E2E_LONGCERT_USER_NAME))
-          E2E_LONGCERT_USER_PEM: ((.:accounts_env_vars.E2E_LONGCERT_USER_PEM))
-          E2E_SERVICE_ACCOUNT: ((.:accounts_env_vars.E2E_SERVICE_ACCOUNT))
-          E2E_SERVICE_ACCOUNT_TOKEN: ((.:accounts_env_vars.E2E_SERVICE_ACCOUNT_TOKEN))
-          E2E_UNPRIVILEGED_SERVICE_ACCOUNT: ((.:accounts_env_vars.E2E_UNPRIVILEGED_SERVICE_ACCOUNT))
-          E2E_UNPRIVILEGED_SERVICE_ACCOUNT_TOKEN: ((.:accounts_env_vars.E2E_UNPRIVILEGED_SERVICE_ACCOUNT_TOKEN))
-          E2E_USER_NAME: ((.:accounts_env_vars.E2E_USER_NAME))
-          E2E_USER_PEM: ((.:accounts_env_vars.E2E_USER_PEM))
-          E2E_USER_TOKEN: ((.:accounts_env_vars.E2E_USER_TOKEN))
           FULL_LOG_ON_ERR: yes-please
           GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
           GINKGO_NODES: 8
@@ -341,10 +326,6 @@ jobs:
           CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
           CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
           CRDS_TEST_API_ENDPOINT: https://cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
-          CRDS_TEST_CLI_CERT: ((.:accounts_env_vars.CRDS_TEST_CLI_CERT))
-          CRDS_TEST_CLI_KEY: ((.:accounts_env_vars.CRDS_TEST_CLI_KEY))
-          CRDS_TEST_CLI_USER: ((.:accounts_env_vars.CRDS_TEST_CLI_USER))
-          CRDS_TEST_CLI_USER_TOKEN: ((.:accounts_env_vars.CRDS_TEST_CLI_USER_TOKEN))
           CRDS_TEST_SKIP_SSL: true
           GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
 
@@ -670,7 +651,7 @@ jobs:
     file: korifi-ci/pipelines/tasks/deploy-pairup.yml
     image: ci-image
     params:
-      CF_API_URL: cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
+      API_SERVER_ROOT: cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
       FIREBASE_CONF: ((acceptance/pairup.config))
       CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
       CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
@@ -706,7 +687,7 @@ jobs:
     file: korifi-ci/pipelines/tasks/deploy-postfacto.yml
     image: ci-image
     params:
-      CF_API_URL: cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
+      API_SERVER_ROOT: cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
       CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
       CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
       GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
