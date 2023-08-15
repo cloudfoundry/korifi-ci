@@ -10,6 +10,7 @@ inputs:
 - name: kube
 
 params:
+  TERRAFORM_SERVICE_ACCOUNT_JSON: ((gcp-serviceaccount))
   GCP_SERVICE_ACCOUNT_JSON: ((gcp-serviceaccount))
   CLUSTER_TYPE:
   CLUSTER_NAME:
