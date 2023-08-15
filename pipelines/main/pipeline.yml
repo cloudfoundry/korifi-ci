@@ -300,6 +300,9 @@ jobs:
           params:
             API_SERVER_ROOT: https://cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
             CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
+            CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
+            GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
+            AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
             SMOKE_TEST_USER: cf-admin
             SMOKE_TEST_APPS_DOMAIN: ((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
             SMOKE_TEST_APP_ROUTE_PROTOCOL: https
