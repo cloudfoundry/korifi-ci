@@ -14,7 +14,9 @@ params:
   CLUSTER_TYPE:
   CLUSTER_NAME:
   GCP_ZONE:
+  AWS_ACCESS_KEY_ID: ((aws/terraform.access-key-id))
   AWS_REGION:
+  AWS_SECRET_ACCESS_KEY: ((aws/terraform.secret-access-key))
   API_SERVER_ROOT:
   SMOKE_TEST_USER:
   SMOKE_TEST_APPS_DOMAIN:
