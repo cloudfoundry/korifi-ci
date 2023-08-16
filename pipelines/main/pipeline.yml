@@ -525,6 +525,7 @@ jobs:
     params:
       CLUSTER_NAME: eks-e2e
       CLUSTER_TYPE: EKS
+      CSR_SIGNING_DISALLOWED: true
 
   - do: *end-to-ends
 
@@ -582,6 +583,7 @@ jobs:
     params:
       CLUSTER_NAME: eks-e2e
       CLUSTER_TYPE: EKS
+      CSR_SIGNING_DISALLOWED: true
 
   - do: *end-to-ends
 
@@ -766,6 +768,7 @@ jobs:
     params:
       CLUSTER_NAME: eks-e2e
       CLUSTER_TYPE: EKS
+      CSR_SIGNING_DISALLOWED: true
   - do: *end-to-ends
   ensure: *clean-env
 

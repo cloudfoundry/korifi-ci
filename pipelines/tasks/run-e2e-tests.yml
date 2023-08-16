@@ -24,5 +24,6 @@ params:
   GOOGLE_APPLICATION_CREDENTIALS:
   ROOT_NAMESPACE:
   DEFAULT_APP_BITS_PATH:
+  CSR_SIGNING_DISALLOWED:
 run:
   path: korifi-ci/pipelines/scripts/run-e2e-tests.sh
