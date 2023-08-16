@@ -3,6 +3,7 @@ platform: linux
 inputs:
 - name: postfacto
 - name: korifi-ci
+- name: korifi
 
 params:
   GCP_SERVICE_ACCOUNT_JSON: ((gcp-serviceaccount))
