@@ -877,6 +877,7 @@ jobs:
   - in_parallel:
     - get: korifi-ci
     - get: ci-image
+    - get: cf-k8s-secrets
   - <<: *setClusterVars
     params:
       CLUSTER_NAME: acceptance
@@ -887,7 +888,6 @@ jobs:
   - do: &recreateCluster
     - in_parallel:
       - get: gcloud-image
-      - get: cf-k8s-secrets
     - load_var: cluster-env-vars
       file: clusters/env_vars.yaml
     - task: undeploy-korifi
@@ -952,6 +952,7 @@ jobs:
     - get: korifi
     - get: korifi-ci
     - get: ci-image
+    - get: cf-k8s-secrets
   - <<: *setClusterVars
     params:
       CLUSTER_NAME: eks-e2e
@@ -1008,6 +1009,7 @@ jobs:
     - get: korifi
     - get: korifi-ci
     - get: ci-image
+    - get: cf-k8s-secrets
   - <<: *setClusterVars
     params:
       CLUSTER_NAME: pr-e2e
