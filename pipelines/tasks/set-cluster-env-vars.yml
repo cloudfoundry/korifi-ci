@@ -20,6 +20,7 @@ params:
   KPACK_REPO_LOCATION:
   KPACK_REPO_NAME:
   NODE_MACHINE_TYPE:
+  CSR_SIGNING_DISALLOWED:
 
 run:
   path: korifi-ci/pipelines/scripts/set-cluster-env-vars.sh

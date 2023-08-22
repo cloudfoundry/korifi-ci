@@ -324,6 +324,7 @@ jobs:
           GINKGO_NODES: 8
           ROOT_NAMESPACE: cf
           DEFAULT_APP_BITS_PATH: dorifi
+          CSR_SIGNING_DISALLOWED: ((.:cluster-env-vars.CSR_SIGNING_DISALLOWED))
 
       - task: run-crds-tests
         file: korifi-ci/pipelines/tasks/run-crds-tests.yml
