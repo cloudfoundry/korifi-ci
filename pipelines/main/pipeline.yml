@@ -299,15 +299,12 @@ jobs:
           timeout: 30m
           params:
             API_SERVER_ROOT: https://cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
-            CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
-            CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
-            GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
+            APP_FQDN: ((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
             AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
+            CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
+            CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
+            GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
             SMOKE_TEST_USER: cf-admin
-            SMOKE_TEST_APPS_DOMAIN: ((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
-            SMOKE_TEST_APP_ROUTE_PROTOCOL: https
-            SMOKE_TEST_API_ENDPOINT: https://cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
-            SMOKE_TEST_SKIP_SSL: true
 
       - task: run-e2e-tests
         file: korifi-ci/pipelines/tasks/run-e2e-tests.yml
@@ -331,13 +328,11 @@ jobs:
         image: ci-image
         timeout: 30m
         params:
+          API_SERVER_ROOT: https://cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
           AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
           CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
           CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
-          CRDS_TEST_API_ENDPOINT: https://cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
-          CRDS_TEST_SKIP_SSL: true
           GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
-          API_SERVER_ROOT: https://cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
 
   - task: undeploy-korifi
     file: korifi-ci/pipelines/tasks/undeploy-korifi.yml

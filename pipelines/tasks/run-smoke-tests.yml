@@ -11,21 +11,18 @@ inputs:
 - name: cf-k8s-secrets
 
 params:
-  TERRAFORM_SERVICE_ACCOUNT_JSON: ((gcp-serviceaccount))
-  GCP_SERVICE_ACCOUNT_JSON: ((gcp-serviceaccount))
-  CLUSTER_TYPE:
-  CLUSTER_NAME:
-  GCP_ZONE:
+  API_SERVER_ROOT:
+  APP_FQDN:
   AWS_ACCESS_KEY_ID: ((aws/terraform.access-key-id))
   AWS_REGION:
   AWS_SECRET_ACCESS_KEY: ((aws/terraform.secret-access-key))
-  API_SERVER_ROOT:
-  SMOKE_TEST_USER:
-  SMOKE_TEST_APPS_DOMAIN:
-  SMOKE_TEST_APP_ROUTE_PROTOCOL:
-  SMOKE_TEST_API_ENDPOINT:
-  SMOKE_TEST_SKIP_SSL:
+  CLUSTER_NAME:
+  CLUSTER_TYPE:
+  GCP_SERVICE_ACCOUNT_JSON: ((gcp-serviceaccount))
+  GCP_ZONE:
   KUBECONFIG: kube/kube.config
+  SMOKE_TEST_USER:
+  TERRAFORM_SERVICE_ACCOUNT_JSON: ((gcp-serviceaccount))
 
 run:
   path: korifi-ci/pipelines/scripts/run-smoke-tests.sh
