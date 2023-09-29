@@ -1035,8 +1035,8 @@ resource_types:
   type: registry-image
   source:
     repository: loggregatorbot/github-pr-resource
-    username: _json_key
-    password: ((gcp-artifact-registry-writer))
+    username: ((docker.user))
+    password: ((docker.pass))
 
 - name: github-status
   type: registry-image
