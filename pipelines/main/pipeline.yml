@@ -1034,7 +1034,7 @@ resource_types:
 - name: pull-request
   type: registry-image
   source:
-    repository: europe-docker.pkg.dev/cf-on-k8s-wg/ci/github-pr-resource
+    repository: loggregatorbot/github-pr-resource
     username: _json_key
     password: ((gcp-artifact-registry-writer))
 
