@@ -1161,9 +1161,9 @@ resources:
 - name: weekend-periodic-timer
   type: time
   source:
-    days: [Saturday, Sunday]
+    days: [Sunday]
     interval: 20m
-    start: 09:00 AM
+    start: 00:00 AM
     stop: 11:59 PM
     location: Europe/London
     initial_version: true
