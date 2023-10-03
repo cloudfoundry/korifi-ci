@@ -1165,7 +1165,7 @@ resources:
     interval: 20m
     start: 00:00 AM
     stop: 11:59 PM
-    location: Europe/London
+    location: UTC
     initial_version: true
 
 - name: bump-timer
