@@ -12,9 +12,11 @@ mkdir -p "$RELEASE_ARTIFACTS_DIR"
 source korifi-ci/pipelines/scripts/common/gcloud-functions
 source korifi-ci/pipelines/scripts/common/kbld-korifi
 
-update_config_with_version() {
+configure_kbld() {
   yq -i "with(.destinations[]; .tags=[\"latest\", \"$VERSION\"])" "$KBLD_CONFIG_DIR/korifi-kbld.yml"
   yq -i "with(.sources[]; .kubectlBuildkit.build.rawOptions += [\"--build-arg\", \"version=v$VERSION\"])" "$KBLD_CONFIG_DIR/korifi-kbld.yml"
+
+  yq -i "with(.sources[]; .docker.build.rawOptions += [\"--build-arg\", \"HELM_CHART_SOURCE=$RELEASE_ARTIFACTS_DIR\"])" "$KBLD_CONFIG_DIR/korifi-installer-kbld.yml"
 }
 
 create_release() {
@@ -31,6 +33,10 @@ create_release() {
   }
   popd
 
+  kbld -f "$KBLD_CONFIG_DIR/korifi-installer-kbld.yml" \
+    -f "korifi/scripts/installer/install-korifi-kind.yaml" \
+    >"$RELEASE_OUTPUT_DIR/install-korifi-kind.yaml"
+
   pushd "$RELEASE_OUTPUT_DIR"
   {
     tar czf "korifi-$VERSION.tgz" "korifi-$VERSION"
@@ -41,7 +47,7 @@ create_release() {
 main() {
   export-kubeconfig
   docker_login
-  update_config_with_version
+  configure_kbld
   create_release
 }
 

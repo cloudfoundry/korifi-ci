@@ -1,0 +1,14 @@
+---
+apiVersion: kbld.k14s.io/v1alpha1
+kind: Config
+sources:
+- image: cloudfoundry/korifi-installer:latest
+  path: .
+  docker:
+    build:
+      file: scripts/installer/Dockerfile
+      buildkit: true
+
+destinations:
+- image: cloudfoundry/korifi-installer:latest
+  newImage: cloudfoundry/korifi-installer
