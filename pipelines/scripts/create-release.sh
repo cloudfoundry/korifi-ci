@@ -16,7 +16,7 @@ configure_kbld() {
   yq -i "with(.destinations[]; .tags=[\"latest\", \"$VERSION\"])" "$KBLD_CONFIG_DIR/korifi-kbld.yml"
   yq -i "with(.sources[]; .kubectlBuildkit.build.rawOptions += [\"--build-arg\", \"version=v$VERSION\"])" "$KBLD_CONFIG_DIR/korifi-kbld.yml"
 
-  yq -i "with(.sources[]; .docker.build.rawOptions += [\"--build-arg\", \"HELM_CHART_SOURCE=$RELEASE_ARTIFACTS_DIR\"])" "$KBLD_CONFIG_DIR/korifi-installer-kbld.yml"
+  yq -i "with(.sources[]; .kubectlBuildkit.build.rawOptions += [\"--build-arg\", \"HELM_CHART_SOURCE=$RELEASE_ARTIFACTS_DIR\"])" "$KBLD_CONFIG_DIR/korifi-installer-kbld.yml"
 }
 
 create_release() {
@@ -30,12 +30,12 @@ create_release() {
     cp INSTALL.EKS.md "$RELEASE_ARTIFACTS_DIR"
     cp INSTALL.kind.md "$RELEASE_ARTIFACTS_DIR"
     cp README.helm.md "$RELEASE_ARTIFACTS_DIR"
+
+    kbld -f "$KBLD_CONFIG_DIR/korifi-installer-kbld.yml" \
+      -f "korifi/scripts/installer/install-korifi-kind.yaml" \
+      >"$RELEASE_OUTPUT_DIR/install-korifi-kind.yaml"
   }
   popd
-
-  kbld -f "$KBLD_CONFIG_DIR/korifi-installer-kbld.yml" \
-    -f "korifi/scripts/installer/install-korifi-kind.yaml" \
-    >"$RELEASE_OUTPUT_DIR/install-korifi-kind.yaml"
 
   pushd "$RELEASE_OUTPUT_DIR"
   {
