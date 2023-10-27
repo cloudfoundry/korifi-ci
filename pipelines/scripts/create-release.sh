@@ -16,7 +16,7 @@ configure_kbld() {
   yq -i "with(.destinations[]; .tags=[\"latest\", \"$VERSION\"])" "$KBLD_CONFIG_DIR/korifi-kbld.yml"
   yq -i "with(.sources[]; .kubectlBuildkit.build.rawOptions += [\"--build-arg\", \"version=v$VERSION\"])" "$KBLD_CONFIG_DIR/korifi-kbld.yml"
 
-  yq -i "with(.sources[]; .kubectlBuildkit.build.rawOptions += [\"--build-arg\", \"HELM_CHART_SOURCE=$RELEASE_ARTIFACTS_DIR\"])" "$KBLD_CONFIG_DIR/korifi-installer-kbld.yml"
+  yq -i "with(.sources[]; .kubectlBuildkit.build.rawOptions += [\"--build-arg\", \"HELM_CHART_SOURCE=release-output/korifi-$VERSION\"])" "$KBLD_CONFIG_DIR/korifi-installer-kbld.yml"
 }
 
 create_release() {
