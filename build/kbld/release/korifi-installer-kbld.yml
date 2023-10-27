@@ -10,5 +10,5 @@ sources:
       file: scripts/installer/Dockerfile
 
 destinations:
-- image: cloudfoundry/korifi-installer:latest
+- image: cloudfoundry/korifi-installer
   newImage: cloudfoundry/korifi-installer
