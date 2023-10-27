@@ -32,7 +32,7 @@ create_release() {
     cp README.helm.md "$RELEASE_ARTIFACTS_DIR"
 
     kbld -f "$KBLD_CONFIG_DIR/korifi-installer-kbld.yml" \
-      -f "korifi/scripts/installer/install-korifi-kind.yaml" \
+      -f "scripts/installer/install-korifi-kind.yaml" \
       >"$RELEASE_OUTPUT_DIR/install-korifi-kind.yaml"
   }
   popd
