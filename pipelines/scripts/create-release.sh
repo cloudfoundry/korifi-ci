@@ -3,7 +3,7 @@
 set -euo pipefail
 
 KBLD_CONFIG_DIR="$PWD/korifi-ci/build/kbld/release"
-RELEASE_OUTPUT_DIR="$PWD/release-output"
+RELEASE_OUTPUT_DIR="$PWD/korifi/release-output"
 VERSION=$(cat korifi-release-version/version)
 RELEASE_ARTIFACTS_DIR="$RELEASE_OUTPUT_DIR/korifi-$VERSION"
 
@@ -32,7 +32,7 @@ create_release() {
     cp README.helm.md "$RELEASE_ARTIFACTS_DIR"
 
     kbld -f "$KBLD_CONFIG_DIR/korifi-installer-kbld.yml" \
-      -f "scripts/installer/install-korifi-kind.yaml" \
+      -f "./scripts/installer/install-korifi-kind.yaml" \
       >"$RELEASE_OUTPUT_DIR/install-korifi-kind.yaml"
   }
   popd

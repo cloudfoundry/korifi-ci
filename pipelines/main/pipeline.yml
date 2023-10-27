@@ -858,7 +858,8 @@ jobs:
   - put: korifi-github-release
     params:
       globs:
-      - release-output/*
+      - korifi/release-output/*.tgz
+      - korifi/release-output/install-korifi-kind.yaml
       name: korifi-release-version/version
       tag: korifi-release-version/version
       tag_prefix: v
