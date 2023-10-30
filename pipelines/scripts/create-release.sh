@@ -22,7 +22,6 @@ configure_kbld() {
 create_release() {
   pushd korifi
   {
-    helm dependency update helm/korifi
     cp -a helm/korifi/* "$RELEASE_ARTIFACTS_DIR"
     export VALUES_BASE=helm/korifi
     build-korifi >"$RELEASE_ARTIFACTS_DIR/values.yaml"
