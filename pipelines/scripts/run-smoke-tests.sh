@@ -5,5 +5,7 @@ set -euo pipefail
 KUBECONFIG="$(realpath "$KUBECONFIG")"
 
 source korifi-ci/pipelines/scripts/common/target.sh
+source korifi-ci/pipelines/scripts/common/run-with-timeout.sh
 
-SKIP_DEPLOY=true make -C korifi test-smoke
+export SKIP_DEPLOY=true
+run-with-timeout make -C korifi test-smoke
