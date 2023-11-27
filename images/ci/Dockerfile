@@ -98,3 +98,6 @@ RUN curl -fsSLo awscliv2.zip https://awscli.amazonaws.com/awscli-exe-linux-x86_6
 RUN url="$(curl -sSfL https://api.github.com/repos/cloudfoundry/bosh-cli/releases/latest | jq -r '.assets[]|select(.name|match("linux-amd64")).browser_download_url')" \
   && curl -fsSLo /usr/bin/bosh "$url" \
   && chmod +x /usr/bin/bosh
+
+# shfmt
+RUN go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
