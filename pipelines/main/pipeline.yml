@@ -20,15 +20,6 @@ common:
         Job is *$BUILD_JOB_NAME*
         Build name is *$BUILD_NAME*
 
-  envoy_logs: &envoyLogs
-    task: get-envoy-logs
-    file: korifi-ci/pipelines/tasks/get-envoy-logs.yml
-    image: ci-image
-    params:
-      CLUSTER_NAME: pr-e2e
-      CLUSTER_TYPE: GKE
-      GCP_ZONE: europe-west1-b
-
   set_cluster_vars: &setClusterVars
     task: set-cluster-env-vars
     file: korifi-ci/pipelines/tasks/set-cluster-env-vars.yml
@@ -193,7 +184,6 @@ jobs:
         - state: failure
           context: "Concourse - E2E (main)"
     - *slackHook
-    - *envoyLogs
 
   serial: true
   serial_groups:
@@ -433,7 +423,6 @@ jobs:
         context: " e2e-tests (pull_request)"
         status: failure
     - *slackHook
-    - *envoyLogs
   serial: true
   serial_groups:
   - pr-e2e
@@ -486,13 +475,6 @@ jobs:
         context: " e2e-eks-tests (pull_request)"
         status: failure
     - *slackHook
-    - <<: *envoyLogs
-      params:
-        AWS_ACCESS_KEY_ID: ((aws/terraform.access-key-id))
-        AWS_SECRET_ACCESS_KEY: ((aws/terraform.secret-access-key))
-        AWS_REGION: eu-west-1
-        CLUSTER_NAME: eks-e2e
-        CLUSTER_TYPE: EKS
   serial: true
   serial_groups:
   - eks
@@ -545,13 +527,6 @@ jobs:
         - state: failure
           context: "Concourse - E2E on EKS (main)"
     - *slackHook
-    - <<: *envoyLogs
-      params:
-        AWS_ACCESS_KEY_ID: ((aws/terraform.access-key-id))
-        AWS_SECRET_ACCESS_KEY: ((aws/terraform.secret-access-key))
-        AWS_REGION: eu-west-1
-        CLUSTER_NAME: eks-e2e
-        CLUSTER_TYPE: EKS
 
   serial: true
   serial_groups:
@@ -717,7 +692,6 @@ jobs:
   on_failure:
     do:
     - *slackHook
-    - *envoyLogs
   serial: true
   serial_groups:
   - pr-e2e
@@ -743,7 +717,6 @@ jobs:
   on_failure:
     do:
     - *slackHook
-    - *envoyLogs
   serial: true
   serial_groups:
   - eks
