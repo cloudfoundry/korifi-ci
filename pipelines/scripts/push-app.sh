@@ -10,8 +10,8 @@ fi
 source korifi-ci/pipelines/scripts/common/target.sh
 
 orgName="$(basename "$APP_PATH")"
-cf create-org "$orgName"
-cf create-space -o "$orgName" gareth
-cf target -o "$orgName" -s gareth
+cf -v create-org "$orgName"
+cf -v create-space -o "$orgName" gareth
+cf -v target -o "$orgName" -s gareth
 
 cf push "$(cat /proc/sys/kernel/random/uuid)" -p "$APP_PATH"
