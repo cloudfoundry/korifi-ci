@@ -28,8 +28,8 @@ groups:
 
 jobs:
 - name: create
-  on_failure:
-    *slackHook
+  on_failure: *slackHook
+  on_error: *slackHook
   serial: true
   serial_groups:
   - mel-c
@@ -42,6 +42,7 @@ jobs:
     image: ci-image
     file: korifi-ci/pipelines/tasks/create-mel-c.yml
   on_failure: *slackHook
+  on_error: *slackHook
   ensure:
     do:
     - task: save-mel-c-state
@@ -54,8 +55,8 @@ jobs:
         repository: cf-k8s-secrets
 
 - name: destroy
-  on_failure:
-    *slackHook
+  on_failure: *slackHook
+  on_error: *slackHook
   serial: true
   serial_groups:
   - mel-c
@@ -70,6 +71,7 @@ jobs:
     image: ci-image
     file: korifi-ci/pipelines/tasks/destroy-mel-c.yml
   on_failure: *slackHook
+  on_error: *slackHook
   ensure:
     do:
     - task: save-mel-c-state

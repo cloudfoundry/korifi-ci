@@ -62,6 +62,7 @@ jobs:
     params:
       PACKAGE: ci
   on_failure: *slackHook
+  on_error: *slackHook
 
 - name: update-gcloud-image
   plan:
@@ -99,6 +100,7 @@ jobs:
     params:
       PACKAGE: gcloud
   on_failure: *slackHook
+  on_error: *slackHook
 
 resource_types:
 - name: slack-notification

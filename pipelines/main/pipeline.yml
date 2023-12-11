@@ -62,7 +62,7 @@ groups:
 jobs:
 # ===== main =====
 - name: run-tests-main
-  on_failure:
+  on_failure: &run-tests-main-failure
     do:
     - put: korifi-status
       params:
@@ -71,6 +71,7 @@ jobs:
         - state: failure
           context: "Concourse - tests (main)"
     - *slackHook
+  on_error: *run-tests-main-failure
   serial: true
   plan:
   - in_parallel:
@@ -175,7 +176,7 @@ jobs:
           context: "Concourse - tests (main)"
 
 - name: run-e2es-main
-  on_failure:
+  on_failure: &run-e2es-main-failure
     do:
     - put: korifi-status
       params:
@@ -184,6 +185,7 @@ jobs:
         - state: failure
           context: "Concourse - E2E (main)"
     - *slackHook
+  on_error: *run-e2es-main-failure
 
   serial: true
   serial_groups:
@@ -365,7 +367,7 @@ jobs:
         DOCKER_PASSWORD: ((gcp-artifact-registry-writer))
 
 - name: publish-dev-images
-  on_failure:
+  on_failure: &publish-dev-images-failure
     do:
     - put: korifi-status
       params:
@@ -374,6 +376,7 @@ jobs:
         - state: failure
           context: "Concourse - publish images (main)"
     - *slackHook
+  on_error: *publish-dev-images-failure
   plan:
   - in_parallel:
     - get: ci-image
@@ -414,7 +417,7 @@ jobs:
 
 # ===== PR =====
 - name: run-e2es-pr
-  on_failure:
+  on_failure: &run-e2es-pr-failure
     do:
     - put: korifi-pr
       params:
@@ -423,6 +426,7 @@ jobs:
         context: " e2e-tests (pull_request)"
         status: failure
     - *slackHook
+  on_error: *run-e2es-pr-failure
   serial: true
   serial_groups:
   - pr-e2e
@@ -466,7 +470,7 @@ jobs:
 
 # ===== eks =====
 - name: run-e2es-eks-pr
-  on_failure:
+  on_failure: &run-e2es-eks-pr-failure
     do:
     - put: korifi-pr
       params:
@@ -475,6 +479,7 @@ jobs:
         context: " e2e-eks-tests (pull_request)"
         status: failure
     - *slackHook
+  on_error: *run-e2es-eks-pr-failure
   serial: true
   serial_groups:
   - eks
@@ -518,7 +523,7 @@ jobs:
     - *clean-env
 
 - name: run-e2es-eks
-  on_failure:
+  on_failure: &run-e2es-eks-failure
     do:
     - put: korifi-status
       params:
@@ -527,6 +532,7 @@ jobs:
         - state: failure
           context: "Concourse - E2E on EKS (main)"
     - *slackHook
+  on_error: *run-e2es-eks-failure
 
   serial: true
   serial_groups:
@@ -570,8 +576,8 @@ jobs:
 
 # ===== acceptance =====
 - name: deploy-korifi-acceptance
-  on_failure:
-    *slackHook
+  on_failure: *slackHook
+  on_error: *slackHook
   serial: true
   serial_groups:
   - acceptance
@@ -604,8 +610,8 @@ jobs:
   - do: *smoke-tests
 
 - name: deploy-pairup
-  on_failure:
-    *slackHook
+  on_failure: *slackHook
+  on_error: *slackHook
   serial: true
   serial_groups:
   - acceptance
@@ -639,8 +645,8 @@ jobs:
       GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
 
 - name: deploy-postfacto
-  on_failure:
-    *slackHook
+  on_failure: *slackHook
+  on_error: *slackHook
   serial: true
   serial_groups:
   - acceptance
@@ -675,8 +681,8 @@ jobs:
 
 # ===== periodics =====
 - name: run-tests-periodic
-  on_failure:
-    *slackHook
+  on_failure: *slackHook
+  on_error: *slackHook
   plan:
   - in_parallel:
     - get: ci-image
@@ -689,9 +695,8 @@ jobs:
   - in_parallel: *unit-integration
 
 - name: run-e2es-periodic
-  on_failure:
-    do:
-    - *slackHook
+  on_failure: *slackHook
+  on_error: *slackHook
   serial: true
   serial_groups:
   - pr-e2e
@@ -714,9 +719,8 @@ jobs:
   ensure: *clean-env
 
 - name: run-e2es-eks-periodic
-  on_failure:
-    do:
-    - *slackHook
+  on_failure: *slackHook
+  on_error: *slackHook
   serial: true
   serial_groups:
   - eks
@@ -740,8 +744,8 @@ jobs:
   ensure: *clean-env
 
 - name: bump-tests-vendor
-  on_failure:
-    *slackHook
+  on_failure: *slackHook
+  on_error: *slackHook
   plan:
     - in_parallel:
       - get: ci-image
@@ -765,6 +769,7 @@ jobs:
     params:
       file: korifi-release-version/version
   on_failure: *slackHook
+  on_error: *slackHook
 
 - name: bump-minor-version
   plan:
@@ -777,6 +782,7 @@ jobs:
     params:
       file: korifi-release-version/version
   on_failure: *slackHook
+  on_error: *slackHook
 
 - name: bump-patch-version
   plan:
@@ -789,6 +795,7 @@ jobs:
     params:
       file: korifi-release-version/version
   on_failure: *slackHook
+  on_error: *slackHook
 
 - name: publish-release
   plan:
@@ -836,6 +843,7 @@ jobs:
       tag_prefix: v
       commitish: korifi/.git/ref
   on_failure: *slackHook
+  on_error: *slackHook
 
 # ===== clusters =====
 
@@ -911,6 +919,7 @@ jobs:
         CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
         NODE_MACHINE_TYPE: ((.:cluster-env-vars.NODE_MACHINE_TYPE))
   on_failure: *slackHook
+  on_error: *slackHook
 
 - name: recreate-cluster-eks
   serial: true
@@ -967,6 +976,7 @@ jobs:
         DOCKER_USERNAME: _json_key
         DOCKER_PASSWORD: ((gcp-artifact-registry-writer))
   on_failure: *slackHook
+  on_error: *slackHook
 
 # ===== clusters:pr-e2e =====
 - name: recreate-cluster-pr-e2e
@@ -993,6 +1003,7 @@ jobs:
   - do: *recreateCluster
   - do: *deployLatestKorifi
   on_failure: *slackHook
+  on_error: *slackHook
 
 resource_types:
 - name: slack-notification
