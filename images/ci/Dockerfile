@@ -1,4 +1,4 @@
-FROM golang:latest
+FROM golang:1.20.7
 
 ENV PATH="$GOPATH/bin:${PATH}"
 ENV USE_GKE_GCLOUD_AUTH_PLUGIN=True
