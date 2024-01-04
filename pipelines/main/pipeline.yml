@@ -76,6 +76,7 @@ jobs:
   plan:
   - in_parallel:
     - get: ci-image
+    - get: golangci-lint-image
     - get: korifi
       trigger: true
     - get: korifi-ci
@@ -91,7 +92,7 @@ jobs:
       steps:
       - task: linter
         file: korifi-ci/pipelines/tasks/run-lint.yml
-        image: ci-image
+        image: golangci-lint-image
         input_mapping:
           root: korifi
 
@@ -686,6 +687,7 @@ jobs:
   plan:
   - in_parallel:
     - get: ci-image
+    - get: golangci-lint-image
     - get: korifi
     - get: korifi-ci
     - get: workdays-periodic-timer
@@ -1103,6 +1105,14 @@ resources:
   source:
     repo: cloudfoundry/korifi
     access_token: ((github/korifi-bot-token))
+
+- name: golangci-lint-image
+  type: registry-image
+  source:
+    repository: golangci/golangci-lint
+    tag: latest
+    username: ((docker.user))
+    password: ((docker.pass))
 
 - name: korifi-github-release
   type: github-release
