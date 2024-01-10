@@ -16,3 +16,5 @@ jobTaskRunner:
 kpackImageBuilder:
   builderRepository: europe-docker.pkg.dev/cf-on-k8s-wg/acceptance-images/kpack-builder
 
+networking:
+  gatewayClass: contour

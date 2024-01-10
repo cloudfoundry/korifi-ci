@@ -20,3 +20,6 @@ kpackImageBuilder:
   clusterStackID: io.buildpacks.stacks.jammy
   clusterStackBuildImage: paketobuildpacks/build-jammy-base
   clusterStackRunImage: paketobuildpacks/run-jammy-base
+
+networking:
+  gatewayClass: contour
