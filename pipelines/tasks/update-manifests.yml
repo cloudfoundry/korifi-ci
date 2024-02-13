@@ -1,0 +1,11 @@
+platform: linux
+
+inputs:
+- name: korifi-ci
+- name: korifi
+
+params:
+ GITHUB_TOKEN: ((github/korifi-bot-create-pr-token))
+
+run:
+  path: korifi-ci/pipelines/scripts/update-manifests.sh

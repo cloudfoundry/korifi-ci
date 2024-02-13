@@ -42,6 +42,7 @@ groups:
   - run-e2es-periodic
   - run-e2es-eks-periodic
   - bump-tests-vendor
+  - update-manifests
 - name: acceptance
   jobs:
   - deploy-korifi-acceptance
@@ -757,6 +758,20 @@ jobs:
         trigger: true
     - task: bump-tests-vendor
       file: korifi-ci/pipelines/tasks/bump-tests-vendor.yml
+      image: ci-image
+
+- name: update-manifests
+  on_failure: *slackHook
+  on_error: *slackHook
+  plan:
+    - in_parallel:
+      - get: ci-image
+      - get: korifi-ci
+      - get: korifi
+      - get: bump-timer
+        trigger: true
+    - task: update-manifests
+      file: korifi-ci/pipelines/tasks/update-manifests.yml
       image: ci-image
 
 # ===== release =====
