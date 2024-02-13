@@ -32,7 +32,7 @@ create_pr() {
     -H "Authorization: Bearer $GITHUB_TOKEN" \
     -H "Accept: application/vnd.github+json" \
     https://api.github.com/repos/cloudfoundry/korifi/pulls \
-    --data '{"title":"Updating vendir dependencies","body":"Generated from korifi CI","head":"'"$1"'","base":"main"}'
+    --data '{"title":"'"$message"'","body":"Generated from korifi CI","head":"'"$branch"'","base":"main"}'
 }
 
 commit() {
