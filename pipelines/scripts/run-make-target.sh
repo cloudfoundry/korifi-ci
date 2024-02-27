@@ -14,11 +14,6 @@ REGISTRY_DETAILS="
   repoName: 007801690126.dkr.ecr.eu-west-1.amazonaws.com/test
   username: AWS
   password: $(aws ecr get-login-password --region eu-west-1)
-
-- server: korifitest.azurecr.io
-  pathPrefix: korifitest.azurecr.io/test
-  username: $ACR_USER
-  password: $ACR_PASSWORD
 "
 
 make -C "root/$DIR" "$TARGET"
