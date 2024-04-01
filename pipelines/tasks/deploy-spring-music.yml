@@ -1,7 +1,7 @@
 platform: linux
 
 inputs:
-- name: postfacto
+- name: spring-music
 - name: korifi-ci
 - name: korifi
 
