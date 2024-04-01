@@ -1,0 +1,18 @@
+platform: linux
+
+inputs:
+- name: postfacto
+- name: korifi-ci
+- name: korifi
+
+params:
+  GCP_SERVICE_ACCOUNT_JSON: ((gcp-serviceaccount))
+  API_SERVER_ROOT:
+  CLUSTER_TYPE:
+  CLUSTER_NAME:
+  GCP_ZONE:
+  DB_USERNAME:  ((acceptance/spring-music.postgresUser))
+  DB_PASSWORD: ((acceptance/spring-music.postgresPassword))
+  DB_ADDR: ((acceptance/spring-music.postgresAddr))
+run:
+  path: korifi-ci/pipelines/scripts/deploy-spring-music.sh
