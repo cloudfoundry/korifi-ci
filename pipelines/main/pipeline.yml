@@ -1154,7 +1154,7 @@ resources:
   type: git
   icon: git
   source:
-    uri: https://github.com/cloudfoundry-samples/spring-music.git
+    uri: https://github.com/eirini-forks/spring-music.git
     branch: spring-boot-2
 
 - name: korifi-status

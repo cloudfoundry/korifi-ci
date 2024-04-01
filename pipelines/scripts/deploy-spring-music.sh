@@ -10,7 +10,6 @@ cf target -o spring-music -s spring-music
 
 cf push -f spring-music/manifest.yml \
   -p spring-music \
-  --var SPRING_PROFILES_ACTIVE=postgres \
   --no-start
 
 db_uri="postgres://$DB_USERNAME:$DB_PASSWORD@$DB_ADDR:5432/spring-music"
