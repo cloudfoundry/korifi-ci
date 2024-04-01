@@ -3,6 +3,7 @@ platform: linux
 inputs:
 - name: korifi-ci
 - name: kube
+- name: cf-k8s-secrets
 
 params:
   GCP_SERVICE_ACCOUNT_JSON: ((gcp-serviceaccount))
