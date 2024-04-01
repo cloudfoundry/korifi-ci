@@ -1,0 +1,16 @@
+platform: linux
+
+inputs:
+- name: korifi-ci
+- name: kube
+
+params:
+  GCP_SERVICE_ACCOUNT_JSON: ((gcp-serviceaccount))
+  CLUSTER_TYPE:
+  CLUSTER_NAME:
+  GCP_ZONE:
+  API_SERVER_ROOT:
+  KUBECONFIG: kube/kube.config
+
+run:
+  path: korifi-ci/pipelines/scripts/check-long-living-app.sh

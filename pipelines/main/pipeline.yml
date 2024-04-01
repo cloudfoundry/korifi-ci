@@ -49,6 +49,7 @@ groups:
   - deploy-pairup
   - deploy-postfacto
   - deploy-spring-music
+  - check-long-living-app
 - name: release
   jobs:
   - bump-major-version
@@ -602,6 +603,20 @@ jobs:
       CLUSTER_TYPE: GKE
       USE_LETSENCRYPT: true
 
+  - try:
+      do:
+      - task: build-dorifi
+        file: korifi-ci/pipelines/tasks/build-dorifi.yml
+        image: ci-image
+      - task: push-long-living-app
+        file: korifi-ci/pipelines/tasks/push-long-living-app.yml
+        image: ci-image
+        params:
+          API_SERVER_ROOT: https://cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
+          CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
+          CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
+          GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
+
   - do: *deploy-korifi
   - task: add-chmod-buildpack-for-rails
     file: korifi-ci/pipelines/tasks/add-chmod-rails-buildpack.yml
@@ -713,6 +728,37 @@ jobs:
     image: ci-image
     params:
       API_SERVER_ROOT: cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
+      CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
+      CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
+      GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
+
+- name: check-long-living-app
+  on_failure: *slackHook
+  on_error: *slackHook
+  serial: true
+  serial_groups:
+  - acceptance
+  plan:
+  - in_parallel:
+    - get: ci-image
+    - get: korifi
+      trigger: true
+      passed:
+      - deploy-korifi-acceptance
+    - get: korifi-ci
+
+  - <<: *setClusterVars
+    params:
+      CLUSTER_NAME: acceptance
+      CLUSTER_TYPE: GKE
+  - load_var: cluster-env-vars
+    file: clusters/env_vars.yaml
+
+  - task: check-long-living-app
+    file: korifi-ci/pipelines/tasks/check-long-living-app.yml
+    image: ci-image
+    params:
+      API_SERVER_ROOT: https://cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
       CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
       CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
       GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
