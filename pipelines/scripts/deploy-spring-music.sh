@@ -4,6 +4,8 @@ set -euo pipefail
 
 source korifi-ci/pipelines/scripts/common/target.sh
 
+cf delete-org -f spring-music
+
 cf create-org spring-music
 cf create-space -o spring-music spring-music
 cf target -o spring-music -s spring-music
