@@ -603,6 +603,15 @@ jobs:
       CLUSTER_TYPE: GKE
       USE_LETSENCRYPT: true
 
+  - do: *deploy-korifi
+  - task: add-chmod-buildpack-for-rails
+    file: korifi-ci/pipelines/tasks/add-chmod-rails-buildpack.yml
+    image: ci-image
+    params:
+      CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
+      CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
+      GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
+  - do: *smoke-tests
   - try:
       do:
       - task: build-dorifi
@@ -616,16 +625,6 @@ jobs:
           CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
           CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
           GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
-
-  - do: *deploy-korifi
-  - task: add-chmod-buildpack-for-rails
-    file: korifi-ci/pipelines/tasks/add-chmod-rails-buildpack.yml
-    image: ci-image
-    params:
-      CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
-      CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
-      GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
-  - do: *smoke-tests
 
 - name: deploy-pairup
   on_failure: *slackHook
