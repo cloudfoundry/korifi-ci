@@ -746,6 +746,7 @@ jobs:
       passed:
       - deploy-korifi-acceptance
     - get: korifi-ci
+    - get: cf-k8s-secrets
 
   - <<: *setClusterVars
     params:
