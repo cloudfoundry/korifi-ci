@@ -41,7 +41,7 @@ if [[ "$podState" != "Running" ]]; then
   exit 1
 fi
 
-if [[ "$podAgeMin" < 15 ]]; then
+if [[ "$podAgeMin" < 30 ]]; then
   echo "Age of pod $podName too small: ${podAgeMin}m. Pod might have been restarted during upgrade."
   exit 1
 fi

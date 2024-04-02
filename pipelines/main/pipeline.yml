@@ -744,8 +744,8 @@ jobs:
   - task: build-dorifi
     file: korifi-ci/pipelines/tasks/build-dorifi.yml
     image: ci-image
-  - task: push-long-living-app
-    file: korifi-ci/pipelines/tasks/push-long-living-app.yml
+  - task: ensure-long-living-app
+    file: korifi-ci/pipelines/tasks/ensure-long-living-app.yml
     image: ci-image
     params:
       API_SERVER_ROOT: https://cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com

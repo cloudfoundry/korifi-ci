@@ -14,4 +14,4 @@ params:
   KUBECONFIG: kube/kube.config
 
 run:
-  path: korifi-ci/pipelines/scripts/push-long-living-app.sh
+  path: korifi-ci/pipelines/scripts/ensure-long-living-app.sh
