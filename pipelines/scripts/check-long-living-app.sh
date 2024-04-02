@@ -10,7 +10,7 @@ cf target -o "$appName" -s "$appName"
 appURL="$(cf app "$appName" | grep routes | awk '{print $2}')"
 appResponse="$(curl "https://$appURL")"
 
-if [[ "$appResponse" != "Hi, I'm Dorifi\!" ]]; then
+if [[ "$appResponse" != "Hi, I'm Dorifi!" ]]; then
   echo "Unexpected response from app: $appResponse"
   exit 1
 fi
