@@ -11,6 +11,8 @@ api:
 
 controllers:
   taskTTL: 15s
+  processDefaults:
+    memoryMB: 128
 
 jobTaskRunner:
   jobTTL: 5s

@@ -10,6 +10,7 @@ cf target -o postfacto -s postfacto
 
 cf push -f postfacto/manifest.yml \
   -p postfacto \
+  --memory "512M" \
   --var domain="${CLUSTER_NAME}.korifi.cf-app.com" \
   --var postgres-address="$POSTGRES_ADDRESS" \
   --var postgres-user="$POSTGRES_USER" \

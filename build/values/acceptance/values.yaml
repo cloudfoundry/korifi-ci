@@ -10,6 +10,10 @@ api:
   apiServer:
     url: cf.acceptance.korifi.cf-app.com
 
+controllers:
+  processDefaults:
+    memoryMB: 128
+
 jobTaskRunner:
   jobTTL: 24h
 
