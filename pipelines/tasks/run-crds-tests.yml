@@ -8,6 +8,7 @@ inputs:
 - name: korifi-ci
 - name: korifi
 - name: cf-k8s-secrets
+- name: dorifi
 
 params:
   API_SERVER_ROOT:
