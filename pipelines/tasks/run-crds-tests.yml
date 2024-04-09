@@ -20,6 +20,7 @@ params:
   GCP_ZONE:
   ROOT_NAMESPACE: cf
   TERRAFORM_SERVICE_ACCOUNT_JSON: ((gcp-serviceaccount))
+  DEFAULT_APP_BITS_PATH:
 
 run:
   path: korifi-ci/pipelines/scripts/run-crds-tests.sh

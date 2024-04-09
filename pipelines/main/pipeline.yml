@@ -328,6 +328,7 @@ jobs:
           CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
           CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
           GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
+          DEFAULT_APP_BITS_PATH: dorifi
 
   - task: undeploy-korifi
     file: korifi-ci/pipelines/tasks/undeploy-korifi.yml
