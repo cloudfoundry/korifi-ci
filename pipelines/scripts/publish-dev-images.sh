@@ -28,6 +28,10 @@ update_config_with_version() {
   echo "============================================================================="
 }
 
+update_values_file_with_images() {
+  yq eval-all --inplace 'select(fileIndex == 0) * select(fileIndex == 1)' "$VALUES_BASE/values.yaml" "$PWD/korifi-ci/build/values/image-values.yaml"
+}
+
 publish_images() {
   pushd korifi
   {
@@ -48,6 +52,7 @@ main() {
   docker_login
   compute-version
   update_config_with_version
+  update_values_file_with_images
   publish_images
 }
 
