@@ -22,12 +22,16 @@ compute-version() {
 update_config_with_version() {
   yq -i "with(.sources[]; .kubectlBuildkit.build.rawOptions += [\"--build-arg\", \"version=$VERSION\"])" "$KBLD_CONFIG_DIR/korifi-kbld.yml"
   yq -i "with(.destinations[]; .tags=[\"$TAG\"])" "$KBLD_CONFIG_DIR/korifi-kbld.yml"
+
+  echo "============================== kbld config =================================="
+  cat "$KBLD_CONFIG_DIR/korifi-kbld.yml"
+  echo "============================================================================="
 }
 
 publish_images() {
   pushd korifi
   {
-    build-korifi >/dev/null
+    build-korifi
 
     echo "============================================================================="
     echo "  Dev images have been successfully published on dockerhub."
