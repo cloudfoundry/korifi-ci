@@ -1,14 +1,11 @@
 FROM golang:latest
 
-ENV PATH="$GOPATH/bin:${PATH}"
+ENV PATH="$GOPATH/bin:/root/google-cloud-sdk/bin:${PATH}"
 ENV USE_GKE_GCLOUD_AUTH_PLUGIN=True
 
 # add APT custom repos
 # gcloud
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys B53DC80D13EDEF05
-
-RUN echo "deb https://packages.cloud.google.com/apt cloud-sdk main" >/etc/apt/sources.list.d/google-cloud-sdk.list \
-  && curl -fsSLo /usr/share/keyrings/cloud.google.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
 
 # helm
 RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" >/etc/apt/sources.list.d/helm-stable-debian.list \
@@ -32,8 +29,6 @@ RUN apt-get update \
        gawk \
        gh \
        git \
-       google-cloud-sdk \
-       google-cloud-sdk-gke-gcloud-auth-plugin \
        gnupg2 \
        helm \
        iptables \
@@ -98,3 +93,8 @@ RUN curl -fsSLo awscliv2.zip https://awscli.amazonaws.com/awscli-exe-linux-x86_6
 RUN url="$(curl -sSfL https://api.github.com/repos/cloudfoundry/bosh-cli/releases/latest | jq -r '.assets[]|select(.name|match("linux-amd64")).browser_download_url')" \
   && curl -fsSLo /usr/bin/bosh "$url" \
   && chmod +x /usr/bin/bosh
+
+# gcloud cli
+RUN  curl https://sdk.cloud.google.com >/tmp/install-gcloud-cli.sh \
+  && bash /tmp/install-gcloud-cli.sh --disable-prompts \
+  && $HOME/google-cloud-sdk/bin/gcloud components install --quiet gke-gcloud-auth-plugin
