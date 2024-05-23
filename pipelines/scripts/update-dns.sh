@@ -8,7 +8,7 @@ export-kubeconfig
 
 ELB_DNS_NAME=""
 
-timeout 180s bash -c "until kubectl get svc/envoy --namespace projectcontour --output=jsonpath='{.status.loadBalancer}' | grep ingress; do sleep 1 ; done"
+timeout 180s bash -c "until kubectl get svc/envoy-korifi --namespace korifi-gateway --output=jsonpath='{.status.loadBalancer}' | grep ingress; do sleep 1 ; done"
 
 case "$CLUSTER_TYPE" in
   "EKS")

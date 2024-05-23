@@ -11,23 +11,23 @@ fi
 
 ELB_DNS_NAME=""
 
-if ! kubectl get namespaces projectcontour; then
+if ! kubectl get namespaces korifi-gateway; then
   echo "Exiting since there are no contour objects to clean up"
   exit 0
 fi
 
-if ! kubectl get -n projectcontour services envoy; then
+if ! kubectl get -n korifi-gateway services envoy-korifi; then
   echo "Exiting since there is no contour envoy service"
   exit 0
 fi
 
 case "$CLUSTER_TYPE" in
   "EKS")
-    ELB_DNS_NAME="$(kubectl get service envoy -n projectcontour -ojsonpath='{.status.loadBalancer.ingress[0].hostname}')"
+    ELB_DNS_NAME="$(kubectl get service envoy-korifi -n korifi-gateway -ojsonpath='{.status.loadBalancer.ingress[0].hostname}')"
     ;;
 
   "GKE")
-    ELB_DNS_NAME="$(kubectl get service envoy -n projectcontour -ojsonpath='{.status.loadBalancer.ingress[0].ip}')"
+    ELB_DNS_NAME="$(kubectl get service envoy-korifi -n korifi-gateway -ojsonpath='{.status.loadBalancer.ingress[0].ip}')"
     ;;
 
   *)
