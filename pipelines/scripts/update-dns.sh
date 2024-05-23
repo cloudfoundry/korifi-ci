@@ -12,10 +12,10 @@ timeout 180s bash -c "until kubectl get svc/envoy --namespace projectcontour --o
 
 case "$CLUSTER_TYPE" in
   "EKS")
-    ELB_DNS_NAME="$(kubectl get service envoy -n projectcontour -ojsonpath='{.status.loadBalancer.ingress[0].hostname}')"
+    ELB_DNS_NAME="$(kubectl get service envoy-korifi -n korifi-gateway -ojsonpath='{.status.loadBalancer.ingress[0].hostname}')"
     ;;
   "GKE")
-    ELB_DNS_NAME="$(kubectl get service envoy -n projectcontour -ojsonpath='{.status.loadBalancer.ingress[0].ip}')"
+    ELB_DNS_NAME="$(kubectl get service envoy-korifi -n korifi-gateway -ojsonpath='{.status.loadBalancer.ingress[0].ip}')"
     ;;
   *)
     echo "Invalid CLUSTER_TYPE: $CLUSTER_TYPE"
