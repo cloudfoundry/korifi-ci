@@ -234,15 +234,6 @@ jobs:
           GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
           USE_LETSENCRYPT: ((.:cluster-env-vars.USE_LETSENCRYPT))
 
-      - task: update-dns
-        file: korifi-ci/pipelines/tasks/update-dns.yml
-        image: gcloud-image
-        params:
-          AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
-          CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
-          CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
-          GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
-
       - task: deploy-korifi
         file: korifi-ci/pipelines/tasks/deploy-korifi.yml
         image: ci-image
@@ -258,6 +249,15 @@ jobs:
           DOCKER_SERVER: europe-docker.pkg.dev
           DOCKER_USERNAME: _json_key
           DOCKER_PASSWORD: ((gcp-artifact-registry-writer))
+
+      - task: update-dns
+        file: korifi-ci/pipelines/tasks/update-dns.yml
+        image: gcloud-image
+        params:
+          AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
+          CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
+          CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
+          GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
 
     - task: build-dorifi
       file: korifi-ci/pipelines/tasks/build-dorifi.yml
@@ -968,18 +968,18 @@ jobs:
       - get: gcloud-image
     - load_var: cluster-env-vars
       file: clusters/env_vars.yaml
-    - task: undeploy-korifi
-      file: korifi-ci/pipelines/tasks/undeploy-korifi.yml
-      image: ci-image
-      attempts: 10
+    - task: delete-dns
+      file: korifi-ci/pipelines/tasks/delete-dns.yml
+      image: gcloud-image
       params:
         AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
         CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
         CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
         GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
-    - task: delete-dns
-      file: korifi-ci/pipelines/tasks/delete-dns.yml
-      image: gcloud-image
+    - task: undeploy-korifi
+      file: korifi-ci/pipelines/tasks/undeploy-korifi.yml
+      image: ci-image
+      attempts: 10
       params:
         AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
         CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
@@ -1052,14 +1052,6 @@ jobs:
         GCP_PROJECT_ID: ((.:cluster-env-vars.GCP_PROJECT_ID))
         GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
         USE_LETSENCRYPT: ((.:cluster-env-vars.USE_LETSENCRYPT))
-    - task: update-dns
-      file: korifi-ci/pipelines/tasks/update-dns.yml
-      image: gcloud-image
-      params:
-        AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
-        CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
-        CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
-        GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
     - task: deploy-latest-release
       file: korifi-ci/pipelines/tasks/deploy-korifi.yml
       image: ci-image
@@ -1074,6 +1066,14 @@ jobs:
         DOCKER_SERVER: europe-docker.pkg.dev
         DOCKER_USERNAME: _json_key
         DOCKER_PASSWORD: ((gcp-artifact-registry-writer))
+    - task: update-dns
+      file: korifi-ci/pipelines/tasks/update-dns.yml
+      image: gcloud-image
+      params:
+        AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
+        CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
+        CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
+        GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
   on_failure: *slackHook
   on_error: *slackHook
 
