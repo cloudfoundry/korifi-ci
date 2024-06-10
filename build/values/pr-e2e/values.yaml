@@ -24,3 +24,7 @@ kpackImageBuilder:
 
 networking:
   gatewayClass: contour
+
+experimental:
+  managedServices:
+    include: true
