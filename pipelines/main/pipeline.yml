@@ -1013,6 +1013,7 @@ jobs:
     - task: create-kubernetes-cluster
       file: korifi-ci/pipelines/tasks/create-cluster.yml
       image: gcloud-image
+      attempts: 10
       params:
         CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
         CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
