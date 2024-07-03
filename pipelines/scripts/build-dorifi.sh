@@ -9,3 +9,4 @@ pushd korifi
 popd
 
 cp korifi/tests/assets/dorifi/* dorifi
+cp korifi/tests/assets/multi-process/* multi-process

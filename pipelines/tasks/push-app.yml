@@ -8,6 +8,7 @@ inputs:
 - name: korifi-ci
 - name: korifi
 - name: dorifi
+- name: multi-process
 - name: kube
 
 params:
