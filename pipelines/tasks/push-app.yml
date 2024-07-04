@@ -9,6 +9,7 @@ inputs:
 - name: korifi
 - name: dorifi
 - name: multi-process
+- name: sample-broker
 - name: kube
 
 params:

@@ -286,6 +286,17 @@ jobs:
           GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
           AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
 
+      - task: pre-push-sample-broker
+        file: korifi-ci/pipelines/tasks/push-app.yml
+        image: ci-image
+        params:
+          API_SERVER_ROOT: https://cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
+          APP_PATH: sample-broker
+          CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
+          CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
+          GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
+          AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
+
     - in_parallel:
       - do: &smoke-tests
         - task: run-smoke-tests
