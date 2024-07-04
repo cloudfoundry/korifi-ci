@@ -1,4 +1,4 @@
-FROM google/cloud-sdk
+FROM google/cloud-sdk:482.0.0
 
 ENV USE_GKE_GCLOUD_AUTH_PLUGIN=True
 
