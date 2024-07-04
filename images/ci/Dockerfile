@@ -94,7 +94,8 @@ RUN url="$(curl -sSfL https://api.github.com/repos/cloudfoundry/bosh-cli/release
   && curl -fsSLo /usr/bin/bosh "$url" \
   && chmod +x /usr/bin/bosh
 
-# gcloud cli
-RUN  curl https://sdk.cloud.google.com >/tmp/install-gcloud-cli.sh \
-  && bash /tmp/install-gcloud-cli.sh --disable-prompts \
-  && $HOME/google-cloud-sdk/bin/gcloud components install --quiet gke-gcloud-auth-plugin
+RUN curl -fsSL "https://storage.googleapis.com/cloud-sdk-release/google-cloud-cli-482.0.0-linux-x86_64.tar.gz" \
+  | tar -zx \
+  && google-cloud-sdk/install.sh --quiet \
+  && google-cloud-sdk/bin/gcloud components install --quiet gke-gcloud-auth-plugin
+ENV PATH $PATH:/go/google-cloud-sdk/bin
