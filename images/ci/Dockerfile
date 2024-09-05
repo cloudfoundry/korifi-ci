@@ -52,7 +52,10 @@ RUN curl -fsSLo /usr/bin/kubectl "https://dl.k8s.io/release/$(curl -fsSL https:/
   && chmod +x /usr/bin/kubectl
 
 # CF CLI
-RUN curl -fsSL "https://packages.cloudfoundry.org/stable?release=linux64-binary&version=v8&source=github" \
+# Temporarily pin cf cli to 8.7.11 by hardcoding the download link below. This
+# is needed as a workaround to issue
+# https://github.com/cloudfoundry/korifi/issues/3459
+RUN curl -fsSL "https://s3-us-west-1.amazonaws.com/v8-cf-cli-releases/releases/v8.7.11/cf8-cli_8.7.11_linux_x86-64.tgz" \
   | tar -zx cf8 \
   && mv cf8 /usr/bin/cf \
   && chmod +x /usr/bin/cf
