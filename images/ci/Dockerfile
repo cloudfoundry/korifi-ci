@@ -52,10 +52,10 @@ RUN curl -fsSLo /usr/bin/kubectl "https://dl.k8s.io/release/$(curl -fsSL https:/
   && chmod +x /usr/bin/kubectl
 
 # CF CLI
-RUN curl -fsSL "https://packages.cloudfoundry.org/stable?release=linux64-binary&version=v8&source=github" \
+RUN url="$(curl -sSfL https://api.github.com/repos/cloudfoundry/cli/releases/latest | jq -r '.assets[]|select(.name|match("linux_x86-64")).browser_download_url')" \
+  && curl -fsSL "$url" \
   | tar -zx cf8 \
-  && mv cf8 /usr/bin/cf \
-  && chmod +x /usr/bin/cf
+  && mv cf8 /usr/bin/cf
 
 # shfmt
 RUN go install mvdan.cc/sh/cmd/shfmt@latest

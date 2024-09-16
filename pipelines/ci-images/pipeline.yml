@@ -35,6 +35,8 @@ jobs:
     - get: image-source
       resource: ci-image-source
       trigger: true
+    - get: cf-cli-github-release
+      trigger: true
     - get: oci-build-task-image
   - task: build-ci-image
     image: oci-build-task-image
@@ -186,3 +188,10 @@ resources:
   icon: slack
   source:
     url: ((slack-notification.uri))
+
+- name: cf-cli-github-release
+  type: github-release
+  icon: git
+  source:
+    owner: cloudfoundry
+    repository: cli
