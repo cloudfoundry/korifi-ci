@@ -193,5 +193,6 @@ resources:
   type: github-release
   icon: git
   source:
+    access_token: ((github/korifi-bot-token))
     owner: cloudfoundry
     repository: cli
