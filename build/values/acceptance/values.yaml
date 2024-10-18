@@ -25,4 +25,4 @@ networking:
 
 experimental:
   managedServices:
-    include: true
+    enabled: true
