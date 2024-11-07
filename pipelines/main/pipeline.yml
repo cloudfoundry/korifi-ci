@@ -350,37 +350,38 @@ jobs:
       CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
       GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
 
-  - put: korifi-status
-    params:
-      path: korifi
-      statuses:
-        - state: success
-          context: "Concourse - E2E (main)"
-  ensure: &clean-env
+  ensure:
     do:
-    - task: undeploy-korifi
-      file: korifi-ci/pipelines/tasks/undeploy-korifi.yml
-      image: ci-image
-      attempts: 10
+    - do: &clean-env
+      - task: undeploy-korifi
+        file: korifi-ci/pipelines/tasks/undeploy-korifi.yml
+        image: ci-image
+        attempts: 10
+        params:
+          AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
+          CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
+          CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
+          GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
+      - task: deploy-latest-release
+        file: korifi-ci/pipelines/tasks/deploy-korifi.yml
+        image: ci-image
+        timeout: 3h
+        params:
+          AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
+          CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
+          CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
+          DEPLOY_LATEST_RELEASE: please
+          GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
+          USE_LETSENCRYPT: ((.:cluster-env-vars.USE_LETSENCRYPT))
+          DOCKER_SERVER: europe-docker.pkg.dev
+          DOCKER_USERNAME: _json_key
+          DOCKER_PASSWORD: ((gcp-artifact-registry-writer))
+    - put: korifi-status
       params:
-        AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
-        CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
-        CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
-        GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
-    - task: deploy-latest-release
-      file: korifi-ci/pipelines/tasks/deploy-korifi.yml
-      image: ci-image
-      timeout: 3h
-      params:
-        AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
-        CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
-        CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
-        DEPLOY_LATEST_RELEASE: please
-        GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
-        USE_LETSENCRYPT: ((.:cluster-env-vars.USE_LETSENCRYPT))
-        DOCKER_SERVER: europe-docker.pkg.dev
-        DOCKER_USERNAME: _json_key
-        DOCKER_PASSWORD: ((gcp-artifact-registry-writer))
+        path: korifi
+        statuses:
+          - state: success
+            context: "Concourse - E2E (main)"
 
 - name: publish-dev-images
   on_failure: &publish-dev-images-failure
@@ -473,16 +474,15 @@ jobs:
 
   - do: *end-to-ends
 
-  - put: korifi-pr
-    params:
-      path: korifi
-      base_context: "Concourse "
-      context: " e2e-tests (pull_request)"
-      status: success
-
   ensure:
     do:
-    - *clean-env
+    - do: *clean-env
+    - put: korifi-pr
+      params:
+        path: korifi
+        base_context: "Concourse "
+        context: " e2e-tests (pull_request)"
+        status: success
 
 # ===== eks =====
 - name: run-e2es-eks-pr
@@ -527,16 +527,15 @@ jobs:
 
   - do: *end-to-ends
 
-  - put: korifi-pr
-    params:
-      path: korifi
-      base_context: "Concourse "
-      context: " e2e-eks-tests (pull_request)"
-      status: success
-
   ensure:
     do:
-    - *clean-env
+    - do: *clean-env
+    - put: korifi-pr
+      params:
+        path: korifi
+        base_context: "Concourse "
+        context: " e2e-eks-tests (pull_request)"
+        status: success
 
 - name: run-e2es-eks
   on_failure: &run-e2es-eks-failure
@@ -588,7 +587,7 @@ jobs:
 
   ensure:
     do:
-    - *clean-env
+    - do: *clean-env
 
 # ===== acceptance =====
 - name: deploy-korifi-acceptance
@@ -812,7 +811,9 @@ jobs:
       CLUSTER_NAME: pr-e2e
       CLUSTER_TYPE: GKE
   - do: *end-to-ends
-  ensure: *clean-env
+  ensure:
+    do:
+    - do: *clean-env
 
 - name: run-e2es-eks-periodic
   on_failure: *slackHook
@@ -837,7 +838,9 @@ jobs:
       CLUSTER_TYPE: EKS
       CSR_SIGNING_DISALLOWED: true
   - do: *end-to-ends
-  ensure: *clean-env
+  ensure:
+    do:
+    - do: *clean-env
 
 - name: bump-tests-vendor
   on_failure: *slackHook
