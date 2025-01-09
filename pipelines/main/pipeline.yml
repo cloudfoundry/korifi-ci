@@ -64,6 +64,13 @@ groups:
 jobs:
 # ===== main =====
 - name: run-tests-main
+  on_success:
+    put: korifi-status
+    params:
+      path: korifi
+      statuses:
+        - state: success
+          context: "Concourse - tests (main)"
   on_failure: &run-tests-main-failure
     do:
     - put: korifi-status
@@ -171,14 +178,14 @@ jobs:
     params:
       CC_TEST_REPORTER_ID: ((code-climate/test-reporter.id))
 
-  - put: korifi-status
+- name: run-e2es-main
+  on_success:
+    put: korifi-status
     params:
       path: korifi
       statuses:
         - state: success
-          context: "Concourse - tests (main)"
-
-- name: run-e2es-main
+          context: "Concourse - E2E (main)"
   on_failure: &run-e2es-main-failure
     do:
     - put: korifi-status
@@ -350,39 +357,39 @@ jobs:
       GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
 
   ensure:
-    do:
-    - do: &clean-env
-      - task: undeploy-korifi
-        file: korifi-ci/pipelines/tasks/undeploy-korifi.yml
-        image: ci-image
-        attempts: 10
-        params:
-          AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
-          CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
-          CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
-          GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
-      - task: deploy-latest-release
-        file: korifi-ci/pipelines/tasks/deploy-korifi.yml
-        image: ci-image
-        timeout: 3h
-        params:
-          AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
-          CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
-          CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
-          DEPLOY_LATEST_RELEASE: please
-          GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
-          USE_LETSENCRYPT: ((.:cluster-env-vars.USE_LETSENCRYPT))
-          DOCKER_SERVER: europe-docker.pkg.dev
-          DOCKER_USERNAME: _json_key
-          DOCKER_PASSWORD: ((gcp-artifact-registry-writer))
-    - put: korifi-status
+    do: &clean-env
+    - task: undeploy-korifi
+      file: korifi-ci/pipelines/tasks/undeploy-korifi.yml
+      image: ci-image
+      attempts: 10
       params:
-        path: korifi
-        statuses:
-          - state: success
-            context: "Concourse - E2E (main)"
+        AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
+        CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
+        CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
+        GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
+    - task: deploy-latest-release
+      file: korifi-ci/pipelines/tasks/deploy-korifi.yml
+      image: ci-image
+      timeout: 3h
+      params:
+        AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
+        CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
+        CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
+        DEPLOY_LATEST_RELEASE: please
+        GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
+        USE_LETSENCRYPT: ((.:cluster-env-vars.USE_LETSENCRYPT))
+        DOCKER_SERVER: europe-docker.pkg.dev
+        DOCKER_USERNAME: _json_key
+        DOCKER_PASSWORD: ((gcp-artifact-registry-writer))
 
 - name: publish-dev-images
+  on_success:
+    put: korifi-status
+    params:
+      path: korifi
+      statuses:
+        - state: success
+          context: "Concourse - publish images (main)"
   on_failure: &publish-dev-images-failure
     do:
     - put: korifi-status
@@ -421,18 +428,15 @@ jobs:
       REGISTRY_USER: ((release-pipeline/dockerhub-auth.username))
       REGISTRY_PASSWORD: ((release-pipeline/dockerhub-auth.password))
 
-  - put: korifi-status
-    params:
-      path: korifi
-      statuses:
-        - state: success
-          context: "Concourse - publish images (main)"
-
-
-
-
 # ===== PR =====
 - name: run-e2es-pr
+  on_success:
+    put: korifi-pr
+    params:
+      path: korifi
+      base_context: "Concourse "
+      context: " e2e-tests (pull_request)"
+      status: success
   on_failure: &run-e2es-pr-failure
     do:
     - put: korifi-pr
@@ -474,17 +478,17 @@ jobs:
   - do: *end-to-ends
 
   ensure:
-    do:
-    - do: *clean-env
-    - put: korifi-pr
-      params:
-        path: korifi
-        base_context: "Concourse "
-        context: " e2e-tests (pull_request)"
-        status: success
+    do: *clean-env
 
 # ===== eks =====
 - name: run-e2es-eks-pr
+  on_success:
+    put: korifi-pr
+    params:
+      path: korifi
+      base_context: "Concourse "
+      context: " e2e-eks-tests (pull_request)"
+      status: success
   on_failure: &run-e2es-eks-pr-failure
     do:
     - put: korifi-pr
@@ -527,16 +531,16 @@ jobs:
   - do: *end-to-ends
 
   ensure:
-    do:
-    - do: *clean-env
-    - put: korifi-pr
-      params:
-        path: korifi
-        base_context: "Concourse "
-        context: " e2e-eks-tests (pull_request)"
-        status: success
+    do: *clean-env
 
 - name: run-e2es-eks
+  on_success:
+    put: korifi-status
+    params:
+      path: korifi
+      statuses:
+      - state: success
+        context: "Concourse - E2E on EKS (main)"
   on_failure: &run-e2es-eks-failure
     do:
     - put: korifi-status
@@ -577,16 +581,8 @@ jobs:
 
   - do: *end-to-ends
 
-  - put: korifi-status
-    params:
-      path: korifi
-      statuses:
-      - state: success
-        context: "Concourse - E2E on EKS (main)"
-
   ensure:
-    do:
-    - do: *clean-env
+    do: *clean-env
 
 # ===== acceptance =====
 - name: deploy-korifi-acceptance
