@@ -362,6 +362,8 @@ jobs:
           GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
           DEFAULT_APP_BITS_PATH: dorifi
 
+  - *undeploy-korifi
+
   ensure:
     do: &clean-env
     - *ensure-undeploy-korifi
@@ -583,6 +585,8 @@ jobs:
 
   - do: *end-to-ends
 
+  - *undeploy-korifi
+
   ensure:
     do: *clean-env
 
@@ -773,6 +777,7 @@ jobs:
       CLUSTER_NAME: pr-e2e
       CLUSTER_TYPE: GKE
   - do: *end-to-ends
+  - *undeploy-korifi
   ensure:
     do: *clean-env
 
@@ -799,6 +804,7 @@ jobs:
       CLUSTER_TYPE: EKS
       CSR_SIGNING_DISALLOWED: true
   - do: *end-to-ends
+  - *undeploy-korifi
   ensure:
     do: *clean-env
 
