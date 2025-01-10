@@ -25,6 +25,21 @@ common:
     file: korifi-ci/pipelines/tasks/set-cluster-env-vars.yml
     image: ci-image
 
+  undeploy-korifi: &undeploy-korifi
+    task: undeploy-korifi
+    file: korifi-ci/pipelines/tasks/undeploy-korifi.yml
+    image: ci-image
+    params:
+      AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
+      CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
+      CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
+      GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
+
+  ensure-undeploy-korifi: &ensure-undeploy-korifi
+    <<: *undeploy-korifi
+    attempts: 10
+
+
 groups:
 - name: main
   jobs:
@@ -347,26 +362,9 @@ jobs:
           GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
           DEFAULT_APP_BITS_PATH: dorifi
 
-  - task: undeploy-korifi
-    file: korifi-ci/pipelines/tasks/undeploy-korifi.yml
-    image: ci-image
-    params:
-      AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
-      CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
-      CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
-      GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
-
   ensure:
     do: &clean-env
-    - task: undeploy-korifi
-      file: korifi-ci/pipelines/tasks/undeploy-korifi.yml
-      image: ci-image
-      attempts: 10
-      params:
-        AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
-        CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
-        CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
-        GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
+    - *ensure-undeploy-korifi
     - task: deploy-latest-release
       file: korifi-ci/pipelines/tasks/deploy-korifi.yml
       image: ci-image
@@ -477,6 +475,8 @@ jobs:
 
   - do: *end-to-ends
 
+  - *undeploy-korifi
+
   ensure:
     do: *clean-env
 
@@ -529,6 +529,8 @@ jobs:
       CSR_SIGNING_DISALLOWED: true
 
   - do: *end-to-ends
+
+  - *undeploy-korifi
 
   ensure:
     do: *clean-env
@@ -772,8 +774,7 @@ jobs:
       CLUSTER_TYPE: GKE
   - do: *end-to-ends
   ensure:
-    do:
-    - do: *clean-env
+    do: *clean-env
 
 - name: run-e2es-eks-periodic
   on_failure: *slackHook
@@ -799,8 +800,7 @@ jobs:
       CSR_SIGNING_DISALLOWED: true
   - do: *end-to-ends
   ensure:
-    do:
-    - do: *clean-env
+    do: *clean-env
 
 - name: bump-tests-vendor
   on_failure: *slackHook
