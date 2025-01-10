@@ -751,8 +751,6 @@ jobs:
     - get: korifi-ci
     - get: workdays-periodic-timer
       trigger: true
-    - get: weekend-periodic-timer
-      trigger: true
   - in_parallel: *unit-integration
 
 - name: run-e2es-periodic
@@ -769,8 +767,6 @@ jobs:
     - get: korifi
     - get: cf-k8s-secrets
     - get: workdays-periodic-timer
-      trigger: true
-    - get: weekend-periodic-timer
       trigger: true
   - <<: *setClusterVars
     params:
@@ -795,8 +791,6 @@ jobs:
     - get: korifi
     - get: cf-k8s-secrets
     - get: workdays-periodic-timer
-      trigger: true
-    - get: weekend-periodic-timer
       trigger: true
   - <<: *setClusterVars
     params:
@@ -1212,24 +1206,19 @@ resources:
     private_key: ((github/cf-k8s-secrets.private_key))
     uri: ((github/cf-k8s-secrets.uri))
 
+# we don't run periodics on weekends because we have assigned Sunday as a
+# [EKS](https://github.com/cloudfoundry/cf-k8s-secrets/blob/14163bb96c9a7b6245a7fe3ff41968624e99b83d/ci-deployment/eks-e2e/eks-cluster.tf#L30)
+# and
+# [GKE](https://github.com/cloudfoundry/cf-k8s-secrets/blob/14163bb96c9a7b6245a7fe3ff41968624e99b83d/ci-deployment/gke-cluster/cluster-config/terraform.tf#L88)
+# cluster maintenance window
 - name: workdays-periodic-timer
   type: time
   source:
     days: [Monday,Tuesday,Wednesday,Thursday,Friday]
     interval: 20m
-    start: 03:00 AM
+    start: 07:00 PM
     stop: 07:00 AM
     location: Europe/London
-    initial_version: true
-
-- name: weekend-periodic-timer
-  type: time
-  source:
-    days: [Sunday]
-    interval: 20m
-    start: 00:00 AM
-    stop: 11:59 PM
-    location: UTC
     initial_version: true
 
 - name: bump-timer
