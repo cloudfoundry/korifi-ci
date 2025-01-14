@@ -5,10 +5,15 @@ common:
       attachments: |2
           [{
               "color": "danger",
-              "fields": [
+              "blocks": [
                 {
                   "type": "button",
-                  "text": "View in Concourse",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "View in Concourse",
+                    "emoji": true
+                  },
+                  "value": "click_me_123",
                   "url": "https://ci.korifi.cf-app.com/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
                 }
               ]
