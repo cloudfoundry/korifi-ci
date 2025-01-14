@@ -5,12 +5,12 @@ common:
       attachments: |2
           [{
               "color": "danger",
-              "actions": [
-                    {
-                      "type": "button",
-                      "text": "View in Concourse",
-                      "url": "https://ci.korifi.cf-app.com/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
-                    }
+              "fields": [
+                {
+                  "type": "button",
+                  "text": "View in Concourse",
+                  "url": "https://ci.korifi.cf-app.com/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
+                }
               ]
           }]
       channel: '#korifi-ci'
