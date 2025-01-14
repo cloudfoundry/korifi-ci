@@ -43,8 +43,8 @@ destinations:
 - image: cloudfoundry/korifi-controllers:latest
   newImage: europe-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/korifi-controllers
 - image: cloudfoundry/kpack-image-builder:latest
-  newImage: europe-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/kpack-image-builder
+  newImage: europe-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/korifi-kpack-image-builder
 - image: cloudfoundry/statefulset-runner:latest
-  newImage: europe-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/statefulset-runner
+  newImage: europe-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/korifi-statefulset-runner
 - image: cloudfoundry/job-task-runner:latest
-  newImage: europe-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/job-task-runner
+  newImage: europe-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/korifi-job-task-runner

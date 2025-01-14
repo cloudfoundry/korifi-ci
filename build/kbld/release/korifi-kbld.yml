@@ -38,8 +38,8 @@ destinations:
 - image: cloudfoundry/korifi-controllers:latest
   newImage: cloudfoundry/korifi-controllers
 - image: cloudfoundry/kpack-image-builder:latest
-  newImage: cloudfoundry/kpack-image-builder
+  newImage: cloudfoundry/korifi-kpack-image-builder
 - image: cloudfoundry/statefulset-runner:latest
-  newImage: cloudfoundry/statefulset-runner
+  newImage: cloudfoundry/korifi-statefulset-runner
 - image: cloudfoundry/job-task-runner:latest
-  newImage: cloudfoundry/job-task-runner:latest
+  newImage: cloudfoundry/korifi-job-task-runner:latest
