@@ -3,27 +3,32 @@ common:
     put: slack
     params:
       attachments: |2
-          [{
-              "color": "danger",
-              "blocks": [
+        {
+          "blocks": [
+            {
+              "type": "section",
+              "text": {
+                "type": "mrkdwn",
+                "text": "Pipeline *$BUILD_PIPELINE_NAME* failed :cry:\n\nJob is *$BUILD_JOB_NAME*\nBuild name is *$BUILD_NAME*"
+              }
+            },
+            {
+              "type": "actions",
+              "elements": [
                 {
                   "type": "button",
                   "text": {
                     "type": "plain_text",
-                    "text": "View in Concourse",
-                    "emoji": true
+                    "text": "View in Concourse"
                   },
-                  "value": "click_me_123",
-                  "url": "https://ci.korifi.cf-app.com/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
+                  "style": "danger",
+                  "url": "https://ci.korifi.cfapp.com/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
                 }
               ]
-          }]
+            }
+          ]
+        }
       channel: '#korifi-ci'
-      text: |
-        Pipeline *$BUILD_PIPELINE_NAME* failed :cry:
-
-        Job is *$BUILD_JOB_NAME*
-        Build name is *$BUILD_NAME*
 
   set_cluster_vars: &setClusterVars
     task: set-cluster-env-vars
