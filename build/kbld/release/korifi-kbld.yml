@@ -42,4 +42,4 @@ destinations:
 - image: cloudfoundry/korifi-statefulset-runner:latest
   newImage: cloudfoundry/korifi-statefulset-runner
 - image: cloudfoundry/korifi-job-task-runner:latest
-  newImage: cloudfoundry/korifi-job-task-runner:latest
+  newImage: cloudfoundry/korifi-job-task-runner
