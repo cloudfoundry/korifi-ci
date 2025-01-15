@@ -5,10 +5,10 @@ controllers:
   image: cloudfoundry/korifi-controllers:latest
 
 kpackImageBuilder:
-  image: cloudfoundry/kpack-image-builder:latest
+  image: cloudfoundry/korifi-kpack-image-builder:latest
 
 statefulsetRunner:
-  image: cloudfoundry/statefulset-runner:latest
+  image: cloudfoundry/korifi-statefulset-runner:latest
 
 jobTaskRunner:
-  image: cloudfoundry/job-task-runner:latest
+  image: cloudfoundry/korifi-job-task-runner:latest
