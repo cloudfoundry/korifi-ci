@@ -1,35 +1,10 @@
 common:
-common:
   slack_hook: &slackHook
     put: slack
     params:
-      attachments: |2
-        {
-          "blocks": [
-            {
-              "type": "section",
-              "text": {
-                "type": "mrkdwn",
-                "text": "Pipeline *$BUILD_PIPELINE_NAME* failed :cry:\n\nJob is *$BUILD_JOB_NAME*\nBuild name is *$BUILD_NAME*"
-              }
-            },
-            {
-              "type": "actions",
-              "elements": [
-                {
-                  "type": "button",
-                  "text": {
-                    "type": "plain_text",
-                    "text": "View in Concourse"
-                  },
-                  "style": "danger",
-                  "url": "https://ci.korifi.cfapp.com/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
-                }
-              ]
-            }
-          ]
-        }
       channel: '#korifi-ci'
+      text: |
+        Job <https://ci.korifi.cf-app.com/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|*$BUILD_PIPELINE_NAME*/*$BUILD_JOB_NAME*#*$BUILD_NAME*> failed! :cry:
 
 groups:
 - name: main

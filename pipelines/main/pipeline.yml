@@ -4,7 +4,7 @@ common:
     params:
       channel: '#korifi-ci'
       text: |
-        Job <https://ci.korifi.cf-app.com/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|*$BUILD_PIPELINE_NAME*/*$BUILD_JOB_NAME*#*$BUILD_NAME*> failed!
+        Job <https://ci.korifi.cf-app.com/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|*$BUILD_PIPELINE_NAME*/*$BUILD_JOB_NAME*#*$BUILD_NAME*> failed! :cry:
 
   set_cluster_vars: &setClusterVars
     task: set-cluster-env-vars
