@@ -1,0 +1,10 @@
+platform: linux
+
+inputs:
+- name: korifi-ci
+
+params:
+  SLACK_NOTIFICATION_URI: ((slack-notification.uri))
+
+run:
+  path: korifi-ci/pipelines/scripts/slack-notification.sh

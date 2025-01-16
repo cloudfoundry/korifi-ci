@@ -1,34 +1,8 @@
 common:
   slack_hook: &slackHook
-    put: slack
-    params:
-      attachments: |2
-        {
-          "blocks": [
-            {
-              "type": "section",
-              "text": {
-                "type": "mrkdwn",
-                "text": "Pipeline *$BUILD_PIPELINE_NAME* failed :cry:\n\nJob is *$BUILD_JOB_NAME*\nBuild name is *$BUILD_NAME*"
-              }
-            },
-            {
-              "type": "actions",
-              "elements": [
-                {
-                  "type": "button",
-                  "text": {
-                    "type": "plain_text",
-                    "text": "View in Concourse"
-                  },
-                  "style": "danger",
-                  "url": "https://ci.korifi.cfapp.com/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME"
-                }
-              ]
-            }
-          ]
-        }
-      channel: '#korifi-ci'
+    task: slack-notification
+    file: korifi-ci/pipelines/tasks/slack-notification.yml
+    image: ci-image
 
   set_cluster_vars: &setClusterVars
     task: set-cluster-env-vars
@@ -1090,14 +1064,6 @@ jobs:
   on_error: *slackHook
 
 resource_types:
-- name: slack-notification
-  type: registry-image
-  source:
-    username: ((docker.user))
-    password: ((docker.pass))
-    repository: cfcommunity/slack-notification-resource
-    tag: latest
-
 - name: pull-request
   type: registry-image
   source:
@@ -1137,12 +1103,6 @@ resources:
     uri: ((github/cf-k8s-secrets.uri))
     branch: main
     private_key: ((github/cf-k8s-secrets.private_key))
-
-- name: slack
-  type: slack-notification
-  icon: slack
-  source:
-    url: ((slack-notification.uri))
 
 - name: ci-image
   type: registry-image
