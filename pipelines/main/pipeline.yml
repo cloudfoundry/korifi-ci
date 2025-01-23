@@ -1098,6 +1098,10 @@ resources:
     required_review_approvals: 1
     trusted_teams: ["wg-cf-on-k8s-korifi-approvers", "wg-cf-on-k8s-bots"]
     trusted_users: ["dependabot"]
+    ignore_paths:
+    - '.github/**'
+    - 'docs/**'
+    - '**/*.md'
 
 - name: korifi-ci
   type: git
