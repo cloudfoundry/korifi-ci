@@ -29,3 +29,5 @@ networking:
 experimental:
   managedServices:
     enabled: true
+  securityGroups:
+    enabled: true
