@@ -2,7 +2,6 @@ adminUserName: cf-admin
 
 defaultAppDomainName: pr-e2e.korifi.cf-app.com
 generateIngressCertificates: true
-generateWebhookCertificates: true
 containerRepositoryPrefix: europe-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/
 
 api:

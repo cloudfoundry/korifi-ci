@@ -2,7 +2,6 @@ adminUserName: cf-admin
 
 defaultAppDomainName: eks-e2e.korifi.cf-app.com
 generateIngressCertificates: true
-generateWebhookCertificates: true
 containerRegistrySecret: ""
 containerRepositoryPrefix: 007801690126.dkr.ecr.eu-west-1.amazonaws.com/eks-e2e/
 

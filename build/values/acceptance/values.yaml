@@ -2,7 +2,6 @@ adminUserName: cf-admin
 
 defaultAppDomainName: acceptance.korifi.cf-app.com
 generateIngressCertificates: false
-generateWebhookCertificates: true
 containerRepositoryPrefix: europe-docker.pkg.dev/cf-on-k8s-wg/acceptance-images/
 stagingRequirements:
   memoryMB: 1536
