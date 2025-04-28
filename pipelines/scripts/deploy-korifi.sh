@@ -93,7 +93,7 @@ deploy_local() {
 
   pushd korifi
   {
-    VERSION=$(git describe --tags | awk -F'[.-]' '{$3++; print $1 "." $2 "." $3 "-" $4 "-" $5}')
+    VERSION=$(git describe --tags | awk -F'[.-]' '{$3++; print $1 "." $2 "." $3 "-" $4 "-" $5}' | awk '{print substr($1,2)}')
     yq -i "with(.sources[]; .kubectlBuildkit.build.rawOptions += [\"--build-arg\", \"version=$VERSION\"])" "$KBLD_CONFIG_FILE"
     KUBECONFIG="$BUILD_KUBECONFIG" kbld \
       -f "$KBLD_CONFIG_FILE" \
