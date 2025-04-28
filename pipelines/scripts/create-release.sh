@@ -2,9 +2,10 @@
 
 set -euo pipefail
 
+export VERSION=$(cat korifi-release-version/version)
+
 KBLD_CONFIG_DIR="$PWD/korifi-ci/build/kbld/release"
 RELEASE_OUTPUT_DIR="$PWD/korifi/release-output"
-VERSION=$(cat korifi-release-version/version)
 RELEASE_ARTIFACTS_DIR="$RELEASE_OUTPUT_DIR/korifi-$VERSION"
 
 mkdir -p "$RELEASE_ARTIFACTS_DIR"
@@ -23,6 +24,7 @@ create_release() {
   pushd korifi
   {
     cp -a helm/korifi/* "$RELEASE_ARTIFACTS_DIR"
+    yq -i 'with(.; .version=env(VERSION))' "$RELEASE_ARTIFACTS_DIR/Chart.yaml"
     export VALUES_BASE=helm/korifi
     build-korifi >"$RELEASE_ARTIFACTS_DIR/values.yaml"
     cp INSTALL.md "$RELEASE_ARTIFACTS_DIR"
