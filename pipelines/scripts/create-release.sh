@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-export VERSION=$(cat korifi-release-version/version | awk '{print substr($1,2)}')
+export VERSION=$(cat korifi-release-version/version)
 
 KBLD_CONFIG_DIR="$PWD/korifi-ci/build/kbld/release"
 RELEASE_OUTPUT_DIR="$PWD/korifi/release-output"
