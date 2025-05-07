@@ -317,6 +317,7 @@ jobs:
             CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
             CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
             GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
+            GINKGO_NODES: 8
             SMOKE_TEST_USER: cf-admin
 
       - task: run-e2e-tests
@@ -346,6 +347,7 @@ jobs:
           CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
           CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
           GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
+          GINKGO_NODES: 8
           DEFAULT_APP_BITS_PATH: dorifi
 
   - *undeploy-korifi
