@@ -12,3 +12,6 @@ statefulsetRunner:
 
 jobTaskRunner:
   image: cloudfoundry/korifi-job-task-runner:latest
+
+migration:
+  image: cloudfoundry/korifi-migration:latest

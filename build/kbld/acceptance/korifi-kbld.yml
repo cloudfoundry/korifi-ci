@@ -37,6 +37,13 @@ sources:
       file: job-task-runner/Dockerfile
       rawOptions: ["--registry-secret", "gar-buildkit"]
 
+- image: cloudfoundry/korifi-migration:latest
+  path: .
+  kubectlBuildkit:
+    build:
+      file: migration/Dockerfile
+      rawOptions: ["--registry-secret", "gar-buildkit"]
+
 destinations:
 - image: cloudfoundry/korifi-api:latest
   newImage: europe-docker.pkg.dev/cf-on-k8s-wg/acceptance-images/korifi-api
@@ -48,3 +55,5 @@ destinations:
   newImage: europe-docker.pkg.dev/cf-on-k8s-wg/acceptance-images/korifi-statefulset-runner
 - image: cloudfoundry/korifi-job-task-runner:latest
   newImage: europe-docker.pkg.dev/cf-on-k8s-wg/acceptance-images/korifi-job-task-runner
+- image: cloudfoundry/korifi-migration:latest
+  newImage: europe-docker.pkg.dev/cf-on-k8s-wg/acceptance-images/korifi-migration

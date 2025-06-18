@@ -37,6 +37,13 @@ sources:
       file: job-task-runner/Dockerfile
       rawOptions: ["--registry-secret", "ecr-buildkit"]
 
+- image: cloudfoundry/korifi-migration:latest
+  path: .
+  kubectlBuildkit:
+    build:
+      file: migration/Dockerfile
+      rawOptions: ["--registry-secret", "ecr-buildkit"]
+
 destinations:
 - image: cloudfoundry/korifi-api:latest
   newImage: 007801690126.dkr.ecr.eu-west-1.amazonaws.com/eks-e2e-korifi-api
@@ -48,3 +55,5 @@ destinations:
   newImage: 007801690126.dkr.ecr.eu-west-1.amazonaws.com/eks-e2e-korifi-statefulset-runner
 - image: cloudfoundry/korifi-job-task-runner:latest
   newImage: 007801690126.dkr.ecr.eu-west-1.amazonaws.com/eks-e2e-korifi-job-task-runner
+- image: cloudfoundry/korifi-migration:latest
+  newImage: 007801690126.dkr.ecr.eu-west-1.amazonaws.com/eks-e2e-korifi-migration

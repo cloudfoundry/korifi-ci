@@ -32,6 +32,12 @@ sources:
     build:
       file: job-task-runner/Dockerfile
 
+- image: cloudfoundry/korifi-migration:latest
+  path: .
+  kubectlBuildkit:
+    build:
+      file: migration/Dockerfile
+
 destinations:
 - image: cloudfoundry/korifi-api:latest
   newImage: cloudfoundry/korifi-api
@@ -43,3 +49,5 @@ destinations:
   newImage: cloudfoundry/korifi-statefulset-runner
 - image: cloudfoundry/korifi-job-task-runner:latest
   newImage: cloudfoundry/korifi-job-task-runner
+- image: cloudfoundry/korifi-migration:latest
+  newImage: cloudfoundry/korifi-migration
