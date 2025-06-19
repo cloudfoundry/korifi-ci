@@ -173,6 +173,17 @@ jobs:
             DIR: tools
             TARGET: test
 
+        - task: migration-tests
+          file: korifi-ci/pipelines/tasks/run-make-target.yml
+          image: ci-image
+          input_mapping:
+            root: korifi
+          output_mapping:
+            coverage: coverage-tools
+          params:
+            DIR: migration
+            TARGET: test
+
   - task: publish-code-coverage
     image: ci-image
     file: korifi-ci/pipelines/tasks/publish-code-coverage.yml
