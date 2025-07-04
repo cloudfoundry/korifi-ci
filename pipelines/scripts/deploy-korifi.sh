@@ -118,16 +118,17 @@ deploy() {
     extra_helm_flags+=("--set" "eksContainerRegistryRoleARN=$ECR_ACCESS_ROLE_ARN")
   fi
 
+  if [[ -n "$USE_LETSENCRYPT" ]]; then
+    clone_letsencrypt_cert "korifi-api-ingress-cert" "korifi"
+    clone_letsencrypt_cert "korifi-workloads-ingress-cert" "korifi"
+  fi
+
   helm upgrade --install korifi "$chart" \
     --namespace korifi \
     --values "korifi-ci/build/values/$CLUSTER_NAME/values.yaml" \
     "${extra_helm_flags[@]}" \
     --wait
 
-  if [[ -n "$USE_LETSENCRYPT" ]]; then
-    clone_letsencrypt_cert "korifi-api-ingress-cert" "korifi"
-    clone_letsencrypt_cert "korifi-workloads-ingress-cert" "korifi"
-  fi
 }
 
 main() {

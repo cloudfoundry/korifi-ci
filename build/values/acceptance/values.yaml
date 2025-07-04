@@ -9,8 +9,10 @@ stagingRequirements:
 api:
   apiServer:
     url: cf.acceptance.korifi.cf-app.com
+    ingressCertSecret: korifi-api-ingress-cert
 
 controllers:
+  workloadsTLSSecret: korifi-workloads-ingress-cert
   processDefaults:
     memoryMB: 128
 
