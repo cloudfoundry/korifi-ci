@@ -10,6 +10,8 @@ api:
   apiServer:
     url: cf.acceptance.korifi.cf-app.com
     ingressCertSecret: korifi-api-ingress-cert
+  list:
+    defaultPageSize: 5000
 
 controllers:
   workloadsTLSSecret: korifi-workloads-ingress-cert
