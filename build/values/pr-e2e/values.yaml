@@ -11,12 +11,12 @@ api:
     defaultPageSize: 5000
 
 controllers:
-  taskTTL: 15s
+  taskTTL: 5m
   processDefaults:
     memoryMB: 128
 
 jobTaskRunner:
-  jobTTL: 15s
+  jobTTL: 5m
 
 kpackImageBuilder:
   builderRepository: europe-docker.pkg.dev/cf-on-k8s-wg/pr-e2e-images/kpack-builder

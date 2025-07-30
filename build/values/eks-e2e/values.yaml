@@ -12,12 +12,12 @@ api:
     defaultPageSize: 5000
 
 controllers:
-  taskTTL: 15s
+  taskTTL: 5m
   processDefaults:
     memoryMB: 128
 
 jobTaskRunner:
-  jobTTL: 5s
+  jobTTL: 5m
 
 kpackImageBuilder:
   builderRepository: 007801690126.dkr.ecr.eu-west-1.amazonaws.com/eks-e2e-kpack-builder

@@ -14,6 +14,7 @@ api:
     defaultPageSize: 5000
 
 controllers:
+  taskTTL: 24h
   workloadsTLSSecret: korifi-workloads-ingress-cert
   processDefaults:
     memoryMB: 128
