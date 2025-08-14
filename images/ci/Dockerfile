@@ -1,4 +1,4 @@
-FROM golang:latest
+FROM golang:bookworm
 
 ENV PATH="$GOPATH/bin:/root/google-cloud-sdk/bin:${PATH}"
 ENV USE_GKE_GCLOUD_AUTH_PLUGIN=True
