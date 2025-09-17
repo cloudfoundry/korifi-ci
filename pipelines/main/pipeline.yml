@@ -184,12 +184,6 @@ jobs:
             DIR: migration
             TARGET: test
 
-  # - task: publish-code-coverage
-  #   image: ci-image
-  #   file: korifi-ci/pipelines/tasks/publish-code-coverage.yml
-  #   params:
-  #     CC_TEST_REPORTER_ID: ((code-climate/test-reporter.id))
-
 - name: run-e2es-main
   on_success:
     put: korifi-status

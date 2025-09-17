@@ -73,10 +73,6 @@ RUN url="$(curl -sSfL https://api.github.com/repos/vmware-tanzu/buildkit-cli-for
   && curl -sSfL "$url" \
   | tar -C /usr/local/bin -xzf -
 
-# code climate
-RUN curl -fsSLo /usr/local/bin/cc-test-reporter https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 \
-  && chmod +x /usr/local/bin/cc-test-reporter
-
 # yarn
 RUN curl -fsSL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add - \
   && echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list \
