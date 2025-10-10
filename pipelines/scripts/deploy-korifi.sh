@@ -131,6 +131,31 @@ deploy() {
 
 }
 
+allow_apps_egress() {
+  kubectl apply -f - <<EOF
+apiVersion: crd.projectcalico.org/v1
+kind: GlobalNetworkPolicy
+metadata:
+  name: default.allow-apps-egress
+spec:
+  order: 10
+  namespaceSelector: has(korifi.cloudfoundry.org/space-guid)
+  types:
+  - Egress
+  egress:
+  - action: Allow
+    protocol: TCP
+    destination:
+      ports:
+      - 1:65535
+  - action: Allow
+    protocol: UDP
+    destination:
+      ports:
+      - 1:65535
+EOF
+}
+
 main() {
   export KUBECONFIG=$PWD/kube/kube.config
   export KUBE_CONFIG_PATH="$KUBECONFIG"
@@ -138,6 +163,7 @@ main() {
   undefault_existing_storage_class
   setup_root_namespace
   get_eks_terraform_vars
+  allow_apps_egress
   if [[ -n "$DEPLOY_LATEST_RELEASE" ]]; then
     deploy_latest_release
   else
