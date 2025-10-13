@@ -176,8 +176,8 @@ EOF
   fi
   kubectl set env -n kube-system daemonset/aws-node ANNOTATE_POD_IP=true
 
-  kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.30.3/manifests/operator-crds.yaml
-  kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.30.3/manifests/tigera-operator.yaml
+  kubectl apply --server-side -f https://raw.githubusercontent.com/projectcalico/calico/v3.30.3/manifests/operator-crds.yaml
+  kubectl apply --server-side -f https://raw.githubusercontent.com/projectcalico/calico/v3.30.3/manifests/tigera-operator.yaml
 
   retry kubectl apply -f - <<EOF
 apiVersion: operator.tigera.io/v1
