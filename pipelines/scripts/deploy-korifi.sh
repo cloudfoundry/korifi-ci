@@ -4,6 +4,7 @@ set -euo pipefail
 
 source korifi-ci/pipelines/scripts/common/gcloud-functions
 source korifi-ci/pipelines/scripts/common/secrets.sh
+source korifi-ci/pipelines/scripts/common/retry.sh
 
 BUILD_KUBECONFIG=$PWD/kube/build.config
 # refresh the kbld kubectl builder secret before the parallel builds kick in
@@ -156,6 +157,69 @@ spec:
 EOF
 }
 
+install_calico_eks() {
+  if [[ "$CLUSTER_TYPE" != "EKS" ]]; then
+    return
+  fi
+
+  if [[ "$(kubectl auth can-i patch pods --all-namespaces --as=system:serviceaccount:kube-system:aws-node)" == "no" ]]; then
+    kubectl apply -f <(cat <(kubectl get clusterrole aws-node -o yaml) <(
+      cat <<EOF
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  verbs:
+  - patch
+EOF
+    ))
+  fi
+  kubectl set env -n kube-system daemonset/aws-node ANNOTATE_POD_IP=true
+
+  kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.30.3/manifests/operator-crds.yaml
+  kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.30.3/manifests/tigera-operator.yaml
+
+  retry kubectl apply -f - <<EOF
+apiVersion: operator.tigera.io/v1
+kind: Installation
+metadata:
+  name: default
+spec:
+  kubernetesProvider: EKS
+  cni:
+    type: AmazonVPC
+  calicoNetwork:
+    bgp: Disabled
+---
+
+# This section configures the Calico API server.
+# For more information, see: https://docs.tigera.io/calico/latest/reference/installation/api#operator.tigera.io/v1.APIServer
+apiVersion: operator.tigera.io/v1
+kind: APIServer
+metadata:
+  name: default
+spec: {}
+
+---
+
+# Configures the Calico Goldmane flow aggregator.
+apiVersion: operator.tigera.io/v1
+kind: Goldmane
+metadata:
+  name: default
+
+---
+
+# Configures the Calico Whisker observability UI.
+apiVersion: operator.tigera.io/v1
+kind: Whisker
+metadata:
+  name: default
+EOF
+
+  kubectl wait --for=condition=ready node --all=true --timeout=5m
+}
+
 main() {
   export KUBECONFIG=$PWD/kube/kube.config
   export KUBE_CONFIG_PATH="$KUBECONFIG"
@@ -163,6 +227,7 @@ main() {
   undefault_existing_storage_class
   setup_root_namespace
   get_eks_terraform_vars
+  install_calico_eks
   allow_apps_egress
   if [[ -n "$DEPLOY_LATEST_RELEASE" ]]; then
     deploy_latest_release
