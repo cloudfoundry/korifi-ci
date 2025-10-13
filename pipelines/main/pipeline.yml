@@ -1208,7 +1208,7 @@ resources:
   type: time
   source:
     days: [Monday,Tuesday,Wednesday,Thursday,Friday]
-    interval: 20m
+    interval: 80m
     start: 07:00 PM
     stop: 07:00 AM
     location: Europe/London
