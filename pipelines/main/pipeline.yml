@@ -58,9 +58,12 @@ groups:
   - publish-release
 - name: clusters
   jobs:
-  - recreate-cluster-acceptance
-  - recreate-cluster-eks
-  - recreate-cluster-pr-e2e
+  - destroy-cluster-acceptance
+  - create-cluster-acceptance
+  - destroy-cluster-eks
+  - create-cluster-eks
+  - destroy-cluster-pr-e2e
+  - create-cluster-pr-e2e
 
 jobs:
 # ===== main =====
@@ -413,13 +416,6 @@ jobs:
   - task: publish-dev-images
     file: korifi-ci/pipelines/tasks/publish-dev-images.yml
     image: ci-image
-    params:
-      CLUSTER_NAME: pr-e2e
-      CLUSTER_TYPE: GKE
-      GCP_ZONE: europe-west1-b
-      REGISTRY_HOSTNAME: index.docker.io
-      REGISTRY_USER: ((release-pipeline/dockerhub-auth.username))
-      REGISTRY_PASSWORD: ((release-pipeline/dockerhub-auth.password))
 
 # ===== PR =====
 - name: run-e2es-pr
@@ -892,13 +888,6 @@ jobs:
   - task: create-release
     file: korifi-ci/pipelines/tasks/create-release.yml
     image: ci-image
-    params:
-      CLUSTER_NAME: pr-e2e
-      CLUSTER_TYPE: GKE
-      GCP_ZONE: europe-west1-b
-      REGISTRY_HOSTNAME: index.docker.io
-      REGISTRY_USER: ((release-pipeline/dockerhub-auth.username))
-      REGISTRY_PASSWORD: ((release-pipeline/dockerhub-auth.password))
   - put: korifi-github-release
     params:
       globs:
@@ -914,7 +903,7 @@ jobs:
 # ===== clusters =====
 
 # ===== clusters:acceptance =====
-- name: recreate-cluster-acceptance
+- name: destroy-cluster-acceptance
   serial: true
   serial_groups:
   - acceptance
@@ -923,72 +912,75 @@ jobs:
     - get: korifi-ci
     - get: ci-image
     - get: cf-k8s-secrets
+    - get: gcloud-image
   - <<: *setClusterVars
     params:
-      CLUSTER_NAME: acceptance
-      CLUSTER_TYPE: GKE
-      NODE_MACHINE_TYPE: e2-custom-4-6144
-      KPACK_REPO_LOCATION: europe
-      KPACK_REPO_NAME: acceptance-images
-  - do: &recreateCluster
-    - in_parallel:
-      - get: gcloud-image
+      cluster_name: acceptance
+      cluster_type: gke
+      kpack_repo_location: europe
+      kpack_repo_name: acceptance-images
+  - do: &destroyCluster
     - load_var: cluster-env-vars
       file: clusters/env_vars.yaml
     - task: delete-dns
       file: korifi-ci/pipelines/tasks/delete-dns.yml
       image: gcloud-image
-      params:
-        AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
-        CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
-        CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
-        GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
+      params: &propagate
+        aws_region: ((.:cluster-env-vars.aws_region))
+        cluster_name: ((.:cluster-env-vars.cluster_name))
+        cluster_type: ((.:cluster-env-vars.cluster_type))
+        gcp_zone: ((.:cluster-env-vars.gcp_zone))
+        kpack_repo_location: ((.:cluster-env-vars.kpack_repo_location))
+        kpack_repo_name: ((.:cluster-env-vars.kpack_repo_name))
     - task: undeploy-korifi
       file: korifi-ci/pipelines/tasks/undeploy-korifi.yml
       image: ci-image
       attempts: 10
-      params:
-        AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
-        CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
-        CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
-        GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
+      params: *propagate
     - task: delete-kubernetes-cluster
       privileged: true
       file: korifi-ci/pipelines/tasks/delete-cluster.yml
       image: gcloud-image
-      params:
-        AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
-        CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
-        CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
-        GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
+      params: *propagate
     - task: delete-disks
       file: korifi-ci/pipelines/tasks/delete-disks.yml
       image: gcloud-image
-      params:
-        AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
-        CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
-        CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
-        GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
+      params: *propagate
     - task: clean-artifact-registry
       file: korifi-ci/pipelines/tasks/clean-artifact-registry.yml
       image: ci-image
       timeout: 3h
-      params:
-        CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
-        KPACK_REPO_LOCATION: ((.:cluster-env-vars.KPACK_REPO_LOCATION))
-        KPACK_REPO_NAME: ((.:cluster-env-vars.KPACK_REPO_NAME))
+      params: *propagate
+  on_failure: *slackHook
+  on_error: *slackHook
+
+- name: create-cluster-acceptance
+  serial: true
+  serial_groups:
+  - acceptance
+  plan:
+  - in_parallel:
+    - get: korifi-ci
+    - get: cf-k8s-secrets
+    - get: gcloud-image
+  - <<: *setClusterVars
+    params:
+      cluster_name: acceptance
+      cluster_type: gke
+      node_machine_type: e2-custom-4-6144
+  - do: &createCluster
     - task: create-kubernetes-cluster
       file: korifi-ci/pipelines/tasks/create-cluster.yml
       image: gcloud-image
       attempts: 10
       params:
-        CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
-        CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
-        NODE_MACHINE_TYPE: ((.:cluster-env-vars.NODE_MACHINE_TYPE))
+        cluster_name: ((.:cluster-env-vars.cluster_name))
+        cluster_type: ((.:cluster-env-vars.cluster_type))
+        node_machine_type: ((.:cluster-env-vars.node_machine_type))
   on_failure: *slackHook
   on_error: *slackHook
 
-- name: recreate-cluster-eks
+- name: destroy-cluster-eks
   serial: true
   serial_groups:
   - eks
@@ -996,18 +988,41 @@ jobs:
   - in_parallel:
     - get: pr-e2e-delete-timer
       trigger: true
+    - get: korifi-ci
+    - get: ci-image
+    - get: cf-k8s-secrets
+    - get: gcloud-image
+  - <<: *setClusterVars
+    params:
+      CLUSTER_NAME: eks-e2e
+      CLUSTER_TYPE: EKS
+      KPACK_REPO_LOCATION: eu-west-1
+      KPACK_REPO_NAME: eks-e2e
+  - do: *destroyCluster
+  on_failure: *slackHook
+  on_error: *slackHook
+
+- name: create-cluster-eks
+  serial: true
+  serial_groups:
+  - eks
+  plan:
+  - in_parallel:
+    - get: pr-e2e-delete-timer
+      passed:
+        - destroy-cluster-eks
+      trigger: true
     - get: korifi
     - get: korifi-ci
     - get: ci-image
     - get: cf-k8s-secrets
+    - get: gcloud-image
   - <<: *setClusterVars
     params:
       CLUSTER_NAME: eks-e2e
       CLUSTER_TYPE: EKS
       NODE_MACHINE_TYPE: m5.xlarge
-      KPACK_REPO_LOCATION: eu-west-1
-      KPACK_REPO_NAME: eks-e2e
-  - do: *recreateCluster
+  - do: *createCluster
   - do: &deployLatestKorifi
     - task: install-korifi-dependencies
       file: korifi-ci/pipelines/tasks/install-korifi-dependencies.yml
@@ -1046,7 +1061,7 @@ jobs:
   on_error: *slackHook
 
 # ===== clusters:pr-e2e =====
-- name: recreate-cluster-pr-e2e
+- name: destroy-cluster-pr-e2e
   serial: true
   serial_groups:
   - pr-e2e
@@ -1054,10 +1069,37 @@ jobs:
   - in_parallel:
     - get: pr-e2e-delete-timer
       trigger: true
+    - get: korifi-ci
+    - get: ci-image
+    - get: cf-k8s-secrets
+    - get: gcloud-image
+  - <<: *setClusterVars
+    params:
+      CLUSTER_NAME: pr-e2e
+      CLUSTER_TYPE: GKE
+      CI_REPO_LOCATION: europe
+      CI_REPO_NAME: ci
+      KPACK_REPO_LOCATION: europe
+      KPACK_REPO_NAME: pr-e2e-images
+  - do: *destroyCluster
+  on_failure: *slackHook
+  on_error: *slackHook
+
+- name: create-cluster-pr-e2e
+  serial: true
+  serial_groups:
+  - pr-e2e
+  plan:
+  - in_parallel:
+    - get: pr-e2e-delete-timer
+      trigger: true
+      passed:
+        - destroy-cluster-pr-e2e
     - get: korifi
     - get: korifi-ci
     - get: ci-image
     - get: cf-k8s-secrets
+    - get: gcloud-image
   - <<: *setClusterVars
     params:
       CLUSTER_NAME: pr-e2e
@@ -1067,7 +1109,7 @@ jobs:
       CI_REPO_NAME: ci
       KPACK_REPO_LOCATION: europe
       KPACK_REPO_NAME: pr-e2e-images
-  - do: *recreateCluster
+  - do: *createCluster
   - do: *deployLatestKorifi
   on_failure: *slackHook
   on_error: *slackHook

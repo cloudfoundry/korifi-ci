@@ -8,13 +8,7 @@ inputs:
 outputs:
 - name: korifi
 
-params:
-  GCP_SERVICE_ACCOUNT_JSON: ((gcp-serviceaccount))
-  GCP_ZONE:
-  CLUSTER_NAME:
-  CLUSTER_TYPE:
-  REGISTRY_HOSTNAME:
-  REGISTRY_USER:
-  REGISTRY_PASSWORD:
+params: {}
+
 run:
   path: korifi-ci/pipelines/scripts/create-release.sh
