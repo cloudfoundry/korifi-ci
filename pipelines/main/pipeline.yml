@@ -255,7 +255,7 @@ jobs:
         timeout: 3h
         params:
           AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
-          BUILD_CLUSTER_NAME: concourse
+          BUILD_CLUSTER_NAME: pr-e2e
           BUILD_CLUSTER_TYPE: GKE
           CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
           CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
