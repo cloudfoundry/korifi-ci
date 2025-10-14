@@ -915,42 +915,43 @@ jobs:
     - get: gcloud-image
   - <<: *setClusterVars
     params:
-      cluster_name: acceptance
-      cluster_type: gke
-      kpack_repo_location: europe
-      kpack_repo_name: acceptance-images
+      CLUSTER_NAME: acceptance
+      CLUSTER_TYPE: GKE
+      NODE_MACHINE_TYPE: e2-custom-4-6144
+      KPACK_REPO_LOCATION: europe
+      KPACK_REPO_NAME: acceptance-images
   - do: &destroyCluster
     - load_var: cluster-env-vars
       file: clusters/env_vars.yaml
     - task: delete-dns
       file: korifi-ci/pipelines/tasks/delete-dns.yml
       image: gcloud-image
-      params: &propagate
-        aws_region: ((.:cluster-env-vars.aws_region))
-        cluster_name: ((.:cluster-env-vars.cluster_name))
-        cluster_type: ((.:cluster-env-vars.cluster_type))
-        gcp_zone: ((.:cluster-env-vars.gcp_zone))
-        kpack_repo_location: ((.:cluster-env-vars.kpack_repo_location))
-        kpack_repo_name: ((.:cluster-env-vars.kpack_repo_name))
+      params: &propagate-cluster-env-vars
+        AWS_REGION: ((.:cluster-env-vars.AWS_REGION))
+        CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
+        CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
+        GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
+        KPACK_REPO_LOCATION: ((.:cluster-env-vars.KPACK_REPO_LOCATION))
+        KPACK_REPO_NAME: ((.:cluster-env-vars.KPACK_REPO_NAME))
     - task: undeploy-korifi
       file: korifi-ci/pipelines/tasks/undeploy-korifi.yml
       image: ci-image
       attempts: 10
-      params: *propagate
+      params: *propagate-cluster-env-vars
     - task: delete-kubernetes-cluster
       privileged: true
       file: korifi-ci/pipelines/tasks/delete-cluster.yml
       image: gcloud-image
-      params: *propagate
+      params: *propagate-cluster-env-vars
     - task: delete-disks
       file: korifi-ci/pipelines/tasks/delete-disks.yml
       image: gcloud-image
-      params: *propagate
+      params: *propagate-cluster-env-vars
     - task: clean-artifact-registry
       file: korifi-ci/pipelines/tasks/clean-artifact-registry.yml
       image: ci-image
       timeout: 3h
-      params: *propagate
+      params: *propagate-cluster-env-vars
   on_failure: *slackHook
   on_error: *slackHook
 
@@ -965,18 +966,20 @@ jobs:
     - get: gcloud-image
   - <<: *setClusterVars
     params:
-      cluster_name: acceptance
-      cluster_type: gke
-      node_machine_type: e2-custom-4-6144
+      CLUSTER_NAME: acceptance
+      CLUSTER_TYPE: gke
+      NODE_MACHINE_TYPE: e2-custom-4-6144
   - do: &createCluster
+    - load_var: cluster-env-vars
+      file: clusters/env_vars.yaml
     - task: create-kubernetes-cluster
       file: korifi-ci/pipelines/tasks/create-cluster.yml
       image: gcloud-image
       attempts: 10
       params:
-        cluster_name: ((.:cluster-env-vars.cluster_name))
-        cluster_type: ((.:cluster-env-vars.cluster_type))
-        node_machine_type: ((.:cluster-env-vars.node_machine_type))
+        CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
+        CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
+        NODE_MACHINE_TYPE: ((.:cluster-env-vars.NODE_MACHINE_TYPE))
   on_failure: *slackHook
   on_error: *slackHook
 
