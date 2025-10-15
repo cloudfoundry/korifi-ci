@@ -48,7 +48,6 @@ groups:
   jobs:
   - deploy-korifi-acceptance
   - deploy-pairup
-  - deploy-postfacto
   - check-long-living-app
 - name: release
   jobs:
@@ -649,41 +648,6 @@ jobs:
       CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
       GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
 
-- name: deploy-postfacto
-  on_failure: *slackHook
-  on_error: *slackHook
-  serial: true
-  serial_groups:
-  - acceptance
-  plan:
-  - in_parallel:
-    - get: ci-image
-    - get: cf-k8s-secrets
-    - get: korifi
-      trigger: true
-      passed:
-      - deploy-korifi-acceptance
-    - get: korifi-ci
-    - get: postfacto
-      resource: postfacto-fork
-      trigger: true
-
-  - <<: *setClusterVars
-    params:
-      CLUSTER_NAME: acceptance
-      CLUSTER_TYPE: GKE
-  - load_var: cluster-env-vars
-    file: clusters/env_vars.yaml
-
-  - task: deploy-postfacto
-    file: korifi-ci/pipelines/tasks/deploy-postfacto.yml
-    image: ci-image
-    params:
-      API_SERVER_ROOT: cf.((.:cluster-env-vars.CLUSTER_NAME)).korifi.cf-app.com
-      CLUSTER_NAME: ((.:cluster-env-vars.CLUSTER_NAME))
-      CLUSTER_TYPE: ((.:cluster-env-vars.CLUSTER_TYPE))
-      GCP_ZONE: ((.:cluster-env-vars.GCP_ZONE))
-
 - name: check-long-living-app
   on_failure: *slackHook
   on_error: *slackHook
@@ -1201,13 +1165,6 @@ resources:
   source:
     uri: https://github.com/eirini-forks/pairup.git
     branch: master
-
-- name: postfacto-fork
-  type: git
-  icon: git
-  source:
-    uri: https://github.com/eirini-forks/postfacto-release.git
-    branch: main
 
 - name: korifi-status
   type: github-status
