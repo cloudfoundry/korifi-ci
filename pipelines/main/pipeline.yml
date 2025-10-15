@@ -928,6 +928,7 @@ jobs:
     - get: korifi-ci
     - get: cf-k8s-secrets
     - get: gcloud-image
+    - get: ci-image
   - <<: *setClusterVars
     params:
       CLUSTER_NAME: acceptance
