@@ -415,6 +415,13 @@ jobs:
   - task: publish-dev-images
     file: korifi-ci/pipelines/tasks/publish-dev-images.yml
     image: ci-image
+    params:
+      CLUSTER_NAME: pr-e2e
+      CLUSTER_TYPE: GKE
+      GCP_ZONE: europe-west1-b
+      REGISTRY_HOSTNAME: index.docker.io
+      REGISTRY_USER: ((release-pipeline/dockerhub-auth.username))
+      REGISTRY_PASSWORD: ((release-pipeline/dockerhub-auth.password))
 
 # ===== PR =====
 - name: run-e2es-pr
@@ -852,6 +859,14 @@ jobs:
   - task: create-release
     file: korifi-ci/pipelines/tasks/create-release.yml
     image: ci-image
+    params:
+      CLUSTER_NAME: pr-e2e
+      CLUSTER_TYPE: GKE
+      GCP_ZONE: europe-west1-b
+      REGISTRY_HOSTNAME: index.docker.io
+      REGISTRY_USER: ((release-pipeline/dockerhub-auth.username))
+      REGISTRY_PASSWORD: ((release-pipeline/dockerhub-auth.password))
+
   - put: korifi-github-release
     params:
       globs:
