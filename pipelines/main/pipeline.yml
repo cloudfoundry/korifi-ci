@@ -404,6 +404,7 @@ jobs:
         - run-e2es-main
         - run-e2es-eks
     - get: korifi-ci
+    - get: cf-k8s-secrets
 
   - put: korifi-status
     params:
@@ -848,6 +849,7 @@ jobs:
         - run-e2es-eks
       - get: korifi-release-version
       - get: ci-image
+      - get: cf-k8s-secrets
   - task: check-release-version
     image: ci-image
     config:
