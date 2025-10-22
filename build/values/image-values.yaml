@@ -4,14 +4,5 @@ api:
 controllers:
   image: cloudfoundry/korifi-controllers:latest
 
-kpackImageBuilder:
-  image: cloudfoundry/korifi-kpack-image-builder:latest
-
-statefulsetRunner:
-  image: cloudfoundry/korifi-statefulset-runner:latest
-
-jobTaskRunner:
-  image: cloudfoundry/korifi-job-task-runner:latest
-
 migration:
   image: cloudfoundry/korifi-migration:latest

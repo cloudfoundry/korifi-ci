@@ -16,27 +16,6 @@ sources:
       file: controllers/Dockerfile
       rawOptions: ["--registry-secret", "ecr-buildkit"]
 
-- image: cloudfoundry/korifi-kpack-image-builder:latest
-  path: .
-  kubectlBuildkit:
-    build:
-      file: kpack-image-builder/Dockerfile
-      rawOptions: ["--registry-secret", "ecr-buildkit"]
-
-- image: cloudfoundry/korifi-statefulset-runner:latest
-  path: .
-  kubectlBuildkit:
-    build:
-      file: statefulset-runner/Dockerfile
-      rawOptions: ["--registry-secret", "ecr-buildkit"]
-
-- image: cloudfoundry/korifi-job-task-runner:latest
-  path: .
-  kubectlBuildkit:
-    build:
-      file: job-task-runner/Dockerfile
-      rawOptions: ["--registry-secret", "ecr-buildkit"]
-
 - image: cloudfoundry/korifi-migration:latest
   path: .
   kubectlBuildkit:
@@ -49,11 +28,5 @@ destinations:
   newImage: 007801690126.dkr.ecr.eu-west-1.amazonaws.com/eks-e2e-korifi-api
 - image: cloudfoundry/korifi-controllers:latest
   newImage: 007801690126.dkr.ecr.eu-west-1.amazonaws.com/eks-e2e-korifi-controllers
-- image: cloudfoundry/korifi-kpack-image-builder:latest
-  newImage: 007801690126.dkr.ecr.eu-west-1.amazonaws.com/eks-e2e-korifi-kpack-image-builder
-- image: cloudfoundry/korifi-statefulset-runner:latest
-  newImage: 007801690126.dkr.ecr.eu-west-1.amazonaws.com/eks-e2e-korifi-statefulset-runner
-- image: cloudfoundry/korifi-job-task-runner:latest
-  newImage: 007801690126.dkr.ecr.eu-west-1.amazonaws.com/eks-e2e-korifi-job-task-runner
 - image: cloudfoundry/korifi-migration:latest
   newImage: 007801690126.dkr.ecr.eu-west-1.amazonaws.com/eks-e2e-korifi-migration
