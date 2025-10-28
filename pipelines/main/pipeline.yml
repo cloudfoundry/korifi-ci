@@ -1006,9 +1006,7 @@ jobs:
   - eks
   plan:
   - in_parallel:
-    - get: pr-e2e-delete-timer
-      passed:
-        - destroy-cluster-eks
+    - get: pr-e2e-create-timer
       trigger: true
     - get: korifi
     - get: korifi-ci
@@ -1089,10 +1087,8 @@ jobs:
   - pr-e2e
   plan:
   - in_parallel:
-    - get: pr-e2e-delete-timer
+    - get: pr-e2e-create-timer
       trigger: true
-      passed:
-        - destroy-cluster-pr-e2e
     - get: korifi
     - get: korifi-ci
     - get: ci-image
@@ -1241,9 +1237,9 @@ resources:
   type: time
   source:
     days: [Monday,Tuesday,Wednesday,Thursday,Friday]
-    interval: 90m
+    interval: 30m
     start: 07:00 PM
-    stop: 07:00 AM
+    stop: 11:59 AM
     location: Europe/London
     initial_version: true
 
@@ -1260,5 +1256,12 @@ resources:
   type: time
   icon: bomb
   source:
-    start: 7:00 AM
+    start: 0:00 AM
+    stop: 0:10 AM
+
+- name: pr-e2e-create-timer
+  type: time
+  icon: bomb
+  source:
+    start: 7:50 AM
     stop: 8:00 AM
