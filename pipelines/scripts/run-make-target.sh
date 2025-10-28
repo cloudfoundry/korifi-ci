@@ -16,4 +16,4 @@ REGISTRY_DETAILS="
   password: $(aws ecr get-login-password --region eu-west-1)
 "
 
-make -C "root/$DIR" "$TARGET"
+make -C "korifi/$DIR" "$TARGET"

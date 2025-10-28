@@ -6,10 +6,7 @@ caches:
 
 inputs:
 - name: korifi-ci
-- name: root
-
-outputs:
-- name: coverage
+- name: korifi
 
 params:
   DIR: .

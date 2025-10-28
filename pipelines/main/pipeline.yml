@@ -105,17 +105,11 @@ jobs:
       - task: linter
         file: korifi-ci/pipelines/tasks/run-lint.yml
         image: golangci-lint-image
-        input_mapping:
-          root: korifi
 
       - in_parallel: &unit-integration
         - task: api-tests
           file: korifi-ci/pipelines/tasks/run-make-target.yml
           image: ci-image
-          input_mapping:
-            root: korifi
-          output_mapping:
-            coverage: coverage-api
           params:
             DIR: api
             TARGET: test
@@ -123,10 +117,6 @@ jobs:
         - task: controllers-tests
           file: korifi-ci/pipelines/tasks/run-make-target.yml
           image: ci-image
-          input_mapping:
-            root: korifi
-          output_mapping:
-            coverage: coverage-controllers
           params:
             DIR: controllers
             TARGET: test
@@ -134,10 +124,6 @@ jobs:
         - task: job-task-runner-tests
           file: korifi-ci/pipelines/tasks/run-make-target.yml
           image: ci-image
-          input_mapping:
-            root: korifi
-          output_mapping:
-            coverage: coverage-job-task-runner
           params:
             DIR: job-task-runner
             TARGET: test
@@ -145,10 +131,6 @@ jobs:
         - task: kpack-image-builder-tests
           file: korifi-ci/pipelines/tasks/run-make-target.yml
           image: ci-image
-          input_mapping:
-            root: korifi
-          output_mapping:
-            coverage: coverage-kpack-image-builder
           params:
             DIR: kpack-image-builder
             TARGET: test
@@ -156,10 +138,6 @@ jobs:
         - task: statefulset-runner-tests
           file: korifi-ci/pipelines/tasks/run-make-target.yml
           image: ci-image
-          input_mapping:
-            root: korifi
-          output_mapping:
-            coverage: coverage-statefulset-runner
           params:
             DIR: statefulset-runner
             TARGET: test
@@ -167,10 +145,6 @@ jobs:
         - task: tools-tests
           file: korifi-ci/pipelines/tasks/run-make-target.yml
           image: ci-image
-          input_mapping:
-            root: korifi
-          output_mapping:
-            coverage: coverage-tools
           params:
             DIR: tools
             TARGET: test
@@ -178,10 +152,6 @@ jobs:
         - task: migration-tests
           file: korifi-ci/pipelines/tasks/run-make-target.yml
           image: ci-image
-          input_mapping:
-            root: korifi
-          output_mapping:
-            coverage: coverage-tools
           params:
             DIR: migration
             TARGET: test
