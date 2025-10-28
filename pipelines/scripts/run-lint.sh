@@ -2,4 +2,4 @@
 
 set -euo pipefail
 
-make -C "root/$DIR" lint
+make -C "korifi/$DIR" lint

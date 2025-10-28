@@ -6,7 +6,7 @@ caches:
 
 inputs:
 - name: korifi-ci
-- name: root
+- name: korifi
 
 params:
   DIR: .
