@@ -1207,11 +1207,9 @@ resources:
   type: time
   source:
     days: [Monday,Tuesday,Wednesday,Thursday,Friday]
-    interval: 30m
-    start: 07:00 PM
-    stop: 11:59 AM
-    location: Europe/London
-    initial_version: true
+    interval: 60m
+    start: 06:00 PM
+    stop: 11:00 PM
 
 - name: bump-timer
   type: time
@@ -1219,8 +1217,6 @@ resources:
     days: [Monday,Tuesday,Wednesday,Thursday,Friday]
     start: 03:00 AM
     stop: 08:00 AM
-    location: Europe/London
-    initial_version: true
 
 - name: pr-e2e-delete-timer
   type: time
