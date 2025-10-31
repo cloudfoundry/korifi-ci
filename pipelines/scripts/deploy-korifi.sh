@@ -85,10 +85,15 @@ EOF
   location=$(curl -i https://github.com/cloudfoundry/korifi/releases/latest | grep "location: " | tr -d '\r')
   local version="${location##*tag/v}"
 
+  kubectl delete namespace korifi-gateway --wait --ignore-not-found
   deploy "https://github.com/cloudfoundry/korifi/releases/download/v${version}/korifi-${version}.tgz"
 }
 
 deploy_local() {
+  kubectl delete namespace korifi-gateway --wait --ignore-not-found
+  kubectl create namespace korifi-gateway
+  kubectl annotate namespace korifi-gateway --overwrite "helm.sh/resource-policy"="keep"
+
   KBLD_CONFIG_FILE="$PWD/korifi-ci/build/kbld/$CLUSTER_NAME/korifi-kbld.yml"
   VALUES_FILE="$PWD/korifi-ci/build/values/image-values.yaml"
 
