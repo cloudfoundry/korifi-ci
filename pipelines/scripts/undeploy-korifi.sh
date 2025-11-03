@@ -27,13 +27,13 @@ cleanup_root_namespace() {
   popd
 }
 
-undeploy_cf() {
+undeploy_korifi() {
   if helm status --namespace korifi korifi; then
     helm delete --namespace korifi korifi --wait
   fi
 }
 
-cleanup_korifi_namespace() {
+cleanup_korifi_namespaces() {
   pushd "cf-k8s-secrets/ci-deployment/$CLUSTER_NAME/k8s"
   {
     terraform init \
@@ -41,6 +41,7 @@ cleanup_korifi_namespace() {
       -upgrade=true
     terraform destroy \
       -target kubernetes_namespace.korifi \
+      -target kubernetes_namespace.korifi-gateway \
       -var "name=$CLUSTER_NAME" \
       -var "registry-server=whatever" \
       -var "registry-username=whatever" \
@@ -58,8 +59,8 @@ main() {
     exit 0
   fi
   cleanup_root_namespace
-  undeploy_cf
-  cleanup_korifi_namespace
+  undeploy_korifi
+  cleanup_korifi_namespaces
 }
 
 main
