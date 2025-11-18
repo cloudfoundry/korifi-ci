@@ -1215,13 +1215,14 @@ resources:
   type: time
   source:
     days: [Monday,Tuesday,Wednesday,Thursday,Friday]
-    start: 03:00 AM
-    stop: 08:00 AM
+    start: 08:00 PM
+    stop: 10:00 PM
 
 - name: pr-e2e-delete-timer
   type: time
   icon: bomb
   source:
+    days: [Tuesday,Wednesday,Thursday,Friday,Saturday]
     start: 0:00 AM
     stop: 0:10 AM
 
@@ -1229,5 +1230,6 @@ resources:
   type: time
   icon: bomb
   source:
+    days: [Monday,Tuesday,Wednesday,Thursday,Friday]
     start: 7:50 AM
     stop: 8:00 AM
