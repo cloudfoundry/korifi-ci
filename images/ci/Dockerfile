@@ -1,11 +1,7 @@
-FROM golang:bookworm
+FROM golang:latest
 
 ENV PATH="$GOPATH/bin:/root/google-cloud-sdk/bin:${PATH}"
 ENV USE_GKE_GCLOUD_AUTH_PLUGIN=True
-
-# add APT custom repos
-# gcloud
-RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys B53DC80D13EDEF05
 
 # helm
 RUN echo "deb [signed-by=/usr/share/keyrings/helm.gpg] https://packages.buildkite.com/helm-linux/helm-debian/any/ any main" >/etc/apt/sources.list.d/helm-stable-debian.list \
@@ -34,10 +30,11 @@ RUN apt-get update \
        iptables \
        jq \
        lsb-release \
+       nodejs \
+       npm \
        parallel \
        ruby-dev \
        shellcheck \
-       software-properties-common \
        sshfs \
        sudo \
        terraform \
@@ -74,10 +71,7 @@ RUN url="$(curl -sSfL https://api.github.com/repos/vmware-tanzu/buildkit-cli-for
   | tar -C /usr/local/bin -xzf -
 
 # yarn
-RUN curl -fsSL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add - \
-  && echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list \
-  && sudo apt update \
-  && sudo apt install -y yarn
+RUN npm install -g yarn
 
 # aws cli
 RUN curl -fsSLo awscliv2.zip https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip \
