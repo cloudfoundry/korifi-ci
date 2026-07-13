@@ -9,6 +9,6 @@ params:
   CLUSTER_NAME:
   CLUSTER_TYPE:
   GCP_SERVICE_ACCOUNT_JSON: ((gcp-serviceaccount))
-  WORKER_COUNT: 3
+  WORKER_COUNT: 1
 run:
   path: korifi-ci/pipelines/scripts/delete-cluster.sh
